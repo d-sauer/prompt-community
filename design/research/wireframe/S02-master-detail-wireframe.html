@@ -1,0 +1,1305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>S02 — Master–Detail Split View Wireframe</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background: #08080f;
+            color: #e2e8f0;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        /* Page Header */
+        .page-header {
+            margin-bottom: 40px;
+        }
+
+        .screen-badge {
+            display: inline-block;
+            background: #4c1d95;
+            color: #c4b5fd;
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        .page-header h1 {
+            font-size: 32px;
+            margin-bottom: 8px;
+            font-weight: 700;
+        }
+
+        .page-header p {
+            color: #94a3b8;
+            font-size: 14px;
+            margin-bottom: 16px;
+        }
+
+        .meta-badges {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .meta-badge {
+            background: #1a1a2e;
+            border: 1px solid #2a2a3a;
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            color: #a78bfa;
+        }
+
+        .meta-badge strong {
+            color: #c4b5fd;
+            margin-right: 4px;
+        }
+
+        /* Section Headers */
+        .section-header {
+            margin-top: 48px;
+            margin-bottom: 24px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #2a2a3a;
+        }
+
+        .section-header h2 {
+            font-size: 20px;
+            font-weight: 600;
+            color: #c4b5fd;
+        }
+
+        /* Browser Frame */
+        .browser-frame {
+            background: #13131a;
+            border: 1px solid #2a2a3a;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 24px;
+        }
+
+        .browser-chrome {
+            background: #0a0a10;
+            padding: 8px 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border-bottom: 1px solid #2a2a3a;
+        }
+
+        .browser-dots {
+            display: flex;
+            gap: 6px;
+        }
+
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .dot-red { background: #ef4444; }
+        .dot-amber { background: #f59e0b; }
+        .dot-green { background: #10b981; }
+
+        .browser-url {
+            flex: 1;
+            background: #08080f;
+            border: 1px solid #2a2a3a;
+            padding: 4px 8px;
+            border-radius: 4px;
+            color: #64748b;
+            font-size: 12px;
+            margin-left: 12px;
+        }
+
+        /* Split Pane Container */
+        .split-pane {
+            display: flex;
+            height: 650px;
+            background: #08080f;
+            border: 1px solid #2a2a3a;
+            border-radius: 8px;
+            overflow: hidden;
+            gap: 0;
+        }
+
+        /* Master Panel */
+        .master-panel {
+            flex: 0 0 320px;
+            background: #13131a;
+            border-right: 1px solid #2a2a3a;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .master-toolbar {
+            padding: 12px;
+            background: #1a1a2e;
+            border-bottom: 1px solid #2a2a3a;
+            flex-shrink: 0;
+        }
+
+        .master-search {
+            background: #12121e;
+            border: 1px solid #2a2a3a;
+            padding: 6px 10px;
+            border-radius: 4px;
+            color: #e2e8f0;
+            font-size: 13px;
+            width: 100%;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .master-search input {
+            background: transparent;
+            border: none;
+            color: #e2e8f0;
+            flex: 1;
+            font-size: 13px;
+            outline: none;
+        }
+
+        .master-search input::placeholder {
+            color: #64748b;
+        }
+
+        .search-controls {
+            display: flex;
+            gap: 4px;
+            font-size: 12px;
+        }
+
+        .search-count {
+            color: #94a3b8;
+        }
+
+        .search-clear {
+            color: #64748b;
+            cursor: pointer;
+            padding: 0 4px;
+        }
+
+        .master-filters {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+            margin-bottom: 8px;
+            font-size: 12px;
+        }
+
+        .filter-chip {
+            background: #1e1b4b;
+            border: 1px solid #7c3aed;
+            color: #a78bfa;
+            padding: 4px 8px;
+            border-radius: 3px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            cursor: pointer;
+        }
+
+        .filter-chip-close {
+            color: #64748b;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .result-count {
+            color: #94a3b8;
+            font-size: 12px;
+            padding: 0 4px;
+        }
+
+        .master-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 0;
+        }
+
+        .prompt-row {
+            padding: 10px 12px;
+            border-bottom: 1px solid #2a2a3a;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .prompt-row:hover {
+            background: #1a1a2e;
+        }
+
+        .prompt-row.active {
+            background: #1a1a2e;
+            border-left: 3px solid #7c3aed;
+            padding-left: 9px;
+        }
+
+        .prompt-row-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .avatar-small {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: #4c1d95;
+            flex-shrink: 0;
+        }
+
+        .author-time {
+            display: flex;
+            gap: 4px;
+            align-items: center;
+            font-size: 11px;
+            color: #64748b;
+        }
+
+        .author-name {
+            color: #a78bfa;
+            font-weight: 500;
+        }
+
+        .prompt-title {
+            font-size: 13px;
+            font-weight: 600;
+            color: #e2e8f0;
+            line-height: 1.3;
+        }
+
+        .prompt-meta {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            font-size: 11px;
+            color: #64748b;
+        }
+
+        .tag-chip {
+            display: inline-block;
+            background: #1e1b4b;
+            color: #a78bfa;
+            padding: 2px 6px;
+            border-radius: 2px;
+            font-size: 10px;
+            border: 1px solid #2a2a3a;
+        }
+
+        .vote-count, .comment-count {
+            display: flex;
+            align-items: center;
+            gap: 2px;
+        }
+
+        .skeleton-row {
+            padding: 10px 12px;
+            border-bottom: 1px solid #2a2a3a;
+            display: flex;
+            gap: 8px;
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 0.6; }
+            50% { opacity: 1; }
+        }
+
+        .skeleton-circle {
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: #2a2a3a;
+        }
+
+        .skeleton-line {
+            flex: 1;
+            height: 8px;
+            background: #2a2a3a;
+            border-radius: 2px;
+        }
+
+        .empty-state {
+            padding: 40px 20px;
+            text-align: center;
+            color: #64748b;
+        }
+
+        .empty-icon {
+            font-size: 48px;
+            margin-bottom: 12px;
+        }
+
+        .empty-text {
+            font-size: 13px;
+            margin-bottom: 12px;
+        }
+
+        .btn-small {
+            background: #4c1d95;
+            color: #c4b5fd;
+            border: 1px solid #7c3aed;
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-size: 11px;
+            cursor: pointer;
+        }
+
+        /* Resize Handle */
+        .resize-handle {
+            width: 4px;
+            background: transparent;
+            cursor: col-resize;
+            transition: all 0.2s ease;
+            flex-shrink: 0;
+        }
+
+        .resize-handle:hover {
+            background: #7c3aed;
+        }
+
+        /* Detail Panel */
+        .detail-panel {
+            flex: 1;
+            background: #08080f;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .detail-header {
+            padding: 12px 20px;
+            background: #13131a;
+            border-bottom: 1px solid #2a2a3a;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-shrink: 0;
+            overflow: hidden;
+        }
+
+        .detail-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #e2e8f0;
+            flex: 1;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .detail-actions {
+            display: flex;
+            gap: 6px;
+            flex-shrink: 0;
+        }
+
+        .btn-action {
+            background: #1a1a2e;
+            color: #a78bfa;
+            border: 1px solid #2a2a3a;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 11px;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .btn-action:hover {
+            background: #2a2a3a;
+            color: #c4b5fd;
+        }
+
+        .btn-more {
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #1a1a2e;
+            border: 1px solid #2a2a3a;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .detail-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+        }
+
+        .detail-empty {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            color: #64748b;
+            text-align: center;
+        }
+
+        .detail-empty-icon {
+            font-size: 48px;
+            margin-bottom: 12px;
+        }
+
+        .prompt-full-title {
+            font-size: 22px;
+            font-weight: 700;
+            color: #e2e8f0;
+            margin-bottom: 12px;
+        }
+
+        .prompt-tags {
+            display: flex;
+            gap: 6px;
+            margin-bottom: 16px;
+            flex-wrap: wrap;
+        }
+
+        .tag-full {
+            background: #1e1b4b;
+            color: #a78bfa;
+            padding: 4px 10px;
+            border-radius: 3px;
+            font-size: 12px;
+            border: 1px solid #7c3aed;
+        }
+
+        .prompt-stats {
+            display: flex;
+            gap: 16px;
+            padding: 12px;
+            background: #13131a;
+            border-radius: 4px;
+            margin-bottom: 16px;
+            font-size: 12px;
+            color: #94a3b8;
+        }
+
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .prompt-body {
+            font-size: 13px;
+            line-height: 1.6;
+            color: #e2e8f0;
+            margin-bottom: 20px;
+        }
+
+        .code-block {
+            background: #12121e;
+            border: 1px solid #2a2a3a;
+            border-radius: 4px;
+            padding: 12px;
+            margin: 12px 0;
+            overflow-x: auto;
+            position: relative;
+            font-family: "Monaco", monospace;
+            font-size: 12px;
+            color: #a78bfa;
+            line-height: 1.5;
+        }
+
+        .code-copy {
+            position: absolute;
+            top: 6px;
+            right: 6px;
+            background: #1a1a2e;
+            color: #64748b;
+            border: 1px solid #2a2a3a;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 10px;
+            cursor: pointer;
+        }
+
+        .code-copy:hover {
+            background: #2a2a3a;
+            color: #a78bfa;
+        }
+
+        .reactions-bar {
+            display: flex;
+            gap: 6px;
+            padding: 12px;
+            background: #13131a;
+            border-radius: 4px;
+            margin: 16px 0;
+            flex-wrap: wrap;
+        }
+
+        .reaction-btn {
+            background: #1a1a2e;
+            border: 1px solid #2a2a3a;
+            padding: 4px 8px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 12px;
+            color: #94a3b8;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            transition: all 0.2s ease;
+        }
+
+        .reaction-btn:hover {
+            background: #2a2a3a;
+            color: #c4b5fd;
+        }
+
+        .reaction-btn.active {
+            background: #1e1b4b;
+            color: #a78bfa;
+            border-color: #7c3aed;
+        }
+
+        .divider {
+            height: 1px;
+            background: #2a2a3a;
+            margin: 16px 0;
+        }
+
+        .comments-header {
+            font-size: 14px;
+            font-weight: 600;
+            color: #c4b5fd;
+            margin: 16px 0 12px;
+        }
+
+        .comment {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 16px;
+            padding: 12px;
+            background: #13131a;
+            border-radius: 4px;
+            border: 1px solid #2a2a3a;
+        }
+
+        .comment-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: #4c1d95;
+            flex-shrink: 0;
+        }
+
+        .comment-body {
+            flex: 1;
+            font-size: 12px;
+        }
+
+        .comment-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 4px;
+        }
+
+        .comment-author {
+            font-weight: 600;
+            color: #c4b5fd;
+        }
+
+        .comment-time {
+            color: #64748b;
+            font-size: 11px;
+        }
+
+        .comment-text {
+            color: #e2e8f0;
+            line-height: 1.5;
+        }
+
+        .comment-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 6px;
+        }
+
+        .comment-like {
+            color: #64748b;
+            font-size: 11px;
+            cursor: pointer;
+        }
+
+        .comment-composer {
+            display: flex;
+            gap: 12px;
+            padding: 12px;
+            background: #13131a;
+            border-radius: 4px;
+            margin-top: 12px;
+            border: 1px solid #2a2a3a;
+        }
+
+        .composer-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: #4c1d95;
+            flex-shrink: 0;
+        }
+
+        .composer-input {
+            flex: 1;
+        }
+
+        .composer-textarea {
+            width: 100%;
+            height: 60px;
+            background: #12121e;
+            border: 1px solid #2a2a3a;
+            border-radius: 4px;
+            padding: 8px;
+            color: #e2e8f0;
+            font-size: 12px;
+            font-family: inherit;
+            resize: none;
+        }
+
+        .composer-textarea::placeholder {
+            color: #64748b;
+        }
+
+        .composer-actions {
+            display: flex;
+            gap: 6px;
+            margin-top: 8px;
+            justify-content: flex-end;
+        }
+
+        .btn-submit {
+            background: #4c1d95;
+            color: #c4b5fd;
+            border: 1px solid #7c3aed;
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+        .btn-submit:hover {
+            background: #5d2fa0;
+        }
+
+        .composer-cta {
+            padding: 12px;
+            text-align: center;
+            color: #94a3b8;
+            font-size: 12px;
+        }
+
+        .composer-cta a {
+            color: #a78bfa;
+            text-decoration: underline;
+            cursor: pointer;
+        }
+
+        /* Annotation Number */
+        .annotation-number {
+            width: 24px;
+            height: 24px;
+            background: #f59e0b;
+            color: #000;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 12px;
+            position: absolute;
+            margin: -6px 0 0 -6px;
+        }
+
+        /* Annotation Table */
+        .annotation-table {
+            margin-top: 24px;
+            background: #13131a;
+            border: 1px solid #2a2a3a;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .table-header {
+            background: #0a0a10;
+            padding: 12px;
+            display: grid;
+            grid-template-columns: 40px 140px 200px 200px 240px;
+            gap: 12px;
+            border-bottom: 1px solid #2a2a3a;
+            font-weight: 600;
+            font-size: 12px;
+            color: #a78bfa;
+        }
+
+        .table-row {
+            padding: 12px;
+            display: grid;
+            grid-template-columns: 40px 140px 200px 200px 240px;
+            gap: 12px;
+            border-bottom: 1px solid #2a2a3a;
+            font-size: 12px;
+            align-items: start;
+        }
+
+        .table-row:last-child {
+            border-bottom: none;
+        }
+
+        .table-row:hover {
+            background: #1a1a2e;
+        }
+
+        .table-cell {
+            color: #94a3b8;
+        }
+
+        .table-cell-number {
+            color: #f59e0b;
+            font-weight: 600;
+        }
+
+        .table-cell-label {
+            color: #c4b5fd;
+            font-weight: 500;
+        }
+
+        .code-inline {
+            background: #1a1a2e;
+            border: 1px solid #2a2a3a;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: "Monaco", "Courier New", monospace;
+            color: #a78bfa;
+            font-size: 11px;
+        }
+
+        /* State Variants */
+        .variants-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+            margin-top: 32px;
+        }
+
+        .variant-frame {
+            background: #13131a;
+            border: 1px solid #2a2a3a;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .variant-label {
+            background: #1a1a2e;
+            padding: 8px 12px;
+            border-bottom: 1px solid #2a2a3a;
+            font-size: 12px;
+            font-weight: 600;
+            color: #a78bfa;
+        }
+
+        .variant-content {
+            height: 400px;
+            background: #08080f;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #64748b;
+            font-size: 13px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        /* Keyboard Shortcuts */
+        .shortcuts-section {
+            margin-top: 32px;
+            background: #13131a;
+            border: 1px solid #2a2a3a;
+            border-radius: 8px;
+            padding: 20px;
+        }
+
+        .shortcuts-section h3 {
+            color: #c4b5fd;
+            margin-bottom: 16px;
+            font-size: 16px;
+        }
+
+        .shortcuts-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+        }
+
+        .shortcut-item {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .shortcut-key {
+            background: #0a0a10;
+            border: 1px solid #2a2a3a;
+            padding: 4px 8px;
+            border-radius: 3px;
+            font-family: "Monaco", monospace;
+            font-size: 11px;
+            color: #a78bfa;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .shortcut-desc {
+            color: #94a3b8;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Page Header -->
+        <div class="page-header">
+            <div class="screen-badge">SCREEN S02</div>
+            <h1>Master–Detail Split View</h1>
+            <p>The main working view with a horizontally resizable split pane. Left master panel shows the filtered/sorted prompt list. Right detail panel shows the selected prompt's full content, reactions, and comments.</p>
+            <div class="meta-badges">
+                <div class="meta-badge"><strong>Route:</strong> /browse, /prompts/:id</div>
+                <div class="meta-badge"><strong>Component:</strong> BrowseView.vue</div>
+                <div class="meta-badge"><strong>Access:</strong> Read = anonymous, Write = authenticated</div>
+            </div>
+        </div>
+
+        <!-- Default State -->
+        <div class="section-header">
+            <h2>Default State — Prompt Selected with Comments</h2>
+        </div>
+
+        <div class="browser-frame">
+            <div class="browser-chrome">
+                <div class="browser-dots">
+                    <div class="dot dot-red"></div>
+                    <div class="dot dot-amber"></div>
+                    <div class="dot dot-green"></div>
+                </div>
+                <div class="browser-url">/browse (with /prompts/123 detail view)</div>
+            </div>
+
+            <div class="split-pane">
+                <!-- Master Panel -->
+                <div class="master-panel">
+                    <div class="master-toolbar">
+                        <div class="master-search">
+                            <span>🔍</span>
+                            <input type="text" placeholder="Filter prompts..." />
+                            <span class="annotation-number" style="position: relative; margin: 0; width: auto; height: auto; background: transparent; color: #f59e0b; display: inline-flex;">1</span>
+                            <span class="search-controls">
+                                <span class="search-count">42</span>
+                                <span class="search-clear" title="Clear">×</span>
+                            </span>
+                        </div>
+                        <div class="master-filters">
+                            <div class="filter-chip">
+                                category: coding
+                                <span class="filter-chip-close">×</span>
+                                <span class="annotation-number" style="position: relative; margin: 0; width: auto; height: auto; background: transparent; color: #f59e0b; margin-left: 4px;">2</span>
+                            </div>
+                            <div class="filter-chip">
+                                model: claude
+                                <span class="filter-chip-close">×</span>
+                            </div>
+                        </div>
+                        <div class="result-count">42 prompts<span class="annotation-number" style="position: relative; margin: 0; width: auto; height: auto; background: transparent; color: #f59e0b; margin-left: 6px; font-size: 10px;">3</span></div>
+                    </div>
+
+                    <div class="master-list">
+                        <div class="prompt-row active">
+                            <div class="prompt-row-header">
+                                <div class="avatar-small"></div>
+                                <div class="author-time">
+                                    <span class="author-name">alice</span>
+                                    <span>2d ago</span>
+                                </div>
+                            </div>
+                            <div class="prompt-title">React Performance Optimization Best Practices</div>
+                            <div class="prompt-meta">
+                                <span class="tag-chip">coding</span>
+                                <span class="tag-chip">gpt-4</span>
+                                <span class="vote-count">👍 42</span>
+                                <span class="comment-count">💬 8</span>
+                            </div>
+                        </div>
+
+                        <div class="prompt-row">
+                            <div class="prompt-row-header">
+                                <div class="avatar-small" style="background: #7c3aed;"></div>
+                                <div class="author-time">
+                                    <span class="author-name">bob</span>
+                                    <span>3d ago</span>
+                                </div>
+                            </div>
+                            <div class="prompt-title">Vue 3 Composition API Deep Dive</div>
+                            <div class="prompt-meta">
+                                <span class="tag-chip">coding</span>
+                                <span class="tag-chip">claude</span>
+                                <span class="vote-count">👍 38</span>
+                                <span class="comment-count">💬 12</span>
+                            </div>
+                        </div>
+
+                        <div class="prompt-row">
+                            <div class="prompt-row-header">
+                                <div class="avatar-small" style="background: #0891b2;"></div>
+                                <div class="author-time">
+                                    <span class="author-name">carol</span>
+                                    <span>5d ago</span>
+                                </div>
+                            </div>
+                            <div class="prompt-title">Advanced CSS Grid Layouts for Responsive Design</div>
+                            <div class="prompt-meta">
+                                <span class="tag-chip">coding</span>
+                                <span class="tag-chip">gemini</span>
+                                <span class="vote-count">👍 25</span>
+                                <span class="comment-count">💬 5</span>
+                            </div>
+                        </div>
+
+                        <div class="prompt-row">
+                            <div class="prompt-row-header">
+                                <div class="avatar-small" style="background: #f97316;"></div>
+                                <div class="author-time">
+                                    <span class="author-name">dave</span>
+                                    <span>1w ago</span>
+                                </div>
+                            </div>
+                            <div class="prompt-title">Python Data Science Workflow Optimization</div>
+                            <div class="prompt-meta">
+                                <span class="tag-chip">analysis</span>
+                                <span class="tag-chip">claude</span>
+                                <span class="vote-count">👍 19</span>
+                                <span class="comment-count">💬 3</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Resize Handle -->
+                <div class="resize-handle" style="position: relative;">
+                    <span class="annotation-number" style="position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); margin: 0; width: 18px; height: 18px; font-size: 10px;">4</span>
+                </div>
+
+                <!-- Detail Panel -->
+                <div class="detail-panel">
+                    <div class="detail-header">
+                        <div class="detail-title">React Performance Optimization Best Practices</div>
+                        <div class="detail-actions">
+                            <button class="btn-action">📋 Copy</button>
+                            <button class="btn-action">🔀 Fork</button>
+                            <button class="btn-action">📜 History</button>
+                            <button class="btn-action">📤 Share</button>
+                            <button class="btn-more">⋯</button>
+                        </div>
+                    </div>
+
+                    <div class="detail-content">
+                        <h2 class="prompt-full-title">React Performance Optimization Best Practices</h2>
+
+                        <div class="prompt-tags">
+                            <div class="tag-full">Coding</div>
+                            <div class="tag-full">React</div>
+                            <div class="tag-full">Performance</div>
+                            <div class="tag-full">GPT-4</div>
+                            <div class="tag-full">Advanced</div>
+                        </div>
+
+                        <div class="prompt-stats">
+                            <div class="stat-item">👍 <strong style="color: #c4b5fd;">42 votes</strong></div>
+                            <div class="stat-item">💬 <strong style="color: #c4b5fd;">8 comments</strong></div>
+                            <div class="stat-item">👁 <strong style="color: #c4b5fd;">234 views</strong></div>
+                            <div class="stat-item">🕒 <strong style="color: #c4b5fd;">3 days ago</strong></div>
+                        </div>
+
+                        <div class="prompt-body">
+                            <p><strong>Optimize React performance using these proven strategies:</strong></p>
+                            <p style="margin-top: 8px;">1. Use React.memo for pure components to prevent unnecessary re-renders...</p>
+                            <p style="margin-top: 8px;">2. Implement useCallback to memoize event handlers...</p>
+                            <p style="margin-top: 8px;">3. Code-split with React.lazy and Suspense...</p>
+                        </div>
+
+                        <div class="code-block">const Component = React.memo(({ value }) => {<br/>  return &lt;div&gt;{value}&lt;/div&gt;;<br/>});<span class="code-copy">Copy</span></div>
+
+                        <div class="reactions-bar">
+                            <button class="reaction-btn active">👍 42</button>
+                            <button class="reaction-btn">❤️ 15</button>
+                            <button class="reaction-btn">🚀 8</button>
+                            <span class="annotation-number" style="position: relative; margin: 0; width: auto; height: auto; background: transparent; color: #f59e0b; margin-left: auto; margin-right: 0;">5</span>
+                        </div>
+
+                        <div class="divider"></div>
+
+                        <div class="comments-header">Comments (8)<span class="annotation-number" style="position: relative; margin: 0; width: auto; height: auto; background: transparent; color: #f59e0b; margin-left: 8px; font-size: 10px;">6</span></div>
+
+                        <div class="comment">
+                            <div class="comment-avatar"></div>
+                            <div class="comment-body">
+                                <div class="comment-header">
+                                    <span class="comment-author">bob</span>
+                                    <span class="comment-time">2d ago</span>
+                                </div>
+                                <div class="comment-text">Great tips! The React.memo section is especially useful for large lists. Have you tried profiling with the React DevTools Profiler?</div>
+                                <div class="comment-actions">
+                                    <span class="comment-like">♥ 3</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="comment">
+                            <div class="comment-avatar" style="background: #7c3aed;"></div>
+                            <div class="comment-body">
+                                <div class="comment-header">
+                                    <span class="comment-author">carol</span>
+                                    <span class="comment-time">1d ago</span>
+                                </div>
+                                <div class="comment-text">This is gold. I've been struggling with performance in my app and this definitely helps clarify the best practices.</div>
+                                <div class="comment-actions">
+                                    <span class="comment-like">♥ 5</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="comment-composer">
+                            <div class="composer-avatar"></div>
+                            <div class="composer-input">
+                                <textarea class="composer-textarea" placeholder="Share your thoughts..."></textarea>
+                                <div class="composer-actions">
+                                    <button class="btn-submit">Submit</button>
+                                </div>
+                            </div>
+                            <span class="annotation-number" style="position: relative; margin: 0; width: auto; height: auto; background: transparent; color: #f59e0b; margin-left: 0; top: 0;">7</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Annotation Table -->
+        <div class="annotation-table">
+            <div class="table-header">
+                <div>#</div>
+                <div>Element</div>
+                <div>Behavior</div>
+                <div>Vue/shadcn Component</div>
+                <div>Tech Note</div>
+            </div>
+
+            <div class="table-row">
+                <div class="table-cell table-cell-number">1</div>
+                <div class="table-cell">Master Search Input</div>
+                <div class="table-cell">Type to filter prompts via MiniSearch; real-time update; clear button resets</div>
+                <div class="table-cell"><span class="code-inline">Input</span> (shadcn); MiniSearch hook</div>
+                <div class="table-cell">Client-side search, no API call. Updates <span class="code-inline">useSearchStore.query</span>. Debounce optional for performance.</div>
+            </div>
+
+            <div class="table-row">
+                <div class="table-cell table-cell-number">2</div>
+                <div class="table-cell">Active Filter Chips</div>
+                <div class="table-cell">Display current filters as removable chips; click × to clear that filter</div>
+                <div class="table-cell"><span class="code-inline">Badge</span> (shadcn); custom styling</div>
+                <div class="table-cell">One chip per active filter (category, model, etc.). Clicking × calls filter removal action; triggers query refetch.</div>
+            </div>
+
+            <div class="table-row">
+                <div class="table-cell table-cell-number">3</div>
+                <div class="table-cell">Result Count</div>
+                <div class="table-cell">Display total number of prompts matching current filters</div>
+                <div class="table-cell">Text div</div>
+                <div class="table-cell">Updated in real-time from TanStack Vue Query <span class="code-inline">data.length</span> or metadata count.</div>
+            </div>
+
+            <div class="table-row">
+                <div class="table-cell table-cell-number">4</div>
+                <div class="table-cell">Resize Handle</div>
+                <div class="table-cell">Drag left/right to resize split panels (240px–520px master, flex detail); stores position in UI store</div>
+                <div class="table-cell"><span class="code-inline">ResizablePanelGroup</span> (shadcn)</div>
+                <div class="table-cell">4px div with <span class="code-inline">cursor: col-resize</span>. Updates <span class="code-inline">useUIStore.splitPanePosition</span> on drag end. Persists to localStorage.</div>
+            </div>
+
+            <div class="table-row">
+                <div class="table-cell table-cell-number">5</div>
+                <div class="table-cell">Reactions Bar</div>
+                <div class="table-cell">Toggle buttons (👍 42, ❤️ 15, 🚀 8); click to add/remove reaction; optimistic update</div>
+                <div class="table-cell"><span class="code-inline">Button</span> (shadcn, toggle variant)</div>
+                <div class="table-cell">Uses <span class="code-inline">useToggleReaction(promptId, emoji)</span> mutation. Updates local state immediately; syncs with API.</div>
+            </div>
+
+            <div class="table-row">
+                <div class="table-cell table-cell-number">6</div>
+                <div class="table-cell">Comments List</div>
+                <div class="table-cell">Display all comments on the prompt; scroll to load more (virtual scroll); each comment shows avatar, author, time, text, reactions</div>
+                <div class="table-cell"><span class="code-inline">ScrollArea</span> (shadcn); virtual scroll optional</div>
+                <div class="table-cell">Fetched via <span class="code-inline">useCommentsQuery(promptId)</span>. Paginated or infinite scroll. Comment count in header updates dynamically.</div>
+            </div>
+
+            <div class="table-row">
+                <div class="table-cell table-cell-number">7</div>
+                <div class="table-cell">Comment Composer</div>
+                <div class="table-cell">Authenticated: avatar + textarea + Submit button. Unauthenticated: "Sign in to comment" CTA</div>
+                <div class="table-cell"><span class="code-inline">Avatar</span>, <span class="code-inline">Textarea</span>, <span class="code-inline">Button</span> (shadcn); conditional render</div>
+                <div class="table-cell">Controlled textarea; mutation <span class="code-inline">useCreateComment(promptId, text)</span> on submit. Clears field after success.</div>
+            </div>
+
+            <div class="table-row">
+                <div class="table-cell table-cell-number">—</div>
+                <div class="table-cell">Prompt Rows (Master)</div>
+                <div class="table-cell">Click row to select/navigate to prompt; active row highlighted; hover state; shows avatar, author, time, title, tags, vote/comment counts</div>
+                <div class="table-cell"><span class="code-inline">Avatar</span>, <span class="code-inline">Badge</span> (shadcn)</div>
+                <div class="table-cell">Click handler navigates to <span class="code-inline">/prompts/:id</span> or updates <span class="code-inline">usePromptsStore.selectedPromptId</span>. Virtualized with TanStack Virtual.</div>
+            </div>
+
+            <div class="table-row">
+                <div class="table-cell table-cell-number">—</div>
+                <div class="table-cell">Detail Header (Sticky)</div>
+                <div class="table-cell">Shows prompt title (truncated) and action buttons: Copy, Fork, History, Share, ⋯ (more)</div>
+                <div class="table-cell"><span class="code-inline">Button</span> (shadcn); sticky positioning</div>
+                <div class="table-cell">Copy button uses <span class="code-inline">useClipboard()</span> from @vueuse. Fork, History, Share navigate or open modals. ⋯ opens DropdownMenu.</div>
+            </div>
+        </div>
+
+        <!-- State Variants -->
+        <div class="section-header">
+            <h2>State Variants</h2>
+        </div>
+
+        <div class="variants-container">
+            <div class="variant-frame">
+                <div class="variant-label">Loading State (Skeleton Rows)</div>
+                <div class="variant-content">
+                    <div style="display: flex; width: 100%; height: 100%;">
+                        <div style="flex: 0 0 280px; background: #13131a; border-right: 1px solid #2a2a3a; overflow-y: auto;">
+                            <div style="padding: 12px; background: #1a1a2e; border-bottom: 1px solid #2a2a3a; min-height: 80px;"></div>
+                            <div style="padding: 10px 12px; border-bottom: 1px solid #2a2a3a; display: flex; gap: 6px; animation: pulse 1s infinite;">
+                                <div style="width: 18px; height: 18px; border-radius: 50%; background: #2a2a3a;"></div>
+                                <div style="flex: 1; display: flex; flex-direction: column; gap: 4px;">
+                                    <div style="height: 8px; background: #2a2a3a; border-radius: 2px; width: 70%;"></div>
+                                    <div style="height: 6px; background: #2a2a3a; border-radius: 2px; width: 100%;"></div>
+                                </div>
+                            </div>
+                            <div style="padding: 10px 12px; border-bottom: 1px solid #2a2a3a; display: flex; gap: 6px; animation: pulse 1s infinite;">
+                                <div style="width: 18px; height: 18px; border-radius: 50%; background: #2a2a3a;"></div>
+                                <div style="flex: 1; display: flex; flex-direction: column; gap: 4px;">
+                                    <div style="height: 8px; background: #2a2a3a; border-radius: 2px; width: 70%;"></div>
+                                    <div style="height: 6px; background: #2a2a3a; border-radius: 2px; width: 100%;"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div style="flex: 1; background: #08080f; display: flex; align-items: center; justify-content: center; color: #64748b; font-size: 12px;">Loading detail...</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="variant-frame">
+                <div class="variant-label">Empty Master List</div>
+                <div class="variant-content">
+                    <div style="display: flex; width: 100%; height: 100%;">
+                        <div style="flex: 0 0 280px; background: #13131a; border-right: 1px solid #2a2a3a; display: flex; flex-direction: column;">
+                            <div style="padding: 12px; background: #1a1a2e; border-bottom: 1px solid #2a2a3a;"></div>
+                            <div style="flex: 1; display: flex; align-items: center; justify-content: center; text-align: center; padding: 20px;">
+                                <div>
+                                    <div style="font-size: 32px; margin-bottom: 8px;">📭</div>
+                                    <div style="font-size: 11px; color: #64748b;">No prompts found</div>
+                                    <div style="font-size: 10px; color: #4a4a6a; margin-top: 6px;">Clear filters to see results</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div style="flex: 1; background: #08080f; display: flex; align-items: center; justify-content: center; color: #64748b; font-size: 12px;">Select a prompt</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="variant-frame">
+                <div class="variant-label">Unauthenticated (Auth CTA)</div>
+                <div class="variant-content">
+                    <div style="display: flex; width: 100%; height: 100%;">
+                        <div style="flex: 0 0 280px; background: #13131a; border-right: 1px solid #2a2a3a; display: flex; flex-direction: column;">
+                            <div style="padding: 12px; background: #1a1a2e; border-bottom: 1px solid #2a2a3a;"></div>
+                            <div style="flex: 1; display: flex; flex-direction: column; gap: 8px; padding: 12px; overflow-y: auto;">
+                                <div style="padding: 10px; background: #1a1a2e; border-radius: 4px; border-left: 3px solid #7c3aed; cursor: pointer;"></div>
+                                <div style="padding: 10px; background: transparent; border-radius: 4px; border-left: 3px solid transparent; cursor: pointer;"></div>
+                            </div>
+                        </div>
+                        <div style="flex: 1; background: #08080f; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #64748b; gap: 12px;">
+                            <div style="font-size: 32px;">🔒</div>
+                            <div style="text-align: center;">
+                                <div style="font-size: 12px; margin-bottom: 8px;">Sign in to react & comment</div>
+                                <button style="background: #4c1d95; color: #c4b5fd; border: 1px solid #7c3aed; padding: 4px 12px; border-radius: 4px; font-size: 11px; cursor: pointer;">Sign in with GitHub</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Keyboard Shortcuts -->
+        <div class="section-header">
+            <h2>Keyboard Shortcuts (Master Panel)</h2>
+        </div>
+
+        <div class="shortcuts-section">
+            <div class="shortcuts-grid">
+                <div class="shortcut-item">
+                    <div class="shortcut-key">↑ / ↓</div>
+                    <div class="shortcut-desc">Navigate prompt rows in master list</div>
+                </div>
+                <div class="shortcut-item">
+                    <div class="shortcut-key">Enter</div>
+                    <div class="shortcut-desc">Confirm selection; focus detail panel</div>
+                </div>
+                <div class="shortcut-item">
+                    <div class="shortcut-key">C</div>
+                    <div class="shortcut-desc">Copy current prompt text to clipboard</div>
+                </div>
+                <div class="shortcut-item">
+                    <div class="shortcut-key">N</div>
+                    <div class="shortcut-desc">Navigate to /prompts/new (if authenticated)</div>
+                </div>
+                <div class="shortcut-item">
+                    <div class="shortcut-key">/</div>
+                    <div class="shortcut-desc">Focus master panel search input</div>
+                </div>
+                <div class="shortcut-item">
+                    <div class="shortcut-key">Escape</div>
+                    <div class="shortcut-desc">Clear search or deselect prompt</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

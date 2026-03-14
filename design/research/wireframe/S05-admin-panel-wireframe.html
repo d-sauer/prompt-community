@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>S05 Admin/Moderation Panel — Wireframe</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #08080f;
+            color: #e2e8f0;
+            line-height: 1.6;
+            padding: 40px 20px;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        .header {
+            margin-bottom: 40px;
+        }
+        .header-top {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+        .screen-badge {
+            background: #4c1d95;
+            color: #c4b5fd;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-weight: 600;
+            font-size: 12px;
+        }
+        .header h1 {
+            font-size: 32px;
+            font-weight: 600;
+            color: #f1f5f9;
+            margin-bottom: 8px;
+        }
+        .header p {
+            color: #94a3b8;
+            font-size: 14px;
+            margin-bottom: 12px;
+        }
+        .meta-badges {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .badge {
+            background: #1a1a2e;
+            border: 1px solid #1e2030;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            color: #a78bfa;
+        }
+        .section {
+            margin-bottom: 60px;
+        }
+        .section-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #c4b5fd;
+            margin-bottom: 24px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #1e2030;
+        }
+        .wireframe-container {
+            background: #13131a;
+            border: 1px solid #1e2030;
+            border-radius: 8px;
+            padding: 2px;
+            margin-bottom: 32px;
+        }
+        .browser-frame {
+            background: #0a0a12;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+        .browser-header {
+            background: #1a1a2e;
+            padding: 12px;
+            border-bottom: 1px solid #1e2030;
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            font-size: 12px;
+            color: #64748b;
+        }
+        .browser-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #4a4a6a;
+        }
+        .browser-url {
+            flex: 1;
+            padding: 4px 8px;
+            background: #12121e;
+            border-radius: 4px;
+            color: #7c3aed;
+        }
+        .wireframe-content {
+            padding: 24px;
+            min-height: 600px;
+            position: relative;
+        }
+        .admin-layout {
+            display: grid;
+            grid-template-columns: 240px 1fr;
+            gap: 24px;
+        }
+        .sidebar {
+            background: #1a1a2e;
+            border: 1px solid #1e2030;
+            border-radius: 6px;
+            padding: 16px;
+            height: fit-content;
+        }
+        .sidebar-item {
+            padding: 10px 12px;
+            border-radius: 4px;
+            font-size: 13px;
+            color: #94a3b8;
+            margin-bottom: 4px;
+            cursor: pointer;
+        }
+        .sidebar-item.active {
+            background: #1e1b4b;
+            border-left: 3px solid #7c3aed;
+            color: #c4b5fd;
+            padding-left: 10px;
+        }
+        .main-content {
+            flex: 1;
+        }
+        .stats-bar {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+        .stat-card {
+            background: #1a1a2e;
+            border: 1px solid #1e2030;
+            border-radius: 6px;
+            padding: 16px;
+            text-align: center;
+        }
+        .stat-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: #7c3aed;
+            margin-bottom: 4px;
+        }
+        .stat-label {
+            font-size: 12px;
+            color: #94a3b8;
+        }
+        .stat-card.flagged .stat-value {
+            color: #ef4444;
+        }
+        .tabs {
+            display: flex;
+            gap: 0;
+            border-bottom: 1px solid #1e2030;
+            margin-bottom: 24px;
+        }
+        .tab {
+            padding: 12px 16px;
+            font-size: 13px;
+            color: #94a3b8;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s;
+        }
+        .tab.active {
+            color: #c4b5fd;
+            border-bottom-color: #7c3aed;
+        }
+        .table-container {
+            overflow-x: auto;
+            background: #1a1a2e;
+            border: 1px solid #1e2030;
+            border-radius: 6px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+        thead {
+            background: #12121e;
+            border-bottom: 1px solid #1e2030;
+        }
+        th {
+            padding: 12px;
+            text-align: left;
+            color: #a78bfa;
+            font-weight: 600;
+        }
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #1e2030;
+            color: #e2e8f0;
+        }
+        tbody tr:hover {
+            background: #1e1b4b;
+        }
+        .action-buttons {
+            display: flex;
+            gap: 6px;
+        }
+        .btn {
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: 500;
+        }
+        .btn-primary {
+            background: #7c3aed;
+            color: #f1f5f9;
+        }
+        .btn-primary:hover {
+            background: #6d28d9;
+        }
+        .btn-green {
+            background: #0a1a0a;
+            color: #4ade80;
+            border: 1px solid #16a34a;
+        }
+        .btn-yellow {
+            background: #1a1500;
+            color: #facc15;
+            border: 1px solid #ca8a04;
+        }
+        .btn-danger {
+            background: #1a0a0a;
+            color: #ef4444;
+            border: 1px solid #7f1d1d;
+        }
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #4ade80;
+        }
+        .empty-state-icon {
+            font-size: 40px;
+            margin-bottom: 12px;
+        }
+        .annotation {
+            position: absolute;
+            width: 18px;
+            height: 18px;
+            background: #f59e0b;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #000;
+            font-weight: 800;
+            font-size: 11px;
+            cursor: pointer;
+        }
+        .annotation-1 { top: 24px; left: 24px; }
+        .annotation-2 { top: 24px; right: 280px; }
+        .annotation-3 { top: 24px; right: 160px; }
+        .annotation-4 { top: 24px; right: 40px; }
+        .annotation-5 { top: 200px; right: 24px; }
+        .annotation-6 { top: 420px; left: 50%; transform: translateX(-50%); }
+        .annotation-7 { bottom: 24px; right: 24px; }
+        .annotation-table {
+            margin-top: 32px;
+            background: #1a1a2e;
+            border: 1px solid #1e2030;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+        .annotation-table table {
+            width: 100%;
+        }
+        .annotation-table th, .annotation-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #1e2030;
+        }
+        .annotation-table th {
+            background: #12121e;
+            color: #a78bfa;
+            font-weight: 600;
+            font-size: 12px;
+        }
+        .annotation-table td {
+            color: #e2e8f0;
+            font-size: 13px;
+        }
+        .annotation-table tbody tr:hover {
+            background: #1e1b4b;
+        }
+        .annotation-num {
+            background: #f59e0b;
+            color: #000;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 12px;
+            flex-shrink: 0;
+        }
+        .variants-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+        }
+        .variant-card {
+            background: #13131a;
+            border: 1px solid #1e2030;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .variant-label {
+            padding: 12px;
+            background: #1a1a2e;
+            border-bottom: 1px solid #1e2030;
+            font-size: 12px;
+            color: #a78bfa;
+            font-weight: 600;
+        }
+        .variant-preview {
+            padding: 16px;
+            min-height: 280px;
+            font-size: 12px;
+            color: #94a3b8;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+        .interaction-card {
+            background: #1a1a2e;
+            border: 1px solid #1e2030;
+            border-radius: 6px;
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+        .interaction-card h4 {
+            color: #c4b5fd;
+            font-size: 13px;
+            margin-bottom: 8px;
+        }
+        .interaction-card p {
+            color: #94a3b8;
+            font-size: 12px;
+            line-height: 1.5;
+        }
+        .interaction-code {
+            background: #12121e;
+            border: 1px solid #1e2030;
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 11px;
+            color: #7c3aed;
+            margin-top: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="header-top">
+                <span class="screen-badge">S05</span>
+            </div>
+            <h1>Admin / Moderation Panel</h1>
+            <p>Dedicated moderation workspace for repository maintainers. Provides stats overview, flagged prompt queue with quick actions, label management, and moderation log.</p>
+            <div class="meta-badges">
+                <span class="badge">Route: /admin</span>
+                <span class="badge">Access: Maintainer only</span>
+                <span class="badge">Component: AdminView.vue</span>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2 class="section-title">Default State: Moderation Queue Tab</h2>
+            <div class="wireframe-container">
+                <div class="browser-frame">
+                    <div class="browser-header">
+                        <span class="browser-dot"></span>
+                        <span class="browser-dot"></span>
+                        <span class="browser-dot"></span>
+                        <span class="browser-url">/admin#queue</span>
+                    </div>
+                    <div class="wireframe-content">
+                        <div class="admin-layout">
+                            <div class="sidebar">
+                                <div class="sidebar-item active">📊 Moderation</div>
+                                <div class="sidebar-item">📝 Submitted</div>
+                                <div class="sidebar-item">🏷️ Labels</div>
+                                <div class="sidebar-item">⭐ Featured</div>
+                            </div>
+                            <div class="main-content">
+                                <div class="stats-bar">
+                                    <div class="stat-card">
+                                        <div class="stat-value">234</div>
+                                        <div class="stat-label">Total Prompts</div>
+                                    </div>
+                                    <div class="stat-card">
+                                        <div class="stat-value">187</div>
+                                        <div class="stat-label">Open / Active</div>
+                                    </div>
+                                    <div class="stat-card flagged">
+                                        <div class="stat-value">12</div>
+                                        <div class="stat-label">Flagged</div>
+                                    </div>
+                                    <div class="stat-card">
+                                        <div class="stat-value">28</div>
+                                        <div class="stat-label">Featured</div>
+                                    </div>
+                                </div>
+                                <annotation class="annotation annotation-1">1</annotation>
+                                <annotation class="annotation annotation-2">2</annotation>
+                                <annotation class="annotation annotation-3">3</annotation>
+                                <annotation class="annotation annotation-4">4</annotation>
+
+                                <div class="tabs">
+                                    <button class="tab active">🚨 Moderation Queue</button>
+                                    <button class="tab">🏷️ Label Manager</button>
+                                    <button class="tab">📋 Log</button>
+                                    <button class="tab">⭐ Featured</button>
+                                </div>
+
+                                <div class="table-container">
+                                    <table>
+                                        <thead>
+                                            <tr>
+                                                <th style="width: 30px;"><input type="checkbox" style="cursor: pointer;"></th>
+                                                <th>Prompt Title</th>
+                                                <th>Author</th>
+                                                <th>Flagged</th>
+                                                <th>Reason</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td><input type="checkbox" style="cursor: pointer;"></td>
+                                                <td>Generate marketing copy</td>
+                                                <td>user123</td>
+                                                <td>2h ago</td>
+                                                <td><span style="background: #7f1d1d; color: #ef4444; padding: 2px 6px; border-radius: 3px; font-size: 11px;">state:flagged</span></td>
+                                                <td>
+                                                    <div class="action-buttons">
+                                                        <button class="btn btn-primary">View</button>
+                                                        <button class="btn btn-green">Approve</button>
+                                                        <button class="btn btn-yellow">Hide</button>
+                                                        <button class="btn btn-danger">Delete</button>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td><input type="checkbox" style="cursor: pointer;"></td>
+                                                <td>SQL injection attack pattern</td>
+                                                <td>dev456</td>
+                                                <td>4h ago</td>
+                                                <td><span style="background: #7f1d1d; color: #ef4444; padding: 2px 6px; border-radius: 3px; font-size: 11px;">state:flagged</span></td>
+                                                <td>
+                                                    <div class="action-buttons">
+                                                        <button class="btn btn-primary">View</button>
+                                                        <button class="btn btn-green">Approve</button>
+                                                        <button class="btn btn-yellow">Hide</button>
+                                                        <button class="btn btn-danger">Delete</button>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td><input type="checkbox" style="cursor: pointer;"></td>
+                                                <td>Write a poem about cats</td>
+                                                <td>alice789</td>
+                                                <td>6h ago</td>
+                                                <td><span style="background: #7f1d1d; color: #ef4444; padding: 2px 6px; border-radius: 3px; font-size: 11px;">state:flagged</span></td>
+                                                <td>
+                                                    <div class="action-buttons">
+                                                        <button class="btn btn-primary">View</button>
+                                                        <button class="btn btn-green">Approve</button>
+                                                        <button class="btn btn-yellow">Hide</button>
+                                                        <button class="btn btn-danger">Delete</button>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <annotation class="annotation annotation-5">5</annotation>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="annotation-table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th style="width: 50px;">#</th>
+                            <th>Element</th>
+                            <th>Behavior</th>
+                            <th>shadcn-vue Component</th>
+                            <th>Tech Note</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><div class="annotation-num">1</div></td>
+                            <td>Stat Cards (Total Prompts, Open, Flagged, Featured)</td>
+                            <td>Display real-time metrics; Total Prompts & Flagged link to respective tabs on click</td>
+                            <td>Card</td>
+                            <td>useAdminQueue() for flagged count; count issues via GitHub API</td>
+                        </tr>
+                        <tr>
+                            <td><div class="annotation-num">2</div></td>
+                            <td>Tab Navigation Bar</td>
+                            <td>Switch between Moderation Queue, Label Manager, Log, Featured tabs; URL hash updates (#queue, #labels, #log, #featured)</td>
+                            <td>Tabs / TabsList / TabsTrigger / TabsContent</td>
+                            <td>Deep-linkable via router hash; default to #queue</td>
+                        </tr>
+                        <tr>
+                            <td><div class="annotation-num">3</div></td>
+                            <td>Flagged Prompts Table</td>
+                            <td>Display issues with state:flagged label; sortable by date, searchable by title</td>
+                            <td>DataTable (or table + sort UI)</td>
+                            <td>useAdminQueue() hook; reload on action completion</td>
+                        </tr>
+                        <tr>
+                            <td><div class="annotation-num">4</div></td>
+                            <td>Action Buttons (View, Approve, Hide, Delete)</td>
+                            <td>View: opens issue detail; Approve: removes state:flagged label; Hide: adds state:hidden, closes issue; Delete: closes issue</td>
+                            <td>Button</td>
+                            <td>useRemoveLabelFromIssue, useAddLabelToIssue, useCloseIssue hooks; optimistic UI updates</td>
+                        </tr>
+                        <tr>
+                            <td><div class="annotation-num">5</div></td>
+                            <td>Bulk Action Bar (on row select)</td>
+                            <td>Appears when ≥1 row checked; allows bulk approve/hide; slide-up animation from bottom</td>
+                            <td>Button / Popover</td>
+                            <td>Batch mutations via Promise.all; disable buttons until all complete</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2 class="section-title">State Variants</h2>
+            <div class="variants-grid">
+                <div class="variant-card">
+                    <div class="variant-label">Variant 1: Empty Moderation Queue</div>
+                    <div class="variant-preview">
+                        <div>
+                            <div style="font-size: 36px; margin-bottom: 12px;">🎉</div>
+                            <div style="color: #4ade80; font-weight: 500;">No flagged prompts</div>
+                            <div style="color: #64748b; font-size: 12px; margin-top: 8px;">All prompts are in good standing</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="variant-card">
+                    <div class="variant-label">Variant 2: Label Manager Tab Active</div>
+                    <div class="variant-preview">
+                        <div style="text-align: left; width: 100%;">
+                            <div style="background: #1a1a2e; padding: 12px; border-radius: 4px; margin-bottom: 12px; display: grid; grid-template-columns: 24px 1fr auto; gap: 12px; align-items: center;">
+                                <div style="width: 24px; height: 24px; background: #7c3aed; border-radius: 50%;"></div>
+                                <div>
+                                    <div style="color: #c4b5fd; font-size: 12px; font-weight: 500;">category:python</div>
+                                    <div style="color: #64748b; font-size: 11px;">45 prompts</div>
+                                </div>
+                                <div style="display: flex; gap: 4px;">
+                                    <button class="btn btn-primary" style="padding: 4px 8px; font-size: 11px;">Edit</button>
+                                    <button class="btn btn-danger" style="padding: 4px 8px; font-size: 11px;">Del</button>
+                                </div>
+                            </div>
+                            <div style="background: #1a1a2e; padding: 12px; border-radius: 4px; display: grid; grid-template-columns: 24px 1fr auto; gap: 12px; align-items: center;">
+                                <div style="width: 24px; height: 24px; background: #3b82f6; border-radius: 50%;"></div>
+                                <div>
+                                    <div style="color: #c4b5fd; font-size: 12px; font-weight: 500;">model:gpt4</div>
+                                    <div style="color: #64748b; font-size: 11px;">89 prompts</div>
+                                </div>
+                                <div style="display: flex; gap: 4px;">
+                                    <button class="btn btn-primary" style="padding: 4px 8px; font-size: 11px;">Edit</button>
+                                    <button class="btn btn-danger" style="padding: 4px 8px; font-size: 11px;">Del</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="variant-card">
+                    <div class="variant-label">Variant 3: Unauthorized Access</div>
+                    <div class="variant-preview">
+                        <div>
+                            <div style="font-size: 36px; margin-bottom: 12px;">🔒</div>
+                            <div style="color: #ef4444; font-weight: 500;">Access Denied</div>
+                            <div style="color: #64748b; font-size: 12px; margin-top: 8px;">Only maintainers can view this page</div>
+                            <button class="btn btn-primary" style="margin-top: 12px;">Go to Browse</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2 class="section-title">Key Interactions</h2>
+
+            <div class="interaction-card">
+                <h4>Approve Flagged Prompt</h4>
+                <p>User clicks [Approve] button on a flagged prompt. Row is optimistically removed from table. useRemoveLabelFromIssue mutation executes in background. If error, row re-appears and error toast displays.</p>
+                <div class="interaction-code">useRemoveLabelFromIssue(issueId, 'state:flagged')</div>
+            </div>
+
+            <div class="interaction-card">
+                <h4>Hide Prompt (Moderation Action)</h4>
+                <p>User clicks [Hide] button. Prompt receives state:hidden label and issue is closed. Row is optimistically removed. On success, toast shows "Prompt hidden &amp; closed".</p>
+                <div class="interaction-code">useAddLabelToIssue(issueId, 'state:hidden')<br>useCloseIssue(issueId)</div>
+            </div>
+
+            <div class="interaction-card">
+                <h4>Bulk Approve (Multiple Rows)</h4>
+                <p>User checks multiple rows and clicks [Bulk Approve] from bottom action bar. All selected rows removed optimistically. Mutations execute in parallel via Promise.all. Bulk action bar disappears when all rows processed.</p>
+                <div class="interaction-code">Promise.all(selectedIds.map(id => useRemoveLabelFromIssue(id, 'state:flagged')))</div>
+            </div>
+
+            <div class="interaction-card">
+                <h4>Add New Label (Label Manager Tab)</h4>
+                <p>User fills inline form (color picker, name input, type selector). [Add Label] button submits. New label card appears instantly in grid. Input cleared. On error, toast shows message.</p>
+                <div class="interaction-code">POST /repos/:owner/:repo/labels (via Octokit)</div>
+            </div>
+
+            <div class="interaction-card">
+                <h4>Tab Navigation with Deep Linking</h4>
+                <p>Clicking a tab updates URL hash (#queue, #labels, #log, #featured). Users can bookmark deep links. Page refreshes to same tab via route handler.</p>
+                <div class="interaction-code">router.push('/admin#queue')</div>
+            </div>
+
+            <div class="interaction-card">
+                <h4>Featured Prompts Tab</h4>
+                <p>Displays all issues with state:featured label. [Remove from Featured] button removes label. Search input filters results and allows adding new featured prompts via useAddLabelToIssue.</p>
+                <div class="interaction-code">useFeaturedPrompts() — @tanstack/vue-query hook</div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

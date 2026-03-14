@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>S03 - New Prompt Editor | Wireframe</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: #08080f;
+      color: #e2e8f0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      padding: 40px 20px;
+    }
+    .container { max-width: 1400px; margin: 0 auto; }
+
+    .header {
+      margin-bottom: 40px;
+      border-bottom: 1px solid #1e2030;
+      padding-bottom: 24px;
+    }
+    .screen-id {
+      display: inline-block;
+      background: #7c3aed;
+      color: #fff;
+      font-weight: 600;
+      font-size: 12px;
+      padding: 4px 12px;
+      border-radius: 4px;
+      margin-bottom: 12px;
+    }
+    .header h1 {
+      font-size: 32px;
+      margin: 8px 0;
+      font-weight: 600;
+    }
+    .header p {
+      color: #94a3b8;
+      font-size: 14px;
+      margin-bottom: 16px;
+    }
+    .meta-badges {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .badge {
+      background: #1a1a2e;
+      border: 1px solid #2a2a3a;
+      color: #a78bfa;
+      padding: 6px 12px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    .section {
+      margin-bottom: 48px;
+    }
+    .section-title {
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 20px;
+      color: #c4b5fd;
+    }
+
+    /* Wireframe container */
+    .wireframe-browser {
+      background: #1a1a2e;
+      border: 1px solid #2a2a3a;
+      border-radius: 8px;
+      overflow: hidden;
+      margin-bottom: 24px;
+    }
+    .wireframe-header {
+      background: #13131a;
+      border-bottom: 1px solid #2a2a3a;
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      color: #64748b;
+    }
+    .browser-btn { width: 12px; height: 12px; border-radius: 2px; background: #2a2a3a; }
+    .wireframe-content {
+      padding: 24px;
+      background: #08080f;
+    }
+
+    /* Editor layout */
+    .editor-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+
+    .column {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    /* Top bar */
+    .top-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: #13131a;
+      border-bottom: 1px solid #2a2a3a;
+      padding: 12px 24px;
+      margin: -24px -24px 24px -24px;
+      gap: 16px;
+    }
+    .top-bar-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .back-link {
+      color: #7c3aed;
+      font-size: 12px;
+      cursor: pointer;
+    }
+    .title-bar {
+      font-size: 18px;
+      font-weight: 600;
+    }
+    .status-badge {
+      background: #0a2e10;
+      color: #4ade80;
+      padding: 4px 8px;
+      border-radius: 3px;
+      font-size: 11px;
+      font-weight: 500;
+    }
+    .top-bar-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .shortcuts { color: #64748b; font-size: 11px; }
+
+    .btn {
+      padding: 8px 16px;
+      border-radius: 4px;
+      font-weight: 500;
+      font-size: 12px;
+      cursor: pointer;
+      border: none;
+    }
+    .btn-secondary {
+      background: #2a2a3a;
+      color: #e2e8f0;
+      border: 1px solid #4a4a6a;
+    }
+    .btn-primary {
+      background: #7c3aed;
+      color: #fff;
+    }
+
+    /* Form fields */
+    .form-field {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .label {
+      font-size: 12px;
+      font-weight: 500;
+      color: #a78bfa;
+    }
+    .input {
+      background: #12121e;
+      border: 1px solid #2a2a3a;
+      color: #e2e8f0;
+      padding: 8px 12px;
+      border-radius: 4px;
+      font-size: 13px;
+      font-family: inherit;
+    }
+    .input-large {
+      font-size: 28px;
+      padding: 12px;
+      font-weight: 600;
+    }
+    .input::placeholder { color: #64748b; }
+
+    .field-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 12px;
+    }
+
+    .select {
+      background: #12121e;
+      border: 1px solid #2a2a3a;
+      color: #e2e8f0;
+      padding: 8px 12px;
+      border-radius: 4px;
+      font-size: 13px;
+      cursor: pointer;
+    }
+
+    /* Tags */
+    .tags-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      background: #12121e;
+      border: 1px solid #2a2a3a;
+      border-radius: 4px;
+      padding: 8px;
+      min-height: 32px;
+    }
+    .tag {
+      background: #4c1d95;
+      color: #c4b5fd;
+      padding: 4px 8px;
+      border-radius: 3px;
+      font-size: 12px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .tag-x { cursor: pointer; }
+
+    /* Toolbar */
+    .toolbar {
+      display: flex;
+      gap: 4px;
+      background: #13131a;
+      border: 1px solid #2a2a3a;
+      padding: 8px;
+      border-radius: 4px;
+      flex-wrap: wrap;
+    }
+    .toolbar-btn {
+      width: 32px;
+      height: 32px;
+      background: #1a1a2e;
+      border: 1px solid #2a2a3a;
+      color: #a78bfa;
+      border-radius: 3px;
+      cursor: pointer;
+      font-size: 12px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .toolbar-divider {
+      width: 1px;
+      background: #2a2a3a;
+      margin: 0 4px;
+    }
+
+    /* Editor textarea */
+    .editor-textarea {
+      background: #12121e;
+      border: 1px solid #2a2a3a;
+      color: #e2e8f0;
+      padding: 12px;
+      border-radius: 4px;
+      font-family: "Menlo", "Monaco", "Courier New", monospace;
+      font-size: 13px;
+      line-height: 1.6;
+      min-height: 320px;
+      resize: none;
+      flex: 1;
+    }
+
+    .word-count {
+      font-size: 11px;
+      color: #64748b;
+      padding: 8px 0;
+    }
+
+    /* Upload area */
+    .upload-area {
+      border: 2px dashed #2a2a3a;
+      border-radius: 4px;
+      padding: 24px;
+      text-align: center;
+      background: #13131a;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .upload-area:hover {
+      border-color: #7c3aed;
+      background: rgba(124, 58, 237, 0.05);
+    }
+    .upload-icon { font-size: 24px; margin-bottom: 8px; }
+    .upload-text { color: #94a3b8; font-size: 13px; }
+    .upload-hint { color: #64748b; font-size: 11px; margin-top: 4px; }
+
+    /* Preview */
+    .preview-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 0;
+      border-bottom: 1px solid #2a2a3a;
+      margin-bottom: 12px;
+    }
+    .preview-toggle {
+      display: flex;
+      gap: 8px;
+    }
+    .toggle-btn {
+      padding: 4px 8px;
+      font-size: 11px;
+      background: #13131a;
+      border: 1px solid #2a2a3a;
+      color: #94a3b8;
+      border-radius: 3px;
+      cursor: pointer;
+    }
+    .toggle-btn.active {
+      background: #7c3aed;
+      color: #fff;
+      border-color: #7c3aed;
+    }
+
+    .preview-content {
+      color: #e2e8f0;
+      line-height: 1.8;
+      font-size: 13px;
+    }
+    .preview-placeholder {
+      color: #64748b;
+      font-style: italic;
+    }
+
+    /* State variants grid */
+    .variants-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+    }
+    .variant-card {
+      background: #1a1a2e;
+      border: 1px solid #2a2a3a;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .variant-label {
+      background: #13131a;
+      padding: 12px;
+      border-bottom: 1px solid #2a2a3a;
+      font-size: 12px;
+      font-weight: 600;
+      color: #a78bfa;
+    }
+    .variant-preview {
+      padding: 16px;
+      font-size: 12px;
+    }
+
+    /* Annotations */
+    .annotation-dot {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 24px;
+      height: 24px;
+      background: #f59e0b;
+      color: #000;
+      border-radius: 50%;
+      font-weight: 700;
+      font-size: 11px;
+      position: absolute;
+      cursor: pointer;
+    }
+
+    .annotation-table {
+      width: 100%;
+      border-collapse: collapse;
+      background: #1a1a2e;
+      border: 1px solid #2a2a3a;
+      border-radius: 6px;
+      overflow: hidden;
+    }
+    .annotation-table thead {
+      background: #13131a;
+      border-bottom: 1px solid #2a2a3a;
+    }
+    .annotation-table th {
+      padding: 12px;
+      text-align: left;
+      font-size: 12px;
+      font-weight: 600;
+      color: #a78bfa;
+    }
+    .annotation-table td {
+      padding: 12px;
+      font-size: 12px;
+      border-bottom: 1px solid #2a2a3a;
+      color: #e2e8f0;
+    }
+    .annotation-table tr:last-child td {
+      border-bottom: none;
+    }
+    .tech-note {
+      font-family: "Menlo", "Monaco", "Courier New", monospace;
+      font-size: 11px;
+      background: #13131a;
+      padding: 4px 8px;
+      border-radius: 3px;
+      color: #a78bfa;
+    }
+
+    /* Interaction cards */
+    .interaction-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+    }
+    .interaction-card {
+      background: #1a1a2e;
+      border: 1px solid #2a2a3a;
+      border-radius: 6px;
+      padding: 20px;
+    }
+    .interaction-title {
+      font-weight: 600;
+      color: #c4b5fd;
+      margin-bottom: 12px;
+      font-size: 14px;
+    }
+    .interaction-flow {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      font-size: 12px;
+    }
+    .flow-step {
+      display: flex;
+      gap: 12px;
+    }
+    .flow-label {
+      color: #7c3aed;
+      font-weight: 600;
+      min-width: 60px;
+    }
+    .flow-text { color: #94a3b8; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <div class="header">
+      <div class="screen-id">S03</div>
+      <h1>New Prompt Editor</h1>
+      <p>Full-page editor for creating and editing AI prompts with live preview, auto-save drafts, and image uploads.</p>
+      <div class="meta-badges">
+        <div class="badge">Route: /prompts/new | /prompts/:id/edit</div>
+        <div class="badge">Access: Authenticated contributors</div>
+        <div class="badge">Vue Component: PromptEditorView.vue</div>
+      </div>
+    </div>
+
+    <!-- Default State -->
+    <div class="section">
+      <h2 class="section-title">Default State</h2>
+      <div class="wireframe-browser">
+        <div class="wireframe-header">
+          <span class="browser-btn"></span>
+          <span class="browser-btn"></span>
+          <span class="browser-btn"></span>
+          <span style="flex: 1; margin-left: 8px; color: #94a3b8;">New Prompt — AI Prompt Community</span>
+        </div>
+        <div class="wireframe-content">
+          <!-- Top bar -->
+          <div class="top-bar">
+            <div class="top-bar-left">
+              <span class="back-link">←</span>
+              <span class="title-bar">New Prompt</span>
+              <span class="status-badge">Unsaved changes</span>
+            </div>
+            <div class="top-bar-right">
+              <span class="shortcuts">⌘S = Save | ⌘↵ = Publish</span>
+              <button class="btn btn-secondary">Save Draft</button>
+              <button class="btn btn-primary">Publish</button>
+            </div>
+          </div>
+
+          <!-- Editor layout -->
+          <div class="editor-layout">
+            <!-- Left column (Editor) -->
+            <div class="column">
+              <!-- Title input -->
+              <div class="form-field">
+                <input type="text" class="input input-large" placeholder="Give your prompt a descriptive title...">
+              </div>
+
+              <!-- Metadata selectors -->
+              <div class="field-row">
+                <div class="form-field">
+                  <label class="label">Category</label>
+                  <select class="select">
+                    <option>● Coding</option>
+                  </select>
+                </div>
+                <div class="form-field">
+                  <label class="label">AI Model</label>
+                  <select class="select">
+                    <option>GPT-4o</option>
+                  </select>
+                </div>
+                <div class="form-field">
+                  <label class="label">Difficulty</label>
+                  <select class="select">
+                    <option>Intermediate</option>
+                  </select>
+                </div>
+              </div>
+
+              <!-- Tags -->
+              <div class="form-field">
+                <label class="label">Tags</label>
+                <div class="tags-container">
+                  <div class="tag">API Design <span class="tag-x">×</span></div>
+                  <div class="tag">Testing <span class="tag-x">×</span></div>
+                  <span style="color: #64748b; font-size: 12px;">+ Add tag (max 5)</span>
+                </div>
+              </div>
+
+              <!-- Toolbar -->
+              <div class="toolbar">
+                <button class="toolbar-btn" title="Heading 1">H1</button>
+                <button class="toolbar-btn" title="Heading 2">H2</button>
+                <button class="toolbar-btn" title="Heading 3">H3</button>
+                <div class="toolbar-divider"></div>
+                <button class="toolbar-btn" title="Bold"><b>B</b></button>
+                <button class="toolbar-btn" title="Italic"><i>I</i></button>
+                <button class="toolbar-btn" title="Strikethrough"><s>S</s></button>
+                <div class="toolbar-divider"></div>
+                <button class="toolbar-btn" title="Inline code">`</button>
+                <button class="toolbar-btn" title="Code block">{ }</button>
+                <button class="toolbar-btn" title="Quote">&gt;</button>
+                <button class="toolbar-btn" title="Rule">−−−</button>
+                <div class="toolbar-divider"></div>
+                <button class="toolbar-btn" title="Link">🔗</button>
+                <button class="toolbar-btn" title="Image">📷</button>
+              </div>
+
+              <!-- Editor -->
+              <textarea class="editor-textarea" placeholder="# Your Prompt Title&#10;&#10;Write your detailed prompt here...&#10;&#10;Use markdown formatting for structure."></textarea>
+              <div class="word-count">234 words · 1,247 chars</div>
+
+              <!-- Image upload -->
+              <div class="upload-area">
+                <div class="upload-icon">📷</div>
+                <div class="upload-text">Drop image here or click to upload</div>
+                <div class="upload-hint">Max 5MB. Supports PNG, JPG, WebP.</div>
+              </div>
+            </div>
+
+            <!-- Right column (Preview) -->
+            <div class="column">
+              <div class="preview-header">
+                <span style="font-weight: 500; font-size: 14px;">Preview</span>
+                <div class="preview-toggle">
+                  <button class="toggle-btn active">Rendered</button>
+                  <button class="toggle-btn">Raw</button>
+                </div>
+              </div>
+
+              <div class="preview-content">
+                <p class="preview-placeholder">Start typing to see preview...</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Annotations table -->
+      <table class="annotation-table">
+        <thead>
+          <tr>
+            <th style="width: 40px;">No.</th>
+            <th>Element</th>
+            <th>Behavior</th>
+            <th>Component</th>
+            <th>Tech Note</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>1</strong></td>
+            <td>Back Link</td>
+            <td>Navigate back to prompt list; warn if isDirty</td>
+            <td>router-link</td>
+            <td>router.beforeEach guards</td>
+          </tr>
+          <tr>
+            <td><strong>2</strong></td>
+            <td>Status Badge</td>
+            <td>Show "Saved Xm ago" / "Saving..." / "Unsaved changes"</td>
+            <td>Badge (shadcn-vue)</td>
+            <td>useDraftStore.lastSaved, isDirty</td>
+          </tr>
+          <tr>
+            <td><strong>3</strong></td>
+            <td>Save Draft Button</td>
+            <td>Post draft to useDraftStore + localStorage</td>
+            <td>Button (shadcn-vue)</td>
+            <td>useLocalStorage from VueUse</td>
+          </tr>
+          <tr>
+            <td><strong>4</strong></td>
+            <td>Publish Button</td>
+            <td>Create new issue via GitHub API; navigate to detail</td>
+            <td>Button (shadcn-vue)</td>
+            <td>useCreatePrompt mutation</td>
+          </tr>
+          <tr>
+            <td><strong>5</strong></td>
+            <td>Title Input</td>
+            <td>Large input for prompt name; sync to useDraftStore</td>
+            <td>Input (shadcn-vue)</td>
+            <td>v-model, debounced auto-save</td>
+          </tr>
+          <tr>
+            <td><strong>6</strong></td>
+            <td>Category Select</td>
+            <td>Choose from Coding, Writing, Analysis, Creative, System, Other</td>
+            <td>Select (shadcn-vue)</td>
+            <td>Maps to GitHub label</td>
+          </tr>
+          <tr>
+            <td><strong>7</strong></td>
+            <td>Model Select</td>
+            <td>Choose AI model (GPT-4, GPT-4o, Claude 3.5, etc.)</td>
+            <td>Select (shadcn-vue)</td>
+            <td>Maps to GitHub label</td>
+          </tr>
+          <tr>
+            <td><strong>8</strong></td>
+            <td>Difficulty Select</td>
+            <td>Beginner, Intermediate, Advanced</td>
+            <td>Select (shadcn-vue)</td>
+            <td>Maps to GitHub label</td>
+          </tr>
+          <tr>
+            <td><strong>9</strong></td>
+            <td>Tags Chip Input</td>
+            <td>Type tag + Enter to add; × to remove; max 5 tags</td>
+            <td>Input + custom chip UI</td>
+            <td>@vueuse/core reactive array</td>
+          </tr>
+          <tr>
+            <td><strong>10</strong></td>
+            <td>Markdown Toolbar</td>
+            <td>Click buttons to insert markdown syntax or wrap selection</td>
+            <td>Button group (shadcn-vue)</td>
+            <td>Textarea ref selection logic</td>
+          </tr>
+          <tr>
+            <td><strong>11</strong></td>
+            <td>Editor Textarea</td>
+            <td>Monospace editor with line numbers, syntax awareness, grows with content</td>
+            <td>Textarea (custom)</td>
+            <td>markdown-it parsing on input</td>
+          </tr>
+          <tr>
+            <td><strong>12</strong></td>
+            <td>Word Count</td>
+            <td>Live update of word/char count as user types</td>
+            <td>Span (text)</td>
+            <td>Computed property from content</td>
+          </tr>
+          <tr>
+            <td><strong>13</strong></td>
+            <td>Image Upload</td>
+            <td>Drag-drop or click to upload; POST to CF Worker /upload; insert ![alt](url) at cursor</td>
+            <td>Dropzone (custom)</td>
+            <td>@octokit/core for CF Worker auth</td>
+          </tr>
+          <tr>
+            <td><strong>14</strong></td>
+            <td>Live Preview</td>
+            <td>Render markdown in real-time (debounced 300ms); show syntax-highlighted code blocks</td>
+            <td>Div (HTML)</td>
+            <td>markdown-it + shiki v-html binding</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- State Variants -->
+    <div class="section">
+      <h2 class="section-title">State Variants</h2>
+      <div class="variants-grid">
+        <div class="variant-card">
+          <div class="variant-label">New Prompt (Empty)</div>
+          <div class="variant-preview">
+            <div style="color: #64748b; margin-bottom: 12px;">← New Prompt</div>
+            <div style="height: 120px; background: #13131a; border: 1px dashed #2a2a3a; border-radius: 4px; display: flex; align-items: center; justify-content: center; color: #64748b;">
+              All fields empty, placeholders visible
+            </div>
+            <div style="margin-top: 12px; font-size: 11px; color: #94a3b8;">Status: "Unsaved changes" badge</div>
+          </div>
+        </div>
+
+        <div class="variant-card">
+          <div class="variant-label">Edit Mode (Pre-filled)</div>
+          <div class="variant-preview">
+            <div style="color: #64748b; margin-bottom: 12px;">← Edit Prompt</div>
+            <div style="height: 60px; background: #13131a; border: 1px solid #2a2a3a; border-radius: 4px; display: flex; align-items: center; justify-content: center; color: #4ade80;">
+              Title, metadata, content populated
+            </div>
+            <div style="margin-top: 12px; font-size: 11px;">
+              <div style="color: #7c3aed;">Badge: "Editing Version 3"</div>
+              <div style="color: #64748b; margin-top: 4px;">Preview shows current markdown</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="variant-card">
+          <div class="variant-label">Unsaved Changes Warning</div>
+          <div class="variant-preview">
+            <div style="background: #7c3aed; padding: 8px; border-radius: 3px; margin-bottom: 12px; font-size: 11px;">
+              ⚠️ You have unsaved changes
+            </div>
+            <div style="height: 100px; background: #13131a; border: 1px solid #f87171; border-radius: 4px; display: flex; align-items: center; justify-content: center; color: #f87171;">
+              Browser beforeunload warning active
+            </div>
+            <div style="margin-top: 8px; font-size: 11px; color: #64748b;">Publish/Save clears warning</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Key Interactions -->
+    <div class="section">
+      <h2 class="section-title">Key Interactions</h2>
+      <div class="interaction-grid">
+        <div class="interaction-card">
+          <div class="interaction-title">Auto-save Draft</div>
+          <div class="interaction-flow">
+            <div class="flow-step">
+              <div class="flow-label">Trigger:</div>
+              <div class="flow-text">User types in any field; 30s debounce</div>
+            </div>
+            <div class="flow-step">
+              <div class="flow-label">Action:</div>
+              <div class="flow-text">POST to useDraftStore, set isDirty=true, save to localStorage</div>
+            </div>
+            <div class="flow-step">
+              <div class="flow-label">Visual:</div>
+              <div class="flow-text">Status badge updates to "Saved Xm ago"</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="interaction-card">
+          <div class="interaction-title">Publish Prompt</div>
+          <div class="interaction-flow">
+            <div class="flow-step">
+              <div class="flow-label">Trigger:</div>
+              <div class="flow-text">User clicks [Publish] or presses ⌘↵</div>
+            </div>
+            <div class="flow-step">
+              <div class="flow-label">Action:</div>
+              <div class="flow-text">useCreatePrompt mutation → GitHub API creates issue with YAML frontmatter</div>
+            </div>
+            <div class="flow-step">
+              <div class="flow-label">Follow:</div>
+              <div class="flow-text">Invalidate usePrompts cache, navigate to /prompts/:newId</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="interaction-card">
+          <div class="interaction-title">Image Upload</div>
+          <div class="interaction-flow">
+            <div class="flow-step">
+              <div class="flow-label">Trigger:</div>
+              <div class="flow-text">Drag image onto upload area or click to browse</div>
+            </div>
+            <div class="flow-step">
+              <div class="flow-label">Action:</div>
+              <div class="flow-text">POST to CF Worker /upload → returns public R2 URL</div>
+            </div>
+            <div class="flow-step">
+              <div class="flow-label">Insert:</div>
+              <div class="flow-text">Insert ![alt text](url) at cursor position in editor</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="interaction-card">
+          <div class="interaction-title">Markdown Toolbar Button</div>
+          <div class="interaction-flow">
+            <div class="flow-step">
+              <div class="flow-label">Trigger:</div>
+              <div class="flow-text">User clicks toolbar button (e.g., Bold, Code)</div>
+            </div>
+            <div class="flow-step">
+              <div class="flow-label">Action:</div>
+              <div class="flow-text">If text selected: wrap in **text**; else insert ** at cursor</div>
+            </div>
+            <div class="flow-step">
+              <div class="flow-label">Preview:</div>
+              <div class="flow-text">Live markdown preview updates immediately</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="interaction-card">
+          <div class="interaction-title">Link/Image Dialog</div>
+          <div class="interaction-flow">
+            <div class="flow-step">
+              <div class="flow-label">Trigger:</div>
+              <div class="flow-text">User presses ⌘K in editor or clicks Link button</div>
+            </div>
+            <div class="flow-step">
+              <div class="flow-label">Action:</div>
+              <div class="flow-text">Open Dialog component with URL input</div>
+            </div>
+            <div class="flow-step">
+              <div class="flow-label">Insert:</div>
+              <div class="flow-text">On confirm, insert [text](url) at cursor</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="interaction-card">
+          <div class="interaction-title">Unsaved Changes Guard</div>
+          <div class="interaction-flow">
+            <div class="flow-step">
+              <div class="flow-label">Trigger:</div>
+              <div class="flow-text">User tries to navigate away with isDirty=true</div>
+            </div>
+            <div class="flow-step">
+              <div class="flow-label">Guard:</div>
+              <div class="flow-text">router.beforeEach → ConfirmDialog: "Save changes?"</div>
+            </div>
+            <div class="flow-step">
+              <div class="flow-label">Options:</div>
+              <div class="flow-text">Save, Discard, Cancel</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>

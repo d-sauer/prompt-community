@@ -1,0 +1,1071 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>S01 — App Shell Wireframe</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background: #08080f;
+            color: #e2e8f0;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* Page Header */
+        .page-header {
+            margin-bottom: 40px;
+        }
+
+        .screen-badge {
+            display: inline-block;
+            background: #4c1d95;
+            color: #c4b5fd;
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        .page-header h1 {
+            font-size: 32px;
+            margin-bottom: 8px;
+            font-weight: 700;
+        }
+
+        .page-header p {
+            color: #94a3b8;
+            font-size: 14px;
+            margin-bottom: 16px;
+        }
+
+        .meta-badges {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .meta-badge {
+            background: #1a1a2e;
+            border: 1px solid #2a2a3a;
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            color: #a78bfa;
+        }
+
+        .meta-badge strong {
+            color: #c4b5fd;
+            margin-right: 4px;
+        }
+
+        /* Section Headers */
+        .section-header {
+            margin-top: 48px;
+            margin-bottom: 24px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #2a2a3a;
+        }
+
+        .section-header h2 {
+            font-size: 20px;
+            font-weight: 600;
+            color: #c4b5fd;
+        }
+
+        /* Browser Frame */
+        .browser-frame {
+            background: #13131a;
+            border: 1px solid #2a2a3a;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 24px;
+        }
+
+        .browser-chrome {
+            background: #0a0a10;
+            padding: 8px 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border-bottom: 1px solid #2a2a3a;
+        }
+
+        .browser-dots {
+            display: flex;
+            gap: 6px;
+        }
+
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .dot-red { background: #ef4444; }
+        .dot-amber { background: #f59e0b; }
+        .dot-green { background: #10b981; }
+
+        .browser-url {
+            flex: 1;
+            background: #08080f;
+            border: 1px solid #2a2a3a;
+            padding: 4px 8px;
+            border-radius: 4px;
+            color: #64748b;
+            font-size: 12px;
+            margin-left: 12px;
+        }
+
+        /* App Layout */
+        .app-layout {
+            display: flex;
+            height: 600px;
+            background: #08080f;
+        }
+
+        /* Navbar */
+        .navbar {
+            background: #13131a;
+            border-bottom: 1px solid #2a2a3a;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            padding: 0 16px;
+            gap: 16px;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 10;
+        }
+
+        .navbar-logo {
+            font-weight: 700;
+            color: #c4b5fd;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .logo-box {
+            width: 24px;
+            height: 24px;
+            background: #4c1d95;
+            border-radius: 4px;
+        }
+
+        .navbar-search {
+            flex: 1;
+            background: #1a1a2e;
+            border: 1px solid #2a2a3a;
+            padding: 6px 12px;
+            border-radius: 4px;
+            color: #64748b;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            max-width: 400px;
+        }
+
+        .navbar-search-icon {
+            color: #4a4a6a;
+            font-size: 14px;
+        }
+
+        .navbar-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-left: auto;
+        }
+
+        .icon-button {
+            width: 32px;
+            height: 32px;
+            background: #1a1a2e;
+            border: 1px solid #2a2a3a;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #a78bfa;
+            font-size: 14px;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .icon-button:hover {
+            background: #2a2a3a;
+        }
+
+        .badge-count {
+            position: absolute;
+            top: -4px;
+            right: -4px;
+            background: #ef4444;
+            color: white;
+            font-size: 10px;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+        }
+
+        .avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: #4c1d95;
+            border: 1px solid #7c3aed;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #c4b5fd;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .btn-new {
+            background: #4c1d95;
+            color: #c4b5fd;
+            border: 1px solid #7c3aed;
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .btn-new:hover {
+            background: #5d2fa0;
+        }
+
+        /* Main Content Area */
+        .main-content {
+            display: flex;
+            margin-top: 48px;
+            flex: 1;
+            height: calc(100% - 48px);
+        }
+
+        /* Sidebar */
+        .sidebar {
+            background: #13131a;
+            border-right: 1px solid #2a2a3a;
+            width: 200px;
+            overflow-y: auto;
+            padding: 12px 0;
+            position: relative;
+            transition: width 0.3s ease;
+        }
+
+        .sidebar.collapsed {
+            width: 48px;
+        }
+
+        .sidebar-section {
+            padding: 8px 0;
+        }
+
+        .sidebar-section-label {
+            padding: 8px 12px;
+            font-size: 11px;
+            font-weight: 700;
+            color: #4a4a6a;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .sidebar-item {
+            padding: 8px 12px;
+            font-size: 13px;
+            color: #94a3b8;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .sidebar-item:hover {
+            background: #1a1a2e;
+            color: #c4b5fd;
+        }
+
+        .sidebar-item.active {
+            background: #1e1b4b;
+            color: #c4b5fd;
+            border-left: 3px solid #7c3aed;
+            padding-left: 9px;
+        }
+
+        .sidebar-item-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #7c3aed;
+        }
+
+        .sidebar-item-count {
+            margin-left: auto;
+            background: #1a1a2e;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 11px;
+            color: #a78bfa;
+            font-weight: 600;
+        }
+
+        .sidebar-toggle {
+            padding: 8px 12px;
+            font-size: 13px;
+            color: #64748b;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            border: none;
+            background: transparent;
+        }
+
+        .sidebar-divider {
+            border-top: 1px solid #2a2a3a;
+            margin: 8px 0;
+        }
+
+        .sidebar-admin-section .sidebar-section-label {
+            color: #ef4444;
+        }
+
+        /* Router View Placeholder */
+        .router-view {
+            flex: 1;
+            background: #08080f;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        /* Annotation Number */
+        .annotation-number {
+            width: 24px;
+            height: 24px;
+            background: #f59e0b;
+            color: #000;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 12px;
+            position: absolute;
+            margin: -6px 0 0 -6px;
+        }
+
+        /* Notification Drawer */
+        .notification-drawer {
+            position: absolute;
+            right: 0;
+            top: 48px;
+            width: 320px;
+            height: calc(100% - 48px);
+            background: #13131a;
+            border-left: 1px solid #2a2a3a;
+            padding: 16px;
+            overflow-y: auto;
+            z-index: 20;
+            display: none;
+        }
+
+        .notification-drawer.visible {
+            display: block;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+            }
+            to {
+                transform: translateX(0);
+            }
+        }
+
+        .notification-item {
+            background: #1a1a2e;
+            border: 1px solid #2a2a3a;
+            border-radius: 4px;
+            padding: 12px;
+            margin-bottom: 8px;
+            font-size: 12px;
+            color: #94a3b8;
+        }
+
+        /* Annotation Table */
+        .annotation-table {
+            margin-top: 24px;
+            background: #13131a;
+            border: 1px solid #2a2a3a;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .table-header {
+            background: #0a0a10;
+            padding: 12px;
+            display: grid;
+            grid-template-columns: 40px 150px 200px 200px 200px;
+            gap: 12px;
+            border-bottom: 1px solid #2a2a3a;
+            font-weight: 600;
+            font-size: 12px;
+            color: #a78bfa;
+        }
+
+        .table-row {
+            padding: 12px;
+            display: grid;
+            grid-template-columns: 40px 150px 200px 200px 200px;
+            gap: 12px;
+            border-bottom: 1px solid #2a2a3a;
+            font-size: 12px;
+            align-items: start;
+        }
+
+        .table-row:last-child {
+            border-bottom: none;
+        }
+
+        .table-row:hover {
+            background: #1a1a2e;
+        }
+
+        .table-cell {
+            color: #94a3b8;
+        }
+
+        .table-cell-number {
+            color: #f59e0b;
+            font-weight: 600;
+        }
+
+        .table-cell-label {
+            color: #c4b5fd;
+            font-weight: 500;
+        }
+
+        .code-inline {
+            background: #1a1a2e;
+            border: 1px solid #2a2a3a;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: "Monaco", "Courier New", monospace;
+            color: #a78bfa;
+            font-size: 11px;
+        }
+
+        /* State Variants */
+        .variants-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+            margin-top: 32px;
+        }
+
+        .variant-frame {
+            background: #13131a;
+            border: 1px solid #2a2a3a;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .variant-label {
+            background: #1a1a2e;
+            padding: 8px 12px;
+            border-bottom: 1px solid #2a2a3a;
+            font-size: 12px;
+            font-weight: 600;
+            color: #a78bfa;
+        }
+
+        .variant-content {
+            height: 400px;
+            background: #08080f;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #64748b;
+            font-size: 13px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        /* Keyboard Shortcuts */
+        .shortcuts-section {
+            margin-top: 32px;
+            background: #13131a;
+            border: 1px solid #2a2a3a;
+            border-radius: 8px;
+            padding: 20px;
+        }
+
+        .shortcuts-section h3 {
+            color: #c4b5fd;
+            margin-bottom: 16px;
+            font-size: 16px;
+        }
+
+        .shortcuts-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+        }
+
+        .shortcut-item {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .shortcut-key {
+            background: #0a0a10;
+            border: 1px solid #2a2a3a;
+            padding: 4px 8px;
+            border-radius: 3px;
+            font-family: "Monaco", monospace;
+            font-size: 11px;
+            color: #a78bfa;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .shortcut-desc {
+            color: #94a3b8;
+            font-size: 12px;
+        }
+
+        /* Interaction Cards */
+        .interactions-section {
+            margin-top: 32px;
+        }
+
+        .interaction-card {
+            background: #13131a;
+            border: 1px solid #2a2a3a;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+
+        .interaction-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .interaction-badge {
+            background: #4c1d95;
+            color: #c4b5fd;
+            padding: 2px 8px;
+            border-radius: 3px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .interaction-title {
+            color: #c4b5fd;
+            font-weight: 600;
+        }
+
+        .interaction-flow {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+            font-size: 12px;
+        }
+
+        .flow-step {
+            background: #1a1a2e;
+            border: 1px solid #2a2a3a;
+            padding: 8px 12px;
+            border-radius: 4px;
+            color: #94a3b8;
+            flex: 1;
+        }
+
+        .flow-step strong {
+            color: #c4b5fd;
+            display: block;
+            margin-bottom: 4px;
+            font-size: 11px;
+        }
+
+        .flow-arrow {
+            display: flex;
+            align-items: center;
+            color: #7c3aed;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Page Header -->
+        <div class="page-header">
+            <div class="screen-badge">SCREEN S01</div>
+            <h1>App Shell</h1>
+            <p>The persistent outer layout frame rendered on all routes. Contains global navbar, collapsible sidebar with filter tree, and main router-view content area.</p>
+            <div class="meta-badges">
+                <div class="meta-badge"><strong>Route:</strong> * (Layout)</div>
+                <div class="meta-badge"><strong>Component:</strong> AppLayout.vue</div>
+                <div class="meta-badge"><strong>Access:</strong> All users</div>
+            </div>
+        </div>
+
+        <!-- Default State -->
+        <div class="section-header">
+            <h2>Default State — Sidebar Expanded</h2>
+        </div>
+
+        <div class="browser-frame">
+            <div class="browser-chrome">
+                <div class="browser-dots">
+                    <div class="dot dot-red"></div>
+                    <div class="dot dot-amber"></div>
+                    <div class="dot dot-green"></div>
+                </div>
+                <div class="browser-url">/ → /browse</div>
+            </div>
+
+            <div class="app-layout">
+                <!-- Navbar -->
+                <div class="navbar">
+                    <div class="navbar-logo">
+                        <div class="logo-box"></div>
+                        <span>AI Prompt Community</span>
+                        <span class="annotation-number">1</span>
+                    </div>
+                    <div class="navbar-search">
+                        <span class="navbar-search-icon">🔍</span>
+                        <span>Search prompts... ⌘K</span>
+                        <span class="annotation-number">2</span>
+                    </div>
+                    <div class="navbar-actions">
+                        <div class="icon-button">
+                            🔔
+                            <div class="badge-count">3</div>
+                            <span class="annotation-number">3</span>
+                        </div>
+                        <div class="avatar">A<span class="annotation-number">4</span></div>
+                        <div class="btn-new">+ New<span class="annotation-number">5</span></div>
+                    </div>
+                </div>
+
+                <!-- Main Content -->
+                <div class="main-content">
+                    <!-- Sidebar -->
+                    <div class="sidebar">
+                        <div class="sidebar-toggle">
+                            « Collapse
+                            <span class="annotation-number" style="position: relative; margin: 0;">6</span>
+                        </div>
+
+                        <div class="sidebar-section">
+                            <div class="sidebar-section-label">Browse</div>
+                            <div class="sidebar-item active">
+                                <span class="sidebar-item-dot"></span>
+                                All Prompts
+                                <span class="sidebar-item-count">1.2K</span>
+                            </div>
+                            <div class="sidebar-item">
+                                ⚡ Trending
+                                <span class="sidebar-item-count">48</span>
+                            </div>
+                            <div class="sidebar-item">
+                                ⏱ Recent
+                                <span class="sidebar-item-count">180</span>
+                            </div>
+                        </div>
+
+                        <div class="sidebar-section">
+                            <div class="sidebar-section-label">Categories <span class="annotation-number" style="position: relative; margin: 0; margin-left: 60px;">7</span></div>
+                            <div class="sidebar-item">
+                                💻 Coding
+                                <span class="sidebar-item-count">340</span>
+                            </div>
+                            <div class="sidebar-item">
+                                ✍️ Writing
+                                <span class="sidebar-item-count">215</span>
+                            </div>
+                            <div class="sidebar-item">
+                                🔬 Analysis
+                                <span class="sidebar-item-count">128</span>
+                            </div>
+                            <div class="sidebar-item">
+                                🎨 Creative
+                                <span class="sidebar-item-count">96</span>
+                            </div>
+                            <div class="sidebar-item">
+                                ⚙️ System
+                                <span class="sidebar-item-count">67</span>
+                            </div>
+                        </div>
+
+                        <div class="sidebar-section">
+                            <div class="sidebar-section-label">AI Models</div>
+                            <div class="sidebar-item">
+                                🤖 GPT-4
+                                <span class="sidebar-item-count">420</span>
+                            </div>
+                            <div class="sidebar-item">
+                                🧠 Claude
+                                <span class="sidebar-item-count">380</span>
+                            </div>
+                            <div class="sidebar-item">
+                                ✨ Gemini
+                                <span class="sidebar-item-count">240</span>
+                            </div>
+                            <div class="sidebar-item">
+                                🦙 Llama
+                                <span class="sidebar-item-count">85</span>
+                            </div>
+                        </div>
+
+                        <div class="sidebar-section">
+                            <div class="sidebar-section-label">Sort</div>
+                            <div class="sidebar-item">
+                                👍 Most Voted
+                            </div>
+                            <div class="sidebar-item">
+                                📅 Newest
+                            </div>
+                            <div class="sidebar-item">
+                                💬 Most Discussed
+                            </div>
+                        </div>
+
+                        <div class="sidebar-divider"></div>
+
+                        <div class="sidebar-section sidebar-admin-section">
+                            <div class="sidebar-section-label">Admin</div>
+                            <div class="sidebar-item">
+                                ⚠️ Moderation Queue
+                                <span class="sidebar-item-count" style="background: #7c3aed;">2</span>
+                            </div>
+                            <div class="sidebar-item">
+                                🏷️ Label Manager
+                            </div>
+                        </div>
+
+                        <div style="padding: 12px; color: #64748b; font-size: 11px; border-top: 1px solid #2a2a3a; margin-top: 12px;">
+                            v0.8.2
+                        </div>
+                    </div>
+
+                    <!-- Router View -->
+                    <div class="router-view">
+                        &lt;router-view /&gt;
+                        <span class="annotation-number" style="position: absolute; bottom: 20px; right: 20px;">8</span>
+                    </div>
+                </div>
+
+                <!-- Notification Drawer (shown in variant) -->
+                <div class="notification-drawer">
+                    <h3 style="color: #c4b5fd; margin-bottom: 12px; font-size: 14px;">Notifications</h3>
+                    <div class="notification-item">
+                        <strong style="color: #c4b5fd;">Your prompt was liked</strong><br>
+                        alice liked "React Performance Tips"
+                    </div>
+                    <div class="notification-item">
+                        <strong style="color: #c4b5fd;">New comment</strong><br>
+                        bob replied to your prompt "Vue 3 Composition API"
+                    </div>
+                    <div class="notification-item">
+                        <strong style="color: #c4b5fd;">Prompt approved</strong><br>
+                        Your submission "Prompt Optimization" passed review
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Annotation Table -->
+        <div class="annotation-table">
+            <div class="table-header">
+                <div>#</div>
+                <div>Element</div>
+                <div>Behavior</div>
+                <div>Vue/shadcn Component</div>
+                <div>Tech Note</div>
+            </div>
+
+            <div class="table-row">
+                <div class="table-cell table-cell-number">1</div>
+                <div class="table-cell">Logo + App Name</div>
+                <div class="table-cell">Click → navigate to <span class="code-inline">:</span><span class="code-inline">/browse</span></div>
+                <div class="table-cell"><span class="code-inline">RouterLink</span></div>
+                <div class="table-cell">Always visible. Links home.</div>
+            </div>
+
+            <div class="table-row">
+                <div class="table-cell table-cell-number">2</div>
+                <div class="table-cell">Global Search Bar</div>
+                <div class="table-cell">Click or ⌘K → opens Command palette; MiniSearch index live query</div>
+                <div class="table-cell"><span class="code-inline">Command</span> (shadcn)</div>
+                <div class="table-cell">Real-time client-side search via MiniSearch 7. Keyboard shortcut triggers with <span class="code-inline">@vueuse/core</span> useEventListener.</div>
+            </div>
+
+            <div class="table-row">
+                <div class="table-cell table-cell-number">3</div>
+                <div class="table-cell">Notification Bell Icon</div>
+                <div class="table-cell">Click → opens NotificationDrawer Sheet from right; shows unread count badge</div>
+                <div class="table-cell"><span class="code-inline">Sheet</span> (shadcn)</div>
+                <div class="table-cell">Badge count from <span class="code-inline">useUIStore.notificationCount</span>. Real-time updates via query polling or WebSocket (future).</div>
+            </div>
+
+            <div class="table-row">
+                <div class="table-cell table-cell-number">4</div>
+                <div class="table-cell">User Avatar Button</div>
+                <div class="table-cell">Click → opens DropdownMenu; options: Profile, Settings, Sign Out</div>
+                <div class="table-cell"><span class="code-inline">DropdownMenu</span> (shadcn); <span class="code-inline">Avatar</span> (shadcn)</div>
+                <div class="table-cell">Shows if <span class="code-inline">useAuthStore.isAuthenticated</span> true. Avatar initials from <span class="code-inline">useAuthStore.user.login</span>.</div>
+            </div>
+
+            <div class="table-row">
+                <div class="table-cell table-cell-number">5</div>
+                <div class="table-cell">+ New Prompt Button</div>
+                <div class="table-cell">Click → navigate to <span class="code-inline">/prompts/new</span>; visible only if authenticated</div>
+                <div class="table-cell"><span class="code-inline">Button</span> (shadcn)</div>
+                <div class="table-cell">Conditional render: <span class="code-inline">v-if="isAuthenticated"</span>. Color: purple accent.</div>
+            </div>
+
+            <div class="table-row">
+                <div class="table-cell table-cell-number">6</div>
+                <div class="table-cell">Sidebar Collapse Toggle</div>
+                <div class="table-cell">Click or [ shortcut → toggle <span class="code-inline">useUIStore.sidebarCollapsed</span>; animate width 200px ↔ 48px</div>
+                <div class="table-cell"><span class="code-inline">Button</span> (shadcn)</div>
+                <div class="table-cell">Stores state in Pinia; CSS transition animates width. Icon-only mode shows tooltips via <span class="code-inline">Tooltip</span>.</div>
+            </div>
+
+            <div class="table-row">
+                <div class="table-cell table-cell-number">7</div>
+                <div class="table-cell">Sidebar Section: CATEGORIES</div>
+                <div class="table-cell">Click item → set <span class="code-inline">usePromptsStore.filterState.category</span>; collapsible expand/collapse triangle</div>
+                <div class="table-cell"><span class="code-inline">Collapsible</span> (shadcn); <span class="code-inline">Badge</span> (shadcn) for counts</div>
+                <div class="table-cell">Each item has colored dot (CSS background) + count badge. Category filters persist in store and trigger re-fetch via TanStack Vue Query.</div>
+            </div>
+
+            <div class="table-row">
+                <div class="table-cell table-cell-number">8</div>
+                <div class="table-cell">Router View Content Area</div>
+                <div class="table-cell">Renders page-specific component based on current route</div>
+                <div class="table-cell"><span class="code-inline">&lt;RouterView /&gt;</span></div>
+                <div class="table-cell">Flex-grow to fill remaining space. Background: #08080f. Hosts BrowseView, PromptDetail, AdminPanel, etc.</div>
+            </div>
+
+            <div class="table-row">
+                <div class="table-cell table-cell-number">—</div>
+                <div class="table-cell">Notification Drawer</div>
+                <div class="table-cell">Slides from right when bell clicked; lists recent notifications; click to navigate or dismiss</div>
+                <div class="table-cell"><span class="code-inline">Sheet</span>, <span class="code-inline">ScrollArea</span> (shadcn)</div>
+                <div class="table-cell">Overlay z-index: 20. Fetches from <span class="code-inline">useNotificationsQuery()</span>. Swipe-to-close on mobile.</div>
+            </div>
+        </div>
+
+        <!-- State Variants -->
+        <div class="section-header">
+            <h2>State Variants</h2>
+        </div>
+
+        <div class="variants-container">
+            <div class="variant-frame">
+                <div class="variant-label">Sidebar Collapsed (Icon-only)</div>
+                <div class="variant-content">
+                    <div style="display: flex; height: 100%; width: 100%; background: #08080f;">
+                        <div style="width: 48px; background: #13131a; border-right: 1px solid #2a2a3a; padding: 8px 0; display: flex; flex-direction: column; gap: 8px;">
+                            <div style="width: 32px; height: 32px; background: #1a1a2e; border: 1px solid #2a2a3a; border-radius: 4px; margin: 0 auto;"></div>
+                            <div style="width: 32px; height: 32px; background: #1a1a2e; border: 1px solid #2a2a3a; border-radius: 4px; margin: 0 auto;"></div>
+                            <div style="width: 32px; height: 32px; background: #1a1a2e; border: 1px solid #2a2a3a; border-radius: 4px; margin: 0 auto;"></div>
+                            <div style="width: 32px; height: 32px; background: #1a1a2e; border: 1px solid #2a2a3a; border-radius: 4px; margin: 0 auto;"></div>
+                        </div>
+                        <div style="flex: 1; display: flex; align-items: center; justify-content: center; color: #64748b;">Router View</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="variant-frame">
+                <div class="variant-label">Notification Drawer Open</div>
+                <div class="variant-content">
+                    <div style="display: flex; width: 100%; height: 100%; background: #08080f;">
+                        <div style="flex: 1; display: flex; align-items: center; justify-content: center; color: #64748b; font-size: 12px;">Main content</div>
+                        <div style="width: 280px; background: #13131a; border-left: 1px solid #2a2a3a; padding: 16px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px;">
+                            <div style="font-size: 11px; color: #a78bfa; font-weight: 600;">NOTIFICATIONS</div>
+                            <div style="background: #1a1a2e; border: 1px solid #2a2a3a; border-radius: 4px; padding: 8px; font-size: 11px; color: #94a3b8;">
+                                <div style="color: #c4b5fd; font-weight: 600; margin-bottom: 4px;">Prompt liked</div>
+                                alice liked your prompt
+                            </div>
+                            <div style="background: #1a1a2e; border: 1px solid #2a2a3a; border-radius: 4px; padding: 8px; font-size: 11px; color: #94a3b8;">
+                                <div style="color: #c4b5fd; font-weight: 600; margin-bottom: 4px;">New comment</div>
+                                bob replied
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="variant-frame">
+                <div class="variant-label">Unauthenticated (No +New Button)</div>
+                <div class="variant-content">
+                    <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px;">
+                        <div style="color: #a78bfa;">Sign in with GitHub</div>
+                        <div style="font-size: 11px; color: #64748b;">No +New button visible</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Keyboard Shortcuts -->
+        <div class="section-header">
+            <h2>Keyboard Shortcuts</h2>
+        </div>
+
+        <div class="shortcuts-section">
+            <div class="shortcuts-grid">
+                <div class="shortcut-item">
+                    <div class="shortcut-key">⌘K or /</div>
+                    <div class="shortcut-desc">Open global search (Command palette)</div>
+                </div>
+                <div class="shortcut-item">
+                    <div class="shortcut-key">[</div>
+                    <div class="shortcut-desc">Toggle sidebar collapse</div>
+                </div>
+                <div class="shortcut-item">
+                    <div class="shortcut-key">G then B</div>
+                    <div class="shortcut-desc">Navigate to /browse (Go Browse)</div>
+                </div>
+                <div class="shortcut-item">
+                    <div class="shortcut-key">G then N</div>
+                    <div class="shortcut-desc">Navigate to /prompts/new (Go New)</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Key Interactions -->
+        <div class="section-header">
+            <h2>Key Interactions</h2>
+        </div>
+
+        <div class="interaction-card">
+            <div class="interaction-header">
+                <span class="interaction-badge">SEARCH</span>
+                <span class="interaction-title">Global Search → Command Palette</span>
+            </div>
+            <div class="interaction-flow">
+                <div class="flow-step">
+                    <strong>Trigger</strong>
+                    User clicks search bar or presses ⌘K
+                </div>
+                <div class="flow-arrow">→</div>
+                <div class="flow-step">
+                    <strong>Action</strong>
+                    <span class="code-inline">Command</span> component opens; pre-populated with MiniSearch results
+                </div>
+                <div class="flow-arrow">→</div>
+                <div class="flow-step">
+                    <strong>Tech</strong>
+                    <span class="code-inline">useEventListener('keydown')</span> + router push on select
+                </div>
+            </div>
+        </div>
+
+        <div class="interaction-card">
+            <div class="interaction-header">
+                <span class="interaction-badge">SIDEBAR</span>
+                <span class="interaction-title">Filter Selection → Data Re-fetch</span>
+            </div>
+            <div class="interaction-flow">
+                <div class="flow-step">
+                    <strong>Trigger</strong>
+                    User clicks category or model item in sidebar
+                </div>
+                <div class="flow-arrow">→</div>
+                <div class="flow-step">
+                    <strong>Action</strong>
+                    <span class="code-inline">usePromptsStore.filterState</span> updates; active state highlights item
+                </div>
+                <div class="flow-arrow">→</div>
+                <div class="flow-step">
+                    <strong>Tech</strong>
+                    TanStack Vue Query watch triggers <span class="code-inline">usePromptsQuery(filters)</span> refetch
+                </div>
+            </div>
+        </div>
+
+        <div class="interaction-card">
+            <div class="interaction-header">
+                <span class="interaction-badge">COLLAPSE</span>
+                <span class="interaction-title">Sidebar Toggle Animation</span>
+            </div>
+            <div class="interaction-flow">
+                <div class="flow-step">
+                    <strong>Trigger</strong>
+                    User clicks collapse button or presses [
+                </div>
+                <div class="flow-arrow">→</div>
+                <div class="flow-step">
+                    <strong>Action</strong>
+                    <span class="code-inline">useUIStore.sidebarCollapsed</span> toggles; width animates via CSS transition
+                </div>
+                <div class="flow-arrow">→</div>
+                <div class="flow-step">
+                    <strong>Tech</strong>
+                    <span class="code-inline">transition: width 0.3s</span>; item labels hide with <span class="code-inline">v-show</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="interaction-card">
+            <div class="interaction-header">
+                <span class="interaction-badge">AUTH</span>
+                <span class="interaction-title">GitHub OAuth Sign-in</span>
+            </div>
+            <div class="interaction-flow">
+                <div class="flow-step">
+                    <strong>Trigger</strong>
+                    User clicks avatar or "Sign in" CTA
+                </div>
+                <div class="flow-arrow">→</div>
+                <div class="flow-step">
+                    <strong>Action</strong>
+                    CF Worker popup opens; GitHub OAuth flow; token stored in localStorage
+                </div>
+                <div class="flow-arrow">→</div>
+                <div class="flow-step">
+                    <strong>Tech</strong>
+                    <span class="code-inline">useAuthStore.login()</span> mutation; <span class="code-inline">@octokit/graphql</span> authenticated queries
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
