@@ -1,8 +1,12 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 
-// Tests for verifyMaintainerStatus
+// Mock the octokit module at the top level
+vi.mock('./octokit', () => ({
+  createRestClient: vi.fn(),
+}))
+
 describe('verifyMaintainerStatus', () => {
-  beforeEach(() => {
+  beforeEach(async () => {
     vi.clearAllMocks()
   })
 
@@ -20,34 +24,36 @@ describe('verifyMaintainerStatus', () => {
   })
 
   it('returns true when GitHub API returns 204 (member)', async () => {
-    // Mock createRestClient at module level
-    vi.doMock('./octokit', () => ({
-      createRestClient: () => ({
-        request: vi.fn()
-          .mockResolvedValueOnce({ data: { login: 'testuser' } })  // GET /user
-          .mockResolvedValueOnce({ status: 204 }),                   // GET /repos/.../collaborators/...
-      }),
-    }))
+    const { createRestClient } = await import('./octokit')
+    const mockRequest = vi.fn()
+      .mockResolvedValueOnce({ data: { login: 'testuser' } })  // GET /user
+      .mockResolvedValueOnce({ status: 204 })                   // GET /repos/.../collaborators/...
+    vi.mocked(createRestClient).mockReturnValue({ request: mockRequest } as never)
 
-    // Re-import after mock
     const { verifyMaintainerStatus } = await import('./auth')
     const result = await verifyMaintainerStatus('valid-token')
     expect(result).toBe(true)
-    vi.doUnmock('./octokit')
   })
 
   it('returns false when GitHub API returns 404 (not a member)', async () => {
-    vi.doMock('./octokit', () => ({
-      createRestClient: () => ({
-        request: vi.fn()
-          .mockResolvedValueOnce({ data: { login: 'outsider' } })   // GET /user
-          .mockRejectedValueOnce(Object.assign(new Error('Not Found'), { status: 404 })),
-      }),
-    }))
+    const { createRestClient } = await import('./octokit')
+    const mockRequest = vi.fn()
+      .mockResolvedValueOnce({ data: { login: 'outsider' } })   // GET /user
+      .mockRejectedValueOnce(Object.assign(new Error('Not Found'), { status: 404 }))
+    vi.mocked(createRestClient).mockReturnValue({ request: mockRequest } as never)
 
     const { verifyMaintainerStatus } = await import('./auth')
     const result = await verifyMaintainerStatus('valid-token')
     expect(result).toBe(false)
-    vi.doUnmock('./octokit')
+  })
+
+  it('returns false when token is present but API throws an unexpected error', async () => {
+    const { createRestClient } = await import('./octokit')
+    const mockRequest = vi.fn().mockRejectedValue(new Error('Network error'))
+    vi.mocked(createRestClient).mockReturnValue({ request: mockRequest } as never)
+
+    const { verifyMaintainerStatus } = await import('./auth')
+    const result = await verifyMaintainerStatus('some-token')
+    expect(result).toBe(false)
   })
 })

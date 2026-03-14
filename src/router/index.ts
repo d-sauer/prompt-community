@@ -1,12 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { useAuthStore } from '@/stores/useAuthStore'
+import { verifyMaintainerStatus } from '@/lib/github/auth'
 
-// Stub: Phase 2 wires real GitHub collaborator API call
-// Exported so it can be mocked in tests
-export async function verifyMaintainerStatus(_token: string): Promise<boolean> {
-  // TODO Phase 2: call GET /repos/:owner/:repo/collaborators/:username (INFR-08)
-  return false
-}
+export { verifyMaintainerStatus }
 
 export const router = createRouter({
   history: createWebHistory(),
@@ -49,7 +45,7 @@ router.beforeEach(async (to) => {
       return { path: '/browse' }
     }
     // Re-verify via GitHub API on every admin navigation (INFR-08)
-    const confirmed = await verifyMaintainerStatus(authStore.token ?? '')
+    const confirmed = await verifyMaintainerStatus(authStore.token)
     if (!confirmed) return { path: '/browse' }
   }
 })
