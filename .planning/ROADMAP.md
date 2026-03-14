@@ -29,12 +29,12 @@ Decimal phases appear between their surrounding integers in numeric order.
   3. Any user can trigger GitHub OAuth from any screen, complete sign-in via popup (no page redirect), and the popup closes automatically
   4. Authenticated user can sign out and their token is no longer held anywhere in the browser
   5. The app is deployed to Cloudflare Pages and loads within infrastructure cost constraints at target scale
-**Plans**: TBD
+**Plans**: 3 plans
 
 Plans:
-- [ ] 01-01: Project scaffolding, Vite config, shadcn-vue, Tailwind 4, routing skeleton, Cloudflare Pages deployment
-- [ ] 01-02: GitHub API layer (Octokit, TanStack Query, ETag caching, rate limit strategy) and OAuth proxy Worker
-- [ ] 01-03: App shell — sidebar, navbar, theme toggle, keyboard shortcuts, notification drawer, mobile sheet overlay
+- [ ] 01-01-PLAN.md — Scaffold project, Pinia stores, Vue Router, Vitest Wave 0 stubs, CF Pages deployment config
+- [ ] 01-02-PLAN.md — Octokit client factory, verifyMaintainerStatus GitHub API check, OAuth Worker end-to-end
+- [ ] 01-03-PLAN.md — App shell: Navbar, Sidebar, NotificationDrawer stub, keyboard shortcuts, mobile responsive Sheet
 
 ### Phase 2: Read & Contribute
 **Goal**: Any user can browse, search, and read prompts; authenticated users can create, edit, fork, and version their content
@@ -46,7 +46,7 @@ Plans:
   3. Any user can open a prompt and read its full markdown content with syntax-highlighted code blocks, all metadata fields, and a shareable permalink
   4. Authenticated user can create, edit, and fork prompts using a split-pane editor with live markdown preview, image upload, and auto-save every 30 seconds
   5. Any user can view the full version history timeline for a prompt and compare any two versions in diff view; author or maintainer can restore a previous version
-**Plans**: TBD
+**Plans**: 3 plans
 
 Plans:
 - [ ] 02-01: MiniSearch index, GitHub GraphQL browse query, filter/sort/pagination, infinite scroll, prompt list and detail screens
@@ -63,7 +63,7 @@ Plans:
   3. Any user can view another user's public profile showing their submissions and aggregate stats (total votes, total submissions)
   4. Authenticated user can view their own profile with separate tabs for submitted prompts, saved prompts, and activity
   5. Authenticated user can bookmark any prompt and find it in their saved tab; authenticated user can flag a prompt for moderator review
-**Plans**: TBD
+**Plans**: 3 plans
 
 Plans:
 - [ ] 03-01: Reactions (GitHub Issue reactions API, optimistic UI, sign-in CTA) and comments (read anonymous, post authenticated)
@@ -79,7 +79,7 @@ Plans:
   3. Maintainer can add, edit, and delete GitHub labels with namespace prefix conventions enforced, and can mark prompts as featured
   4. Maintainer can view a filterable moderation log with full action history and see a stats overview (total prompts, flagged count, featured count)
   5. Any user can browse previously cached prompts while offline; authenticated user's write actions taken offline are queued and synced when connectivity restores
-**Plans**: TBD
+**Plans**: 3 plans
 
 Plans:
 - [ ] 04-01: Admin panel — access control, stats overview, moderation queue with bulk actions, label management, featured prompts, moderation log
