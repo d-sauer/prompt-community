@@ -1,6 +1,11 @@
 {
   "version": 1,
   "skills": {
+    "ui-animation": {
+      "source": "mblode/agent-skills",
+      "sourceType": "github",
+      "computedHash": "2246d0232b13fcb9b0aea790e2a7716c6db83c547a9588a2114ef0566adacb35"
+    },
     "ui-ux-pro-max": {
       "source": "nextlevelbuilder/ui-ux-pro-max-skill",
       "sourceType": "github",
