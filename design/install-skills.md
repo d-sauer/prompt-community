@@ -9,7 +9,7 @@
 
 8. https://nervegna.substack.com/p/the-designers-essential-skills-for
   - https://github.com/nextlevelbuilder/ui-ux-pro-max-skill
-    `npx skills add nextlevelbuilder/ui-ux-pro-max-skill@ui-ux-pro-max -g -y`
+    + `npx skills add nextlevelbuilder/ui-ux-pro-max-skill@ui-ux-pro-max -g -y`
   - `npx skills add vercel-labs/agent-skills@web-design-guidelines -g -y`
   - `npx skills add mblode/agent-skills@ui-animation -g -y`
   - `npx skills add wshobson/agents@tailwind-design-system -g -y`
