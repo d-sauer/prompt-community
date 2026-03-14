@@ -122,20 +122,78 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| DISC-01–10 | TBD | Pending |
-| CONT-01–11 | TBD | Pending |
-| VERS-01–05 | TBD | Pending |
-| COMM-01–06 | TBD | Pending |
-| USER-01–06 | TBD | Pending |
-| ADMN-01–08 | TBD | Pending |
-| SHEL-01–08 | TBD | Pending |
-| INFR-01–10 | TBD | Pending |
+| SHEL-01 | Phase 1 | Pending |
+| SHEL-02 | Phase 1 | Pending |
+| SHEL-03 | Phase 1 | Pending |
+| SHEL-04 | Phase 1 | Pending |
+| SHEL-05 | Phase 1 | Pending |
+| SHEL-06 | Phase 1 | Pending |
+| USER-01 | Phase 1 | Pending |
+| USER-02 | Phase 1 | Pending |
+| INFR-04 | Phase 1 | Pending |
+| INFR-07 | Phase 1 | Pending |
+| INFR-08 | Phase 1 | Pending |
+| INFR-09 | Phase 1 | Pending |
+| INFR-10 | Phase 1 | Pending |
+| DISC-01 | Phase 2 | Pending |
+| DISC-02 | Phase 2 | Pending |
+| DISC-03 | Phase 2 | Pending |
+| DISC-04 | Phase 2 | Pending |
+| DISC-05 | Phase 2 | Pending |
+| DISC-06 | Phase 2 | Pending |
+| DISC-07 | Phase 2 | Pending |
+| DISC-08 | Phase 2 | Pending |
+| DISC-09 | Phase 2 | Pending |
+| DISC-10 | Phase 2 | Pending |
+| CONT-01 | Phase 2 | Pending |
+| CONT-02 | Phase 2 | Pending |
+| CONT-03 | Phase 2 | Pending |
+| CONT-04 | Phase 2 | Pending |
+| CONT-05 | Phase 2 | Pending |
+| CONT-06 | Phase 2 | Pending |
+| CONT-07 | Phase 2 | Pending |
+| CONT-08 | Phase 2 | Pending |
+| CONT-09 | Phase 2 | Pending |
+| CONT-10 | Phase 2 | Pending |
+| CONT-11 | Phase 2 | Pending |
+| VERS-01 | Phase 2 | Pending |
+| VERS-02 | Phase 2 | Pending |
+| VERS-03 | Phase 2 | Pending |
+| VERS-04 | Phase 2 | Pending |
+| VERS-05 | Phase 2 | Pending |
+| INFR-01 | Phase 2 | Pending |
+| INFR-02 | Phase 2 | Pending |
+| INFR-03 | Phase 2 | Pending |
+| INFR-05 | Phase 2 | Pending |
+| INFR-06 | Phase 2 | Pending |
+| COMM-01 | Phase 3 | Pending |
+| COMM-02 | Phase 3 | Pending |
+| COMM-03 | Phase 3 | Pending |
+| COMM-04 | Phase 3 | Pending |
+| COMM-05 | Phase 3 | Pending |
+| COMM-06 | Phase 3 | Pending |
+| USER-03 | Phase 3 | Pending |
+| USER-04 | Phase 3 | Pending |
+| USER-05 | Phase 3 | Pending |
+| USER-06 | Phase 3 | Pending |
+| ADMN-01 | Phase 4 | Pending |
+| ADMN-02 | Phase 4 | Pending |
+| ADMN-03 | Phase 4 | Pending |
+| ADMN-04 | Phase 4 | Pending |
+| ADMN-05 | Phase 4 | Pending |
+| ADMN-06 | Phase 4 | Pending |
+| ADMN-07 | Phase 4 | Pending |
+| ADMN-08 | Phase 4 | Pending |
+| SHEL-07 | Phase 4 | Pending |
+| SHEL-08 | Phase 4 | Pending |
 
 **Coverage:**
-- v1 requirements: 54 total (DISC×10, CONT×11, VERS×5, COMM×6, USER×6, ADMN×8, SHEL×8, INFR×10)
-- Mapped to phases: 0 (pending roadmap)
-- Unmapped: 54 ⚠️
+- v1 requirements: 64 total (DISC×10, CONT×11, VERS×5, COMM×6, USER×6, ADMN×8, SHEL×8, INFR×10)
+- Mapped to phases: 64/64 ✓
+- Unmapped: 0 ✓
+
+**Note:** The requirements file header stated 54 total but the actual count across all 8 categories is 64. All 64 are mapped.
 
 ---
 *Requirements defined: 2026-03-14*
-*Last updated: 2026-03-14 after initial definition from PRD*
+*Last updated: 2026-03-14 — traceability filled in after roadmap creation*
