@@ -12,5 +12,5 @@
     + `npx skills add nextlevelbuilder/ui-ux-pro-max-skill@ui-ux-pro-max -g -y`
   - + `npx skills add vercel-labs/agent-skills@web-design-guidelines -g -y`
   - + `npx skills add mblode/agent-skills@ui-animation -g -y`
-  - `npx skills add wshobson/agents@tailwind-design-system -g -y`
+  - + `npx skills add wshobson/agents@tailwind-design-system -g -y`
 
