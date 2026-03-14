@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: planning
-stopped_at: Phase 1 context gathered
-last_updated: "2026-03-14T22:02:56.428Z"
+stopped_at: Completed 01-foundation-01-01-PLAN.md
+last_updated: "2026-03-14T22:33:23.881Z"
 last_activity: 2026-03-14 — Roadmap created, phases derived from 64 v1 requirements across 8 categories
 progress:
   total_phases: 4
   completed_phases: 0
-  total_plans: 0
-  completed_plans: 0
+  total_plans: 3
+  completed_plans: 1
   percent: 0
 ---
 
@@ -50,6 +50,7 @@ Progress: [░░░░░░░░░░] 0%
 - Trend: -
 
 *Updated after each plan completion*
+| Phase 01-foundation P01 | 8 | 2 tasks | 100 files |
 
 ## Accumulated Context
 
@@ -63,6 +64,9 @@ Recent decisions affecting current work:
 - Auth: GitHub OAuth App popup flow; tokens held in Pinia memory only — never localStorage
 - Search: MiniSearch client-side index eliminates GitHub Search API dependency (30 req/min cap)
 - UI: shadcn-vue (copy-in model) with Tailwind 4 + Reka UI; dark mode as default
+- [Phase 01-foundation]: CSRF state stored in closure variable (not sessionStorage) — sessionStorage not shared with OAuth popup window; Worker echoes state in postMessage for SPA verification
+- [Phase 01-foundation]: legacy-peer-deps=true in .npmrc — @tailwindcss/vite 4.2.1 declares peer dep on Vite ^5/6/7 but project uses Vite 8; works in practice
+- [Phase 01-foundation]: verifyMaintainerStatus exported separately from router for testability (stub in Phase 1, GitHub API in Phase 2)
 
 ### Pending Todos
 
@@ -74,6 +78,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-14T22:02:56.425Z
-Stopped at: Phase 1 context gathered
-Resume file: .planning/phases/01-foundation/01-CONTEXT.md
+Last session: 2026-03-14T22:33:23.879Z
+Stopped at: Completed 01-foundation-01-01-PLAN.md
+Resume file: None

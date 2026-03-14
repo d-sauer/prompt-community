@@ -92,8 +92,8 @@ Requirements for initial release. All screens must ship together (experience MVP
 - [ ] **INFR-06**: MiniSearch index eliminates all dependency on GitHub Search API for user-facing search
 - [ ] **INFR-07**: GitHub OAuth access tokens held in Pinia memory only — never localStorage or cookies
 - [ ] **INFR-08**: Admin panel access control enforced via GitHub API on every panel load — client-side check alone not sufficient
-- [ ] **INFR-09**: Platform operates within GitHub API limits at 50–400 concurrent users without architectural changes
-- [ ] **INFR-10**: All Cloudflare Pages, Workers, and R2 usage stays within free tier limits at target scale
+- [x] **INFR-09**: Platform operates within GitHub API limits at 50–400 concurrent users without architectural changes
+- [x] **INFR-10**: All Cloudflare Pages, Workers, and R2 usage stays within free tier limits at target scale
 
 ## v2 Requirements
 
@@ -133,8 +133,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 | INFR-04 | Phase 1 | Pending |
 | INFR-07 | Phase 1 | Pending |
 | INFR-08 | Phase 1 | Pending |
-| INFR-09 | Phase 1 | Pending |
-| INFR-10 | Phase 1 | Pending |
+| INFR-09 | Phase 1 | Complete |
+| INFR-10 | Phase 1 | Complete |
 | DISC-01 | Phase 2 | Pending |
 | DISC-02 | Phase 2 | Pending |
 | DISC-03 | Phase 2 | Pending |
