@@ -73,12 +73,10 @@ describe('useAuthStore', () => {
 
   it('Test 7: after postMessage with matching token and state, isAuthenticated becomes true', async () => {
     const store = useAuthStore()
-    vi.spyOn(window, 'open').mockReturnValue({} as Window)
 
     // Capture the state that login() generates
     let capturedState: string | null = null
-    const originalOpen = window.open
-    vi.spyOn(window, 'open').mockImplementation((url, ...args) => {
+    vi.spyOn(window, 'open').mockImplementation((url) => {
       const urlStr = url?.toString() ?? ''
       const match = urlStr.match(/state=([^&]+)/)
       if (match) capturedState = match[1]
@@ -107,7 +105,7 @@ describe('useAuthStore', () => {
     const store = useAuthStore()
 
     let capturedState: string | null = null
-    vi.spyOn(window, 'open').mockImplementation((url, ...args) => {
+    vi.spyOn(window, 'open').mockImplementation((url) => {
       const urlStr = url?.toString() ?? ''
       const match = urlStr.match(/state=([^&]+)/)
       if (match) capturedState = match[1]

@@ -9,26 +9,32 @@ export const router = createRouter({
   routes: [
     { path: '/', redirect: '/browse' },
     {
-      path: '/browse',
-      name: 'browse',
-      component: () => import('@/views/BrowseView.vue'),
-    },
-    {
-      path: '/prompts/new',
-      name: 'prompt-new',
-      component: () => import('@/views/PromptEditorView.vue'),
-      meta: { requiresAuth: true },
-    },
-    {
-      path: '/prompts/:id',
-      name: 'prompt-detail',
-      component: () => import('@/views/PromptDetailView.vue'),
-    },
-    {
-      path: '/admin',
-      name: 'admin',
-      component: () => import('@/views/AdminView.vue'),
-      meta: { requiresMaintainer: true },
+      path: '/',
+      component: () => import('@/components/layout/AppLayout.vue'),
+      children: [
+        {
+          path: 'browse',
+          name: 'browse',
+          component: () => import('@/views/BrowseView.vue'),
+        },
+        {
+          path: 'prompts/new',
+          name: 'prompt-new',
+          component: () => import('@/views/PromptEditorView.vue'),
+          meta: { requiresAuth: true },
+        },
+        {
+          path: 'prompts/:id',
+          name: 'prompt-detail',
+          component: () => import('@/views/PromptDetailView.vue'),
+        },
+        {
+          path: 'admin',
+          name: 'admin',
+          component: () => import('@/views/AdminView.vue'),
+          meta: { requiresMaintainer: true },
+        },
+      ],
     },
   ],
 })

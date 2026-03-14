@@ -53,7 +53,7 @@ describe('OAuth Worker', () => {
     })
 
     it('exchanges code for token and returns HTML with postMessage script', async () => {
-      const mockFetch = vi.spyOn(global, 'fetch').mockResolvedValueOnce(
+      const mockFetch = vi.spyOn(globalThis, 'fetch').mockResolvedValueOnce(
         new Response(JSON.stringify({ access_token: 'gho_test_token' }), {
           headers: { 'Content-Type': 'application/json' },
         }),
@@ -70,7 +70,7 @@ describe('OAuth Worker', () => {
     })
 
     it('postMessage payload includes both token and state (state echoed back)', async () => {
-      vi.spyOn(global, 'fetch').mockResolvedValueOnce(
+      vi.spyOn(globalThis, 'fetch').mockResolvedValueOnce(
         new Response(JSON.stringify({ access_token: 'gho_abc' }), {
           headers: { 'Content-Type': 'application/json' },
         }),
@@ -86,7 +86,7 @@ describe('OAuth Worker', () => {
     })
 
     it('response Content-Type is text/html', async () => {
-      vi.spyOn(global, 'fetch').mockResolvedValueOnce(
+      vi.spyOn(globalThis, 'fetch').mockResolvedValueOnce(
         new Response(JSON.stringify({ access_token: 'gho_test' }), {
           headers: { 'Content-Type': 'application/json' },
         }),
@@ -99,7 +99,7 @@ describe('OAuth Worker', () => {
     })
 
     it('CLIENT_SECRET is never exposed in the response body', async () => {
-      vi.spyOn(global, 'fetch').mockResolvedValueOnce(
+      vi.spyOn(globalThis, 'fetch').mockResolvedValueOnce(
         new Response(JSON.stringify({ access_token: 'gho_token' }), {
           headers: { 'Content-Type': 'application/json' },
         }),
@@ -113,7 +113,7 @@ describe('OAuth Worker', () => {
     })
 
     it('uses APP_ORIGIN as the target origin for postMessage', async () => {
-      vi.spyOn(global, 'fetch').mockResolvedValueOnce(
+      vi.spyOn(globalThis, 'fetch').mockResolvedValueOnce(
         new Response(JSON.stringify({ access_token: 'gho_token' }), {
           headers: { 'Content-Type': 'application/json' },
         }),

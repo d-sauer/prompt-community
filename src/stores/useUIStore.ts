@@ -3,6 +3,7 @@ import { ref } from 'vue'
 
 export const useUIStore = defineStore('ui', () => {
   const sidebarCollapsed = ref(false)
+  const sidebarMobileOpen = ref(false)
   const notificationDrawerOpen = ref(false)
   const notificationCount = ref(0) // defaults to 0; no API call in Phase 1
   const commandPaletteOpen = ref(false)
@@ -30,6 +31,7 @@ export const useUIStore = defineStore('ui', () => {
 
   return {
     sidebarCollapsed,
+    sidebarMobileOpen,
     notificationDrawerOpen,
     notificationCount,
     commandPaletteOpen,
