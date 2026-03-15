@@ -33,6 +33,10 @@ export const useUIStore = defineStore('ui', () => {
     theme.value = newTheme
   }
 
+  function toggleDiffLayout() {
+    diffLayout.value = diffLayout.value === 'side-by-side' ? 'unified' : 'side-by-side'
+  }
+
   return {
     sidebarCollapsed,
     sidebarMobileOpen,
@@ -47,5 +51,6 @@ export const useUIStore = defineStore('ui', () => {
     openCommandPalette,
     closeCommandPalette,
     setTheme,
+    toggleDiffLayout,
   }
 })

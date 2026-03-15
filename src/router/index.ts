@@ -37,8 +37,7 @@ export const router = createRouter({
         {
           path: 'prompts/:id/versions',
           name: 'prompt-versions',
-          // VersionHistoryView stub — implemented in Plan 02-03
-          component: () => import('@/views/PromptDetailView.vue'),
+          component: () => import('@/views/VersionHistoryView.vue'),
         },
         {
           path: 'admin',
