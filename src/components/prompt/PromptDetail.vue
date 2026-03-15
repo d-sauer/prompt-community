@@ -4,6 +4,8 @@ import { usePromptDetail } from '@/composables/queries/usePromptDetail'
 import PromptMetadata from './PromptMetadata.vue'
 import MarkdownBody from './MarkdownBody.vue'
 import PromptActions from './PromptActions.vue'
+import ReactionBar from './ReactionBar.vue'
+import CommentSection from './CommentSection.vue'
 import { Skeleton } from '@/components/ui/skeleton'
 
 const props = defineProps<{
@@ -46,8 +48,11 @@ const { data: prompt, isLoading, isError } = usePromptDetail(idRef)
 
       <PromptMetadata :prompt="prompt" />
 
+      <ReactionBar :prompt="prompt" />
+
       <div class="flex-1 overflow-y-auto">
         <MarkdownBody :content="prompt.body" />
+        <CommentSection :prompt="prompt" />
       </div>
     </template>
   </div>
