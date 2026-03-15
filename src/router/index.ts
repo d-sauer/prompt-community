@@ -40,6 +40,17 @@ export const router = createRouter({
           component: () => import('@/views/VersionHistoryView.vue'),
         },
         {
+          path: 'users/:login',
+          name: 'user-profile',
+          component: () => import('@/views/UserProfileView.vue'),
+        },
+        {
+          path: 'profile',
+          name: 'own-profile',
+          component: () => import('@/views/ProfileRedirectView.vue'),
+          meta: { requiresAuth: true },
+        },
+        {
           path: 'admin',
           name: 'admin',
           component: () => import('@/views/AdminView.vue'),
