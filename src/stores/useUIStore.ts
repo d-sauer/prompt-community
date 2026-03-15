@@ -9,6 +9,10 @@ export const useUIStore = defineStore('ui', () => {
   const commandPaletteOpen = ref(false)
   const theme = ref<'dark' | 'light'>('dark')
 
+  // Phase 2 additions
+  const markdownReady = ref(false)
+  const diffLayout = ref<'side-by-side' | 'unified'>('side-by-side')
+
   function toggleSidebar() {
     sidebarCollapsed.value = !sidebarCollapsed.value
   }
@@ -36,6 +40,8 @@ export const useUIStore = defineStore('ui', () => {
     notificationCount,
     commandPaletteOpen,
     theme,
+    markdownReady,
+    diffLayout,
     toggleSidebar,
     toggleNotificationDrawer,
     openCommandPalette,
