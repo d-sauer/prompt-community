@@ -44,11 +44,11 @@ Requirements for initial release. All screens must ship together (experience MVP
 
 ### Community Engagement (COMM)
 
-- [ ] **COMM-01**: Authenticated user can add a reaction to a prompt (👍 ❤️ 🚀) with optimistic UI
-- [ ] **COMM-02**: Authenticated user can remove their own previously added reaction
+- [x] **COMM-01**: Authenticated user can add a reaction to a prompt (👍 ❤️ 🚀) with optimistic UI
+- [x] **COMM-02**: Authenticated user can remove their own previously added reaction
 - [ ] **COMM-03**: Authenticated user can post a comment on a prompt
 - [ ] **COMM-04**: Any user can read all comments on a prompt without authenticating
-- [ ] **COMM-05**: Anonymous user is shown a sign-in CTA when attempting to react or comment
+- [x] **COMM-05**: Anonymous user is shown a sign-in CTA when attempting to react or comment
 - [ ] **COMM-06**: Authenticated user can flag a prompt for moderator review
 
 ### User Identity & Profile (USER)
@@ -166,11 +166,11 @@ Which phases cover which requirements. Updated during roadmap creation.
 | INFR-03 | Phase 2 | Complete |
 | INFR-05 | Phase 2 | Complete |
 | INFR-06 | Phase 2 | Complete |
-| COMM-01 | Phase 3 | Pending |
-| COMM-02 | Phase 3 | Pending |
+| COMM-01 | Phase 3 | Complete |
+| COMM-02 | Phase 3 | Complete |
 | COMM-03 | Phase 3 | Pending |
 | COMM-04 | Phase 3 | Pending |
-| COMM-05 | Phase 3 | Pending |
+| COMM-05 | Phase 3 | Complete |
 | COMM-06 | Phase 3 | Pending |
 | USER-03 | Phase 3 | Pending |
 | USER-04 | Phase 3 | Pending |
