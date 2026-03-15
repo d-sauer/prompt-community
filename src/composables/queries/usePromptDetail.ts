@@ -4,14 +4,7 @@ import { createGraphqlClient } from '@/lib/github/octokit'
 import { GET_PROMPT_DETAIL } from '@/lib/github/queries'
 import { parseFrontmatter } from '@/lib/frontmatter'
 import { useAuthStore } from '@/stores/useAuthStore'
-import type { Prompt } from '@/types/index'
-
-interface CommentNode {
-  id: string
-  body: string
-  createdAt: string
-  author: { login: string; avatarUrl: string }
-}
+import type { CommentNode, Prompt } from '@/types/index'
 
 interface PromptDetailResponse {
   repository: {
@@ -76,6 +69,7 @@ export function usePromptDetail(id: Ref<number | null | undefined>) {
           viewerHasReacted: g.viewerHasReacted ?? false,
         })),
         commentCount: issue.comments?.totalCount ?? 0,
+        comments: issue.comments?.nodes ?? [],
       }
     },
     enabled: computed(() => Boolean(id.value)),

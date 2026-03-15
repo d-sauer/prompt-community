@@ -89,6 +89,47 @@ export async function createVersionComment(
   return response.data.id
 }
 
+/**
+ * Post a community comment on a GitHub Issue (COMM-03).
+ * Body must NOT start with "## Version" to avoid being parsed as a version comment.
+ */
+export async function postComment(
+  token: string,
+  issueNumber: number,
+  body: string,
+): Promise<{ id: number; body: string; createdAt: string }> {
+  const octokit = createRestClient(token)
+  const response = await octokit.request(
+    'POST /repos/{owner}/{repo}/issues/{issue_number}/comments',
+    {
+      owner: owner(),
+      repo: repo(),
+      issue_number: issueNumber,
+      body,
+      headers: { 'X-GitHub-Api-Version': '2022-11-28' },
+    },
+  )
+  return {
+    id: response.data.id,
+    body: response.data.body ?? '',
+    createdAt: response.data.created_at,
+  }
+}
+
+/**
+ * Flag a prompt for moderator review by adding the flag:review label (COMM-06).
+ */
+export async function flagPrompt(token: string, issueNumber: number): Promise<void> {
+  const octokit = createRestClient(token)
+  await octokit.request('POST /repos/{owner}/{repo}/issues/{issue_number}/labels', {
+    owner: owner(),
+    repo: repo(),
+    issue_number: issueNumber,
+    labels: ['flag:review'],
+    headers: { 'X-GitHub-Api-Version': '2022-11-28' },
+  })
+}
+
 // GraphQL mutation strings for reactions (COMM-01/02)
 
 const ADD_REACTION = `

@@ -39,6 +39,13 @@ export interface ReactionGroup {
   viewerHasReacted: boolean
 }
 
+export interface CommentNode {
+  id: string
+  body: string
+  createdAt: string
+  author: { login: string; avatarUrl: string }
+}
+
 export interface Prompt {
   id: number           // GitHub issue number
   nodeId: string       // GitHub GraphQL node ID (for mutations)
@@ -51,6 +58,7 @@ export interface Prompt {
   labels: Array<{ name: string; color: string }>
   reactionGroups: ReactionGroup[]
   commentCount: number
+  comments: CommentNode[]
 }
 
 export interface VersionObject {
