@@ -49,9 +49,9 @@ Plans:
 **Plans**: 3 plans
 
 Plans:
-- [ ] 02-01: MiniSearch index, GitHub GraphQL browse query, filter/sort/pagination, infinite scroll, prompt list and detail screens
-- [ ] 02-02: Content editor — split-pane markdown, content type fields, image upload to R2, auto-save, unsaved-changes guard, publish to GitHub Issues
-- [ ] 02-03: Version history — version timeline, client-side diff (jsdiff), side-by-side and unified views, restore with confirmation
+- [ ] 02-01-PLAN.md — lib utilities (search/markdown/frontmatter/etag), GraphQL data layer, usePromptsQuery, usePromptDetail, BrowseView + PromptDetailView with all browse/discovery UI
+- [ ] 02-02-PLAN.md — Content editor: useDraftStore, split-pane editor, image upload CF Worker, useCreatePrompt/useUpdatePrompt mutations, PromptEditorView with create/edit/fork/version modes
+- [ ] 02-03-PLAN.md — Version history: usePromptVersions, diff library, DiffView (side-by-side/unified), RestoreDialog with confirmation, useRestoreVersion mutation
 
 ### Phase 3: Community & Profiles
 **Goal**: Authenticated users can engage with prompts through reactions and comments; all users can view public profiles and authenticated users manage their own
