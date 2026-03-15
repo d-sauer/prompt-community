@@ -55,10 +55,10 @@ Requirements for initial release. All screens must ship together (experience MVP
 
 - [x] **USER-01**: Any user can authenticate via GitHub OAuth using a popup flow (no page redirect; popup closes automatically)
 - [x] **USER-02**: Authenticated user can sign out from the platform
-- [ ] **USER-03**: Any user can view another user's public profile showing submissions and aggregate stats
-- [ ] **USER-04**: Authenticated user can view their own profile with submitted prompts, saved prompts, and activity tabs
-- [ ] **USER-05**: Authenticated user can bookmark/save a prompt to their saved tab (persisted to localStorage)
-- [ ] **USER-06**: Authenticated user's profile displays total vote count and total submission count
+- [x] **USER-03**: Any user can view another user's public profile showing submissions and aggregate stats
+- [x] **USER-04**: Authenticated user can view their own profile with submitted prompts, saved prompts, and activity tabs
+- [x] **USER-05**: Authenticated user can bookmark/save a prompt to their saved tab (persisted to localStorage)
+- [x] **USER-06**: Authenticated user's profile displays total vote count and total submission count
 
 ### Administration & Moderation (ADMN)
 
@@ -172,10 +172,10 @@ Which phases cover which requirements. Updated during roadmap creation.
 | COMM-04 | Phase 3 | Complete |
 | COMM-05 | Phase 3 | Complete |
 | COMM-06 | Phase 3 | Complete |
-| USER-03 | Phase 3 | Pending |
-| USER-04 | Phase 3 | Pending |
-| USER-05 | Phase 3 | Pending |
-| USER-06 | Phase 3 | Pending |
+| USER-03 | Phase 3 | Complete |
+| USER-04 | Phase 3 | Complete |
+| USER-05 | Phase 3 | Complete |
+| USER-06 | Phase 3 | Complete |
 | ADMN-01 | Phase 4 | Pending |
 | ADMN-02 | Phase 4 | Pending |
 | ADMN-03 | Phase 4 | Pending |

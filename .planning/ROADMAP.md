@@ -14,7 +14,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Foundation** - App shell, GitHub data layer, OAuth authentication, and infrastructure scaffolding (completed 2026-03-15)
 - [ ] **Phase 2: Read & Contribute** - Browse/discover prompts, content editor, and version history (the core product loop)
-- [ ] **Phase 3: Community & Profiles** - Reactions, comments, user profiles, saves, and flags
+- [x] **Phase 3: Community & Profiles** - Reactions, comments, user profiles, saves, and flags (completed 2026-03-15)
 - [ ] **Phase 4: Admin & PWA** - Moderation panel, label management, offline support, and background sync
 
 ## Phase Details
@@ -95,5 +95,5 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 |-------|----------------|--------|-----------|
 | 1. Foundation | 3/3 | Complete   | 2026-03-15 |
 | 2. Read & Contribute | 2/3 | In Progress|  |
-| 3. Community & Profiles | 2/3 | In Progress|  |
+| 3. Community & Profiles | 3/3 | Complete   | 2026-03-15 |
 | 4. Admin & PWA | 0/2 | Not started | - |

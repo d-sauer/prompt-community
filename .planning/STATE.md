@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: planning
-stopped_at: Completed 03-community-and-profiles-03-02-PLAN.md
-last_updated: "2026-03-15T07:22:33.819Z"
+stopped_at: Completed 03-community-and-profiles-03-03-PLAN.md
+last_updated: "2026-03-15T07:23:35.098Z"
 last_activity: 2026-03-14 — Roadmap created, phases derived from 64 v1 requirements across 8 categories
 progress:
   total_phases: 4
-  completed_phases: 2
+  completed_phases: 3
   total_plans: 9
-  completed_plans: 8
+  completed_plans: 9
   percent: 0
 ---
 
@@ -58,6 +58,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 02-read-and-contribute P03 | 5min | 2 tasks | 15 files |
 | Phase 03-community-and-profiles P01 | 6min | 2 tasks | 10 files |
 | Phase 03-community-and-profiles P02 | 3min | 2 tasks | 10 files |
+| Phase 03-community-and-profiles P03 | 12min | 2 tasks | 11 files |
 
 ## Accumulated Context
 
@@ -90,6 +91,8 @@ Recent decisions affecting current work:
 - [Phase 03-community-and-profiles]: ToggleInput { content, isRemoving } passed to useMutation — preserves correct add/remove dispatch regardless of TanStack Query onMutate/mutationFn execution order
 - [Phase 03-community-and-profiles]: CommentNode exported from types/index.ts (shared by composables + components); comments populated in usePromptDetail cache from issue.comments.nodes
 - [Phase 03-community-and-profiles]: window.confirm() for flag confirmation — no Dialog component; inline sign-in CTA div in ReactionBar
+- [Phase 03-community-and-profiles]: ProfileRedirectView thin component replaces require() router redirect — avoids CommonJS require in ESM context, auth-store accessible via composable at render time
+- [Phase 03-community-and-profiles]: useUserProfile spec tests data via queryClient.getQueryData() not composable computed — avoids reactivity race conditions in test environment
 
 ### Pending Todos
 
@@ -101,6 +104,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-15T07:22:33.817Z
-Stopped at: Completed 03-community-and-profiles-03-02-PLAN.md
+Last session: 2026-03-15T07:23:35.096Z
+Stopped at: Completed 03-community-and-profiles-03-03-PLAN.md
 Resume file: None
