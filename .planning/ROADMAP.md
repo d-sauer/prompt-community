@@ -66,8 +66,9 @@ Plans:
 **Plans**: 3 plans
 
 Plans:
-- [ ] 03-01: Reactions (GitHub Issue reactions API, optimistic UI, sign-in CTA) and comments (read anonymous, post authenticated)
-- [ ] 03-02: User profile screens — public profile view, own profile with tabs, bookmark/save to localStorage, flag submission
+- [ ] 03-01-PLAN.md — Type extensions (nodeId, viewerHasReacted), Wave 0 test stubs, addReaction/removeReaction mutations, useReactions composable with optimistic UI
+- [ ] 03-02-PLAN.md — postComment/flagPrompt mutations, useComments/useFlagPrompt composables, ReactionBar + CommentSection components wired into PromptDetail
+- [ ] 03-03-PLAN.md — useBookmarksStore (localStorage), useUserProfile (GraphQL search), ProfileStats/ProfileTabs components, UserProfileView, router routes /users/:login and /profile, bookmark button in PromptActions
 
 ### Phase 4: Admin & PWA
 **Goal**: Maintainers can moderate content via an admin panel; all users can browse cached prompts offline and writes sync on reconnect
@@ -94,5 +95,5 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 |-------|----------------|--------|-----------|
 | 1. Foundation | 3/3 | Complete   | 2026-03-15 |
 | 2. Read & Contribute | 2/3 | In Progress|  |
-| 3. Community & Profiles | 0/2 | Not started | - |
+| 3. Community & Profiles | 0/3 | Not started | - |
 | 4. Admin & PWA | 0/2 | Not started | - |
