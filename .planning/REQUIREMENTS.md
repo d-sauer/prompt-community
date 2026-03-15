@@ -73,12 +73,12 @@ Requirements for initial release. All screens must ship together (experience MVP
 
 ### App Shell & Navigation (SHEL)
 
-- [ ] **SHEL-01**: Any user can invoke global search from any screen using ⌘K keyboard shortcut
-- [ ] **SHEL-02**: Any user can navigate to Browse (G+B) and New Prompt editor (G+N) via keyboard shortcuts
-- [ ] **SHEL-03**: Any user can toggle between light and dark themes from the navbar, with preference persisted to localStorage
-- [ ] **SHEL-04**: Any user can collapse the sidebar to icon-only mode (48px) to maximise content area
-- [ ] **SHEL-05**: Authenticated user can view in-app notifications in a slide-out notification drawer
-- [ ] **SHEL-06**: Any user on mobile can access sidebar filters via a sheet overlay
+- [x] **SHEL-01**: Any user can invoke global search from any screen using ⌘K keyboard shortcut
+- [x] **SHEL-02**: Any user can navigate to Browse (G+B) and New Prompt editor (G+N) via keyboard shortcuts
+- [x] **SHEL-03**: Any user can toggle between light and dark themes from the navbar, with preference persisted to localStorage
+- [x] **SHEL-04**: Any user can collapse the sidebar to icon-only mode (48px) to maximise content area
+- [x] **SHEL-05**: Authenticated user can view in-app notifications in a slide-out notification drawer
+- [x] **SHEL-06**: Any user on mobile can access sidebar filters via a sheet overlay
 - [ ] **SHEL-07**: Any user can browse previously cached prompts while offline (PWA — service worker cache)
 - [ ] **SHEL-08**: Authenticated user's write actions taken offline are queued for sync when connectivity restores
 
@@ -122,12 +122,12 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| SHEL-01 | Phase 1 | Pending |
-| SHEL-02 | Phase 1 | Pending |
-| SHEL-03 | Phase 1 | Pending |
-| SHEL-04 | Phase 1 | Pending |
-| SHEL-05 | Phase 1 | Pending |
-| SHEL-06 | Phase 1 | Pending |
+| SHEL-01 | Phase 1 | Complete |
+| SHEL-02 | Phase 1 | Complete |
+| SHEL-03 | Phase 1 | Complete |
+| SHEL-04 | Phase 1 | Complete |
+| SHEL-05 | Phase 1 | Complete |
+| SHEL-06 | Phase 1 | Complete |
 | USER-01 | Phase 1 | Complete |
 | USER-02 | Phase 1 | Complete |
 | INFR-04 | Phase 1 | Complete |

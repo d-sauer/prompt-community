@@ -12,7 +12,7 @@ Four phases deliver the complete experience MVP. Phase 1 builds the app skeleton
 
 Decimal phases appear between their surrounding integers in numeric order.
 
-- [ ] **Phase 1: Foundation** - App shell, GitHub data layer, OAuth authentication, and infrastructure scaffolding
+- [x] **Phase 1: Foundation** - App shell, GitHub data layer, OAuth authentication, and infrastructure scaffolding (completed 2026-03-15)
 - [ ] **Phase 2: Read & Contribute** - Browse/discover prompts, content editor, and version history (the core product loop)
 - [ ] **Phase 3: Community & Profiles** - Reactions, comments, user profiles, saves, and flags
 - [ ] **Phase 4: Admin & PWA** - Moderation panel, label management, offline support, and background sync
@@ -92,7 +92,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation | 2/3 | In Progress|  |
+| 1. Foundation | 3/3 | Complete   | 2026-03-15 |
 | 2. Read & Contribute | 0/3 | Not started | - |
 | 3. Community & Profiles | 0/2 | Not started | - |
 | 4. Admin & PWA | 0/2 | Not started | - |
