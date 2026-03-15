@@ -47,7 +47,7 @@ export function useCreatePrompt() {
       return createIssue(authStore.token, title, body, labelNames)
     },
 
-    onSuccess: async (issueNumber: number, input: CreatePromptInput) => {
+    onSuccess: async (issueNumber: number) => {
       // Reset queries to refetch from page 1 (avoids duplicate prompts)
       await queryClient.resetQueries({ queryKey: ['prompts'] })
 

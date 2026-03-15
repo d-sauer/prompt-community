@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref, watch, nextTick } from 'vue'
-import { useLocalStorage, useInterval } from '@vueuse/core'
+import { useLocalStorage, useIntervalFn } from '@vueuse/core'
 import type { PromptFrontmatter } from '@/lib/frontmatter'
 
 export interface DraftContent {
@@ -78,7 +78,7 @@ export const useDraftStore = defineStore('draft', () => {
   }
 
   // Auto-save every 30 seconds
-  useInterval(save, 30_000)
+  useIntervalFn(save, 30_000)
 
   return {
     draftKey,

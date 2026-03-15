@@ -6,7 +6,7 @@ function makeEnv(overrides?: Partial<Env>): Env {
   return {
     R2_BUCKET: {
       put: vi.fn().mockResolvedValue(undefined),
-    } as unknown as R2Bucket,
+    } as Env['R2_BUCKET'],
     R2_PUBLIC_URL: 'https://pub.r2.dev',
     APP_ORIGIN: 'http://localhost:5173',
     ...overrides,

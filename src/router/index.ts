@@ -24,6 +24,12 @@ export const router = createRouter({
           meta: { requiresAuth: true },
         },
         {
+          path: 'prompts/:id/edit',
+          name: 'prompt-edit',
+          component: () => import('@/views/PromptEditorView.vue'),
+          meta: { requiresAuth: true },
+        },
+        {
           path: 'prompts/:id',
           name: 'prompt-detail',
           component: () => import('@/views/PromptDetailView.vue'),
@@ -45,7 +51,7 @@ export const router = createRouter({
   ],
 })
 
-router.beforeEach(async (to) => {
+router.beforeEach(async (to, from) => {
   const authStore = useAuthStore()
 
   if (to.meta.requiresAuth && !authStore.isAuthenticated) {
@@ -59,5 +65,21 @@ router.beforeEach(async (to) => {
     // Re-verify via GitHub API on every admin navigation (INFR-08)
     const confirmed = await verifyMaintainerStatus(authStore.token)
     if (!confirmed) return { path: '/browse' }
+  }
+
+  // Unsaved-changes guard (CONT-11): warn before navigating away from editor
+  // Only check if navigating to a different path
+  if (to.path !== from.path) {
+    // Dynamic import to avoid circular dependency at module load time
+    const { useDraftStore } = await import('@/stores/useDraftStore')
+    const { getActivePinia } = await import('pinia')
+    const pinia = getActivePinia()
+    if (pinia) {
+      const draftStore = useDraftStore(pinia)
+      if (draftStore.isDirty) {
+        const confirmed = window.confirm('You have unsaved changes. Leave anyway?')
+        if (!confirmed) return false
+      }
+    }
   }
 })

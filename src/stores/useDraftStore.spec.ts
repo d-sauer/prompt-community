@@ -13,7 +13,7 @@ vi.mock('@vueuse/core', async (importOriginal) => {
   return {
     ...actual,
     useLocalStorage: vi.fn(() => mockPersistedDraft),
-    useInterval: vi.fn((fn: () => void, _interval: number) => {
+    useIntervalFn: vi.fn((fn: () => void, _interval: number) => {
       capturedIntervalCallback = fn
     }),
   }

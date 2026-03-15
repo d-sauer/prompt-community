@@ -1,3 +1,12 @@
+// Minimal R2Bucket interface (Cloudflare Workers R2 binding)
+interface R2Bucket {
+  put(
+    key: string,
+    value: ArrayBuffer | ReadableStream | null,
+    options?: { httpMetadata?: { contentType?: string } },
+  ): Promise<void>
+}
+
 export interface Env {
   R2_BUCKET: R2Bucket
   R2_PUBLIC_URL: string
