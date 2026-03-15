@@ -1,3 +1,5 @@
+import type { PromptFrontmatter } from '@/lib/frontmatter'
+
 export interface GitHubUser {
   login: string
   name: string | null
@@ -17,25 +19,43 @@ export interface FilterState {
 
 export type SortOrder = 'most-voted' | 'newest' | 'most-discussed'
 
-export interface Prompt {
-  id: number
-  title: string
-  body: string
-  author: GitHubUser
-  createdAt: string
-  updatedAt: string
-  voteCount: number
-  commentCount: number
-  labels: string[]
-  category: string | null
-  model: string | null
-  difficulty: 'beginner' | 'intermediate' | 'advanced' | null
-  tags: string[]
-}
-
-// Pinia store state shapes (for reference — actual stores use defineStore setup syntax)
 export interface AuthState {
   token: string | null
   user: GitHubUser | null
   isMaintainer: boolean
+}
+
+// Phase 2 types
+
+export type ContentType = 'prompt' | 'skill-file' | 'skill-set'
+
+export interface Prompt {
+  id: number           // GitHub issue number
+  title: string
+  body: string         // raw markdown content (after frontmatter stripped)
+  frontmatter: PromptFrontmatter
+  author: { login: string; avatarUrl: string }
+  createdAt: string
+  updatedAt: string
+  labels: Array<{ name: string; color: string }>
+  reactionGroups: Array<{ content: string; reactors: { totalCount: number } }>
+  commentCount: number
+}
+
+export interface VersionObject {
+  version: number
+  date: Date
+  changelog: string
+  content: string
+  commentId: string
+  author: string
+  authorAvatar: string
+}
+
+export interface DraftState {
+  title: string
+  body: string
+  frontmatter: PromptFrontmatter | null
+  isDirty: boolean
+  lastSaved: Date | null
 }
