@@ -22,21 +22,21 @@ Requirements for initial release. All screens must ship together (experience MVP
 
 ### Content Contribution (CONT)
 
-- [ ] **CONT-01**: Authenticated user can create a new prompt submission with title, markdown body, category, AI model, difficulty, and up to 5 tags
-- [ ] **CONT-02**: Authenticated user can create a skill file as a distinct content type
-- [ ] **CONT-03**: Authenticated user can create a grouped skill set as a distinct content type
-- [ ] **CONT-04**: Authenticated user can add usage instructions to any submission
-- [ ] **CONT-05**: Authenticated user can upload images via drag-and-drop or file picker (max 10MB; PNG/JPG/GIF/WebP)
-- [ ] **CONT-06**: Authenticated user can preview rendered markdown in a live split-pane while composing
-- [ ] **CONT-07**: Authenticated user can publish a submission (creates a GitHub Issue with YAML frontmatter in the data repo)
-- [ ] **CONT-08**: Authenticated user can edit their own existing submission
-- [ ] **CONT-09**: Authenticated user can fork an existing prompt as the starting point for a new submission
-- [ ] **CONT-10**: Editor auto-saves draft content to localStorage every 30 seconds
-- [ ] **CONT-11**: Authenticated user is warned about unsaved changes when navigating away from the editor
+- [x] **CONT-01**: Authenticated user can create a new prompt submission with title, markdown body, category, AI model, difficulty, and up to 5 tags
+- [x] **CONT-02**: Authenticated user can create a skill file as a distinct content type
+- [x] **CONT-03**: Authenticated user can create a grouped skill set as a distinct content type
+- [x] **CONT-04**: Authenticated user can add usage instructions to any submission
+- [x] **CONT-05**: Authenticated user can upload images via drag-and-drop or file picker (max 10MB; PNG/JPG/GIF/WebP)
+- [x] **CONT-06**: Authenticated user can preview rendered markdown in a live split-pane while composing
+- [x] **CONT-07**: Authenticated user can publish a submission (creates a GitHub Issue with YAML frontmatter in the data repo)
+- [x] **CONT-08**: Authenticated user can edit their own existing submission
+- [x] **CONT-09**: Authenticated user can fork an existing prompt as the starting point for a new submission
+- [x] **CONT-10**: Editor auto-saves draft content to localStorage every 30 seconds
+- [x] **CONT-11**: Authenticated user is warned about unsaved changes when navigating away from the editor
 
 ### Version Management (VERS)
 
-- [ ] **VERS-01**: Authenticated user can publish an updated version of their own submission with an optional changelog message
+- [x] **VERS-01**: Authenticated user can publish an updated version of their own submission with an optional changelog message
 - [ ] **VERS-02**: Any user can view the full version history timeline for a prompt
 - [ ] **VERS-03**: Any user can compare any two versions in side-by-side or unified diff view
 - [ ] **VERS-04**: Author or maintainer can restore a previous version (non-destructive — restored as new version)
@@ -145,18 +145,18 @@ Which phases cover which requirements. Updated during roadmap creation.
 | DISC-08 | Phase 2 | Complete |
 | DISC-09 | Phase 2 | Complete |
 | DISC-10 | Phase 2 | Complete |
-| CONT-01 | Phase 2 | Pending |
-| CONT-02 | Phase 2 | Pending |
-| CONT-03 | Phase 2 | Pending |
-| CONT-04 | Phase 2 | Pending |
-| CONT-05 | Phase 2 | Pending |
-| CONT-06 | Phase 2 | Pending |
-| CONT-07 | Phase 2 | Pending |
-| CONT-08 | Phase 2 | Pending |
-| CONT-09 | Phase 2 | Pending |
-| CONT-10 | Phase 2 | Pending |
-| CONT-11 | Phase 2 | Pending |
-| VERS-01 | Phase 2 | Pending |
+| CONT-01 | Phase 2 | Complete |
+| CONT-02 | Phase 2 | Complete |
+| CONT-03 | Phase 2 | Complete |
+| CONT-04 | Phase 2 | Complete |
+| CONT-05 | Phase 2 | Complete |
+| CONT-06 | Phase 2 | Complete |
+| CONT-07 | Phase 2 | Complete |
+| CONT-08 | Phase 2 | Complete |
+| CONT-09 | Phase 2 | Complete |
+| CONT-10 | Phase 2 | Complete |
+| CONT-11 | Phase 2 | Complete |
+| VERS-01 | Phase 2 | Complete |
 | VERS-02 | Phase 2 | Pending |
 | VERS-03 | Phase 2 | Pending |
 | VERS-04 | Phase 2 | Pending |
