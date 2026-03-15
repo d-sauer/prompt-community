@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: planning
-stopped_at: Completed 03-community-and-profiles-03-01-PLAN.md
-last_updated: "2026-03-15T07:17:27.509Z"
+stopped_at: Completed 03-community-and-profiles-03-02-PLAN.md
+last_updated: "2026-03-15T07:22:33.819Z"
 last_activity: 2026-03-14 — Roadmap created, phases derived from 64 v1 requirements across 8 categories
 progress:
   total_phases: 4
   completed_phases: 2
   total_plans: 9
-  completed_plans: 7
+  completed_plans: 8
   percent: 0
 ---
 
@@ -57,6 +57,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 02-read-and-contribute P02 | 9min | 3 tasks | 16 files |
 | Phase 02-read-and-contribute P03 | 5min | 2 tasks | 15 files |
 | Phase 03-community-and-profiles P01 | 6min | 2 tasks | 10 files |
+| Phase 03-community-and-profiles P02 | 3min | 2 tasks | 10 files |
 
 ## Accumulated Context
 
@@ -87,6 +88,8 @@ Recent decisions affecting current work:
 - [Phase 02-read-and-contribute]: useRestoreVersion posts new comment only — non-destructive; original version comments remain intact (VERS-04)
 - [Phase 03-community-and-profiles]: toggle() reads viewerHasReacted before mutateAsync so mutationFn receives isRemoving snapshot unaffected by onMutate optimistic flip
 - [Phase 03-community-and-profiles]: ToggleInput { content, isRemoving } passed to useMutation — preserves correct add/remove dispatch regardless of TanStack Query onMutate/mutationFn execution order
+- [Phase 03-community-and-profiles]: CommentNode exported from types/index.ts (shared by composables + components); comments populated in usePromptDetail cache from issue.comments.nodes
+- [Phase 03-community-and-profiles]: window.confirm() for flag confirmation — no Dialog component; inline sign-in CTA div in ReactionBar
 
 ### Pending Todos
 
@@ -98,6 +101,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-15T07:17:27.507Z
-Stopped at: Completed 03-community-and-profiles-03-01-PLAN.md
+Last session: 2026-03-15T07:22:33.817Z
+Stopped at: Completed 03-community-and-profiles-03-02-PLAN.md
 Resume file: None
