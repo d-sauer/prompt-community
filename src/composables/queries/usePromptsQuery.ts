@@ -11,6 +11,7 @@ interface PromptsQueryVars {
   repo: string
   labels?: string[]
   after?: string
+  [key: string]: unknown
 }
 
 interface IssueNode {
