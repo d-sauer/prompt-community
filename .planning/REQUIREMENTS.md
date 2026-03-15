@@ -9,16 +9,16 @@ Requirements for initial release. All screens must ship together (experience MVP
 
 ### Discovery & Browse (DISC)
 
-- [ ] **DISC-01**: Any user can browse the full prompt list without authenticating
-- [ ] **DISC-02**: Any user can filter the prompt list by category (Engineering, Business, General)
-- [ ] **DISC-03**: Any user can filter the prompt list by AI model (e.g., Claude, GPT-4, Gemini)
-- [ ] **DISC-04**: Any user can sort the prompt list by Most Voted, Newest, or Most Commented
-- [ ] **DISC-05**: Any user can search prompts client-side (results appear in < 50ms, no API call)
-- [ ] **DISC-06**: Any user can open a prompt and read its full rendered markdown content with syntax-highlighted code blocks
-- [ ] **DISC-07**: Any user can view a prompt's metadata: content type, category, AI model, difficulty, vote count, comment count, tags, and author
-- [ ] **DISC-08**: Any user can copy a prompt's full content to clipboard with a single action
-- [ ] **DISC-09**: Any user can share a direct permalink to a specific prompt
-- [ ] **DISC-10**: Any user can browse a paginated prompt list with infinite scroll and skeleton loading states
+- [x] **DISC-01**: Any user can browse the full prompt list without authenticating
+- [x] **DISC-02**: Any user can filter the prompt list by category (Engineering, Business, General)
+- [x] **DISC-03**: Any user can filter the prompt list by AI model (e.g., Claude, GPT-4, Gemini)
+- [x] **DISC-04**: Any user can sort the prompt list by Most Voted, Newest, or Most Commented
+- [x] **DISC-05**: Any user can search prompts client-side (results appear in < 50ms, no API call)
+- [x] **DISC-06**: Any user can open a prompt and read its full rendered markdown content with syntax-highlighted code blocks
+- [x] **DISC-07**: Any user can view a prompt's metadata: content type, category, AI model, difficulty, vote count, comment count, tags, and author
+- [x] **DISC-08**: Any user can copy a prompt's full content to clipboard with a single action
+- [x] **DISC-09**: Any user can share a direct permalink to a specific prompt
+- [x] **DISC-10**: Any user can browse a paginated prompt list with infinite scroll and skeleton loading states
 
 ### Content Contribution (CONT)
 
@@ -84,12 +84,12 @@ Requirements for initial release. All screens must ship together (experience MVP
 
 ### Infrastructure & Performance (INFR)
 
-- [ ] **INFR-01**: First Contentful Paint < 1.5s on first visit (Cloudflare CDN)
-- [ ] **INFR-02**: Initial prompt list load < 2s (single GraphQL query + TanStack Query cache)
-- [ ] **INFR-03**: Client-side search response < 50ms (MiniSearch — no network round-trip)
+- [x] **INFR-01**: First Contentful Paint < 1.5s on first visit (Cloudflare CDN)
+- [x] **INFR-02**: Initial prompt list load < 2s (single GraphQL query + TanStack Query cache)
+- [x] **INFR-03**: Client-side search response < 50ms (MiniSearch — no network round-trip)
 - [x] **INFR-04**: GitHub OAuth popup completes token exchange in < 5s
-- [ ] **INFR-05**: ETag conditional requests used for all cacheable GitHub API reads (304 responses = zero rate limit cost)
-- [ ] **INFR-06**: MiniSearch index eliminates all dependency on GitHub Search API for user-facing search
+- [x] **INFR-05**: ETag conditional requests used for all cacheable GitHub API reads (304 responses = zero rate limit cost)
+- [x] **INFR-06**: MiniSearch index eliminates all dependency on GitHub Search API for user-facing search
 - [x] **INFR-07**: GitHub OAuth access tokens held in Pinia memory only — never localStorage or cookies
 - [x] **INFR-08**: Admin panel access control enforced via GitHub API on every panel load — client-side check alone not sufficient
 - [x] **INFR-09**: Platform operates within GitHub API limits at 50–400 concurrent users without architectural changes
@@ -135,16 +135,16 @@ Which phases cover which requirements. Updated during roadmap creation.
 | INFR-08 | Phase 1 | Complete |
 | INFR-09 | Phase 1 | Complete |
 | INFR-10 | Phase 1 | Complete |
-| DISC-01 | Phase 2 | Pending |
-| DISC-02 | Phase 2 | Pending |
-| DISC-03 | Phase 2 | Pending |
-| DISC-04 | Phase 2 | Pending |
-| DISC-05 | Phase 2 | Pending |
-| DISC-06 | Phase 2 | Pending |
-| DISC-07 | Phase 2 | Pending |
-| DISC-08 | Phase 2 | Pending |
-| DISC-09 | Phase 2 | Pending |
-| DISC-10 | Phase 2 | Pending |
+| DISC-01 | Phase 2 | Complete |
+| DISC-02 | Phase 2 | Complete |
+| DISC-03 | Phase 2 | Complete |
+| DISC-04 | Phase 2 | Complete |
+| DISC-05 | Phase 2 | Complete |
+| DISC-06 | Phase 2 | Complete |
+| DISC-07 | Phase 2 | Complete |
+| DISC-08 | Phase 2 | Complete |
+| DISC-09 | Phase 2 | Complete |
+| DISC-10 | Phase 2 | Complete |
 | CONT-01 | Phase 2 | Pending |
 | CONT-02 | Phase 2 | Pending |
 | CONT-03 | Phase 2 | Pending |
@@ -161,11 +161,11 @@ Which phases cover which requirements. Updated during roadmap creation.
 | VERS-03 | Phase 2 | Pending |
 | VERS-04 | Phase 2 | Pending |
 | VERS-05 | Phase 2 | Pending |
-| INFR-01 | Phase 2 | Pending |
-| INFR-02 | Phase 2 | Pending |
-| INFR-03 | Phase 2 | Pending |
-| INFR-05 | Phase 2 | Pending |
-| INFR-06 | Phase 2 | Pending |
+| INFR-01 | Phase 2 | Complete |
+| INFR-02 | Phase 2 | Complete |
+| INFR-03 | Phase 2 | Complete |
+| INFR-05 | Phase 2 | Complete |
+| INFR-06 | Phase 2 | Complete |
 | COMM-01 | Phase 3 | Pending |
 | COMM-02 | Phase 3 | Pending |
 | COMM-03 | Phase 3 | Pending |

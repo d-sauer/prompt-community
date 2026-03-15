@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: planning
-stopped_at: Completed 01-foundation-01-03-PLAN.md
-last_updated: "2026-03-15T03:20:25.597Z"
+stopped_at: Completed 02-read-and-contribute-02-01-PLAN.md
+last_updated: "2026-03-15T06:06:48.148Z"
 last_activity: 2026-03-14 — Roadmap created, phases derived from 64 v1 requirements across 8 categories
 progress:
   total_phases: 4
   completed_phases: 1
-  total_plans: 3
-  completed_plans: 3
+  total_plans: 6
+  completed_plans: 4
   percent: 0
 ---
 
@@ -53,6 +53,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 01-foundation P01 | 8 | 2 tasks | 100 files |
 | Phase 01-foundation P02 | 3 | 2 tasks | 8 files |
 | Phase 01-foundation P03 | 20min | 3 tasks | 11 files |
+| Phase 02-read-and-contribute P01 | 9min | 3 tasks | 38 files |
 
 ## Accumulated Context
 
@@ -74,6 +75,8 @@ Recent decisions affecting current work:
 - [Phase 01-foundation]: v-show (not v-if) on sidebar labels — DOM preservation required for 0.3s CSS width animation
 - [Phase 01-foundation]: Mobile sidebar as Sheet overlay (not responsive collapse) — matches SHEL-06 requirement
 - [Phase 01-foundation]: Router nests all routes under AppLayout as layout component — shell renders once on every page
+- [Phase 02-read-and-contribute]: MiniSearch instance stored in module-level variable (non-reactive) — reactive proxy breaks MiniSearch internal state; buildIndex() creates fresh instance on data change
+- [Phase 02-read-and-contribute]: initMarkdown() async singleton — called in App.vue onMounted, markdownReady flag guards MarkdownBody rendering to prevent FCP blocking (INFR-01)
 
 ### Pending Todos
 
@@ -85,6 +88,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-15T03:14:53.375Z
-Stopped at: Completed 01-foundation-01-03-PLAN.md
+Last session: 2026-03-15T06:06:48.146Z
+Stopped at: Completed 02-read-and-contribute-02-01-PLAN.md
 Resume file: None
