@@ -29,8 +29,19 @@ export interface AuthState {
 
 export type ContentType = 'prompt' | 'skill-file' | 'skill-set'
 
+// Phase 3 types
+
+export type ReactionContent = 'THUMBS_UP' | 'HEART' | 'ROCKET'
+
+export interface ReactionGroup {
+  content: string
+  reactors: { totalCount: number }
+  viewerHasReacted: boolean
+}
+
 export interface Prompt {
   id: number           // GitHub issue number
+  nodeId: string       // GitHub GraphQL node ID (for mutations)
   title: string
   body: string         // raw markdown content (after frontmatter stripped)
   frontmatter: PromptFrontmatter
@@ -38,7 +49,7 @@ export interface Prompt {
   createdAt: string
   updatedAt: string
   labels: Array<{ name: string; color: string }>
-  reactionGroups: Array<{ content: string; reactors: { totalCount: number } }>
+  reactionGroups: ReactionGroup[]
   commentCount: number
 }
 

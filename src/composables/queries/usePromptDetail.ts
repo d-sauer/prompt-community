@@ -16,6 +16,7 @@ interface CommentNode {
 interface PromptDetailResponse {
   repository: {
     issue: {
+      id: string
       number: number
       title: string
       body: string
@@ -23,7 +24,7 @@ interface PromptDetailResponse {
       updatedAt: string
       author: { login: string; avatarUrl: string }
       labels: { nodes: Array<{ name: string; color: string }> }
-      reactionGroups: Array<{ content: string; reactors: { totalCount: number } }>
+      reactionGroups: Array<{ content: string; reactors: { totalCount: number }; viewerHasReacted: boolean }>
       comments: {
         totalCount: number
         nodes: CommentNode[]
@@ -54,6 +55,7 @@ export function usePromptDetail(id: Ref<number | null | undefined>) {
 
       return {
         id: issue.number,
+        nodeId: issue.id,
         title: issue.title,
         body: content,
         frontmatter: frontmatter ?? {
@@ -68,7 +70,11 @@ export function usePromptDetail(id: Ref<number | null | undefined>) {
         createdAt: issue.createdAt,
         updatedAt: issue.updatedAt,
         labels: issue.labels?.nodes ?? [],
-        reactionGroups: issue.reactionGroups ?? [],
+        reactionGroups: (issue.reactionGroups ?? []).map((g) => ({
+          content: g.content,
+          reactors: g.reactors,
+          viewerHasReacted: g.viewerHasReacted ?? false,
+        })),
         commentCount: issue.comments?.totalCount ?? 0,
       }
     },

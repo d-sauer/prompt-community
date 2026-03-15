@@ -1,4 +1,5 @@
-import { createRestClient } from '@/lib/github/octokit'
+import { createGraphqlClient, createRestClient } from '@/lib/github/octokit'
+import type { ReactionContent, ReactionGroup } from '@/types/index'
 
 const owner = () => import.meta.env.VITE_GITHUB_OWNER as string
 const repo = () => import.meta.env.VITE_GITHUB_REPO as string
@@ -86,4 +87,72 @@ export async function createVersionComment(
     },
   )
   return response.data.id
+}
+
+// GraphQL mutation strings for reactions (COMM-01/02)
+
+const ADD_REACTION = `
+  mutation AddReaction($subjectId: ID!, $content: ReactionContent!) {
+    addReaction(input: { subjectId: $subjectId, content: $content }) {
+      reactionGroups {
+        content
+        reactors { totalCount }
+        viewerHasReacted
+      }
+    }
+  }
+`
+
+const REMOVE_REACTION = `
+  mutation RemoveReaction($subjectId: ID!, $content: ReactionContent!) {
+    removeReaction(input: { subjectId: $subjectId, content: $content }) {
+      reactionGroups {
+        content
+        reactors { totalCount }
+        viewerHasReacted
+      }
+    }
+  }
+`
+
+interface AddReactionResponse {
+  addReaction: { reactionGroups: ReactionGroup[] }
+}
+
+interface RemoveReactionResponse {
+  removeReaction: { reactionGroups: ReactionGroup[] }
+}
+
+/**
+ * Add a reaction to a GitHub issue node (COMM-01).
+ * Returns the updated reactionGroups array.
+ */
+export async function addReaction(
+  token: string,
+  nodeId: string,
+  content: ReactionContent,
+): Promise<ReactionGroup[]> {
+  const client = createGraphqlClient(token)
+  const data = await client<AddReactionResponse>(ADD_REACTION, {
+    subjectId: nodeId,
+    content,
+  })
+  return data.addReaction.reactionGroups
+}
+
+/**
+ * Remove a reaction from a GitHub issue node (COMM-02).
+ * Returns the updated reactionGroups array.
+ */
+export async function removeReaction(
+  token: string,
+  nodeId: string,
+  content: ReactionContent,
+): Promise<ReactionGroup[]> {
+  const client = createGraphqlClient(token)
+  const data = await client<RemoveReactionResponse>(REMOVE_REACTION, {
+    subjectId: nodeId,
+    content,
+  })
+  return data.removeReaction.reactionGroups
 }

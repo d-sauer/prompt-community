@@ -47,6 +47,7 @@ export const GET_PROMPT_DETAIL = `
   query GetPromptDetail($owner: String!, $repo: String!, $number: Int!) {
     repository(owner: $owner, name: $repo) {
       issue(number: $number) {
+        id
         number
         title
         body
@@ -67,6 +68,7 @@ export const GET_PROMPT_DETAIL = `
           reactors {
             totalCount
           }
+          viewerHasReacted
         }
         comments(first: 100) {
           totalCount
