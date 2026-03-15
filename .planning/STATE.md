@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: planning
-stopped_at: Completed 02-read-and-contribute-02-02-PLAN.md
-last_updated: "2026-03-15T06:20:02.188Z"
+stopped_at: Completed 02-read-and-contribute-02-03-PLAN.md
+last_updated: "2026-03-15T06:26:37.487Z"
 last_activity: 2026-03-14 — Roadmap created, phases derived from 64 v1 requirements across 8 categories
 progress:
   total_phases: 4
-  completed_phases: 1
+  completed_phases: 2
   total_plans: 6
-  completed_plans: 5
+  completed_plans: 6
   percent: 0
 ---
 
@@ -55,6 +55,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 01-foundation P03 | 20min | 3 tasks | 11 files |
 | Phase 02-read-and-contribute P01 | 9min | 3 tasks | 38 files |
 | Phase 02-read-and-contribute P02 | 9min | 3 tasks | 16 files |
+| Phase 02-read-and-contribute P03 | 5min | 2 tasks | 15 files |
 
 ## Accumulated Context
 
@@ -81,6 +82,8 @@ Recent decisions affecting current work:
 - [Phase 02-read-and-contribute]: useIntervalFn (not useInterval) for auto-save callback — useInterval returns a counter ref, useIntervalFn runs side-effect callbacks
 - [Phase 02-read-and-contribute]: suppressDirty flag + nextTick reset in useDraftStore recover/clear — Vue watch fires async, so sync flag prevents isDirty bounce after bulk field updates
 - [Phase 02-read-and-contribute]: Inline R2Bucket interface in upload.ts — avoids adding @cloudflare/workers-types to browser build tsconfig
+- [Phase 02-read-and-contribute]: computeDiff trims both inputs before diffLines() — eliminates trailing newline false positives (VERS-02 edge case)
+- [Phase 02-read-and-contribute]: useRestoreVersion posts new comment only — non-destructive; original version comments remain intact (VERS-04)
 
 ### Pending Todos
 
@@ -92,6 +95,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-15T06:20:02.186Z
-Stopped at: Completed 02-read-and-contribute-02-02-PLAN.md
+Last session: 2026-03-15T06:26:37.485Z
+Stopped at: Completed 02-read-and-contribute-02-03-PLAN.md
 Resume file: None

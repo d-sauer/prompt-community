@@ -37,10 +37,10 @@ Requirements for initial release. All screens must ship together (experience MVP
 ### Version Management (VERS)
 
 - [x] **VERS-01**: Authenticated user can publish an updated version of their own submission with an optional changelog message
-- [ ] **VERS-02**: Any user can view the full version history timeline for a prompt
-- [ ] **VERS-03**: Any user can compare any two versions in side-by-side or unified diff view
-- [ ] **VERS-04**: Author or maintainer can restore a previous version (non-destructive — restored as new version)
-- [ ] **VERS-05**: Author or maintainer must confirm a version restore before it is applied
+- [x] **VERS-02**: Any user can view the full version history timeline for a prompt
+- [x] **VERS-03**: Any user can compare any two versions in side-by-side or unified diff view
+- [x] **VERS-04**: Author or maintainer can restore a previous version (non-destructive — restored as new version)
+- [x] **VERS-05**: Author or maintainer must confirm a version restore before it is applied
 
 ### Community Engagement (COMM)
 
@@ -157,10 +157,10 @@ Which phases cover which requirements. Updated during roadmap creation.
 | CONT-10 | Phase 2 | Complete |
 | CONT-11 | Phase 2 | Complete |
 | VERS-01 | Phase 2 | Complete |
-| VERS-02 | Phase 2 | Pending |
-| VERS-03 | Phase 2 | Pending |
-| VERS-04 | Phase 2 | Pending |
-| VERS-05 | Phase 2 | Pending |
+| VERS-02 | Phase 2 | Complete |
+| VERS-03 | Phase 2 | Complete |
+| VERS-04 | Phase 2 | Complete |
+| VERS-05 | Phase 2 | Complete |
 | INFR-01 | Phase 2 | Complete |
 | INFR-02 | Phase 2 | Complete |
 | INFR-03 | Phase 2 | Complete |
