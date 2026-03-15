@@ -43,6 +43,27 @@ export const GET_PROMPTS = `
   }
 `
 
+export const GET_USER_SUBMISSIONS = `
+  query GetUserSubmissions($searchQuery: String!, $first: Int!) {
+    search(query: $searchQuery, type: ISSUE, first: $first) {
+      issueCount
+      nodes {
+        ... on Issue {
+          number
+          title
+          createdAt
+          reactionGroups {
+            content
+            reactors { totalCount }
+          }
+          comments { totalCount }
+          labels(first: 5) { nodes { name color } }
+        }
+      }
+    }
+  }
+`
+
 export const GET_PROMPT_DETAIL = `
   query GetPromptDetail($owner: String!, $repo: String!, $number: Int!) {
     repository(owner: $owner, name: $repo) {
