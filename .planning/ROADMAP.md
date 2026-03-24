@@ -83,8 +83,9 @@ Plans:
 **Plans**: 3 plans
 
 Plans:
-- [ ] 04-01: Admin panel — access control, stats overview, moderation queue with bulk actions, label management, featured prompts, moderation log
-- [ ] 04-02: PWA — service worker (vite-plugin-pwa), offline cache strategy, background sync queue for writes
+- [ ] 04-01-PLAN.md — GitHub API layer for admin: mutations (addLabel, removeLabel, deleteIssueGraphQL, postModerationComment, label CRUD) + admin GraphQL queries + Wave 0 spec stubs
+- [ ] 04-02-PLAN.md — Admin panel UI: 5 composables (stats/queue/actions/labels/log) + AdminView with Queue/Labels/Log tabs + AdminStatsBar
+- [ ] 04-03-PLAN.md — PWA: vite-plugin-pwa config, service worker cache strategies, useOfflineQueue composable, offline UX wiring
 
 ## Progress
 
