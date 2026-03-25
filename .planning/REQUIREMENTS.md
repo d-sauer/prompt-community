@@ -79,8 +79,8 @@ Requirements for initial release. All screens must ship together (experience MVP
 - [x] **SHEL-04**: Any user can collapse the sidebar to icon-only mode (48px) to maximise content area
 - [x] **SHEL-05**: Authenticated user can view in-app notifications in a slide-out notification drawer
 - [x] **SHEL-06**: Any user on mobile can access sidebar filters via a sheet overlay
-- [ ] **SHEL-07**: Any user can browse previously cached prompts while offline (PWA — service worker cache)
-- [ ] **SHEL-08**: Authenticated user's write actions taken offline are queued for sync when connectivity restores
+- [x] **SHEL-07**: Any user can browse previously cached prompts while offline (PWA — service worker cache)
+- [x] **SHEL-08**: Authenticated user's write actions taken offline are queued for sync when connectivity restores
 
 ### Infrastructure & Performance (INFR)
 
@@ -184,8 +184,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 | ADMN-06 | Phase 4 | Complete |
 | ADMN-07 | Phase 4 | Complete |
 | ADMN-08 | Phase 4 | Complete |
-| SHEL-07 | Phase 4 | Pending |
-| SHEL-08 | Phase 4 | Pending |
+| SHEL-07 | Phase 4 | Complete |
+| SHEL-08 | Phase 4 | Complete |
 
 **Coverage:**
 - v1 requirements: 64 total (DISC×10, CONT×11, VERS×5, COMM×6, USER×6, ADMN×8, SHEL×8, INFR×10)

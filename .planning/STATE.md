@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: planning
-stopped_at: Completed 04-01-PLAN.md
-last_updated: "2026-03-25T06:07:19.609Z"
+stopped_at: "Completed 04-03-PLAN.md (checkpoint: human-verify Task 3)"
+last_updated: "2026-03-25T06:14:51.268Z"
 last_activity: 2026-03-14 — Roadmap created, phases derived from 64 v1 requirements across 8 categories
 progress:
   total_phases: 4
   completed_phases: 3
   total_plans: 12
-  completed_plans: 10
+  completed_plans: 11
   percent: 0
 ---
 
@@ -60,6 +60,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 03-community-and-profiles P02 | 3min | 2 tasks | 10 files |
 | Phase 03-community-and-profiles P03 | 12min | 2 tasks | 11 files |
 | Phase 04-admin-and-pwa P01 | 5min | 2 tasks | 8 files |
+| Phase 04-admin-and-pwa P03 | 5min | 2 tasks | 8 files |
 
 ## Accumulated Context
 
@@ -97,6 +98,8 @@ Recent decisions affecting current work:
 - [Phase 04-admin-and-pwa]: deleteIssueGraphQL accepts GraphQL base64 node ID (not integer issue number) — enforces correct API contract
 - [Phase 04-admin-and-pwa]: getIssueComments defined in plan 01 (queries.ts) so plan 02 can import without modifying queries.ts
 - [Phase 04-admin-and-pwa]: Wave 0 spec stubs use it.todo() with import commented out — compile and run as pending before plan 02 composables exist
+- [Phase 04-admin-and-pwa]: useOfflineQueue drains explicitly from App.vue (not auto on reconnect) — ensures auth token available before drain
+- [Phase 04-admin-and-pwa]: Token stripped from QueuedAction.payload before localStorage.setItem — tested with spy assertion; vi.stubGlobal localStorage mock required in jsdom+spied environment
 
 ### Pending Todos
 
@@ -108,6 +111,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-25T06:07:14.772Z
-Stopped at: Completed 04-01-PLAN.md
+Last session: 2026-03-25T06:14:51.266Z
+Stopped at: Completed 04-03-PLAN.md (checkpoint: human-verify Task 3)
 Resume file: None
