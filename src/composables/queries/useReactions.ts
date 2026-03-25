@@ -2,6 +2,8 @@ import { useMutation, useQueryClient } from '@tanstack/vue-query'
 import type { Ref } from 'vue'
 import { useAuthStore } from '@/stores/useAuthStore'
 import { addReaction, removeReaction } from '@/lib/github/mutations'
+import { useOfflineQueue } from '@/composables/queries/useOfflineQueue'
+import { toast } from 'vue-sonner'
 import type { Prompt, ReactionContent, ReactionGroup } from '@/types/index'
 
 interface ToggleInput {
@@ -13,9 +15,19 @@ interface ToggleInput {
 export function useReactions(issueId: Ref<number>, nodeId: Ref<string>) {
   const queryClient = useQueryClient()
   const authStore = useAuthStore()
+  const { isOnline, enqueue } = useOfflineQueue()
 
   const mutation = useMutation({
     mutationFn: async ({ content, isRemoving }: ToggleInput) => {
+      if (!isOnline.value) {
+        enqueue({
+          type: 'toggleReaction',
+          issueNumber: issueId.value,
+          payload: { nodeId: nodeId.value, content, isRemoving },
+        })
+        toast('Reaction queued — will sync when back online')
+        return []
+      }
       if (isRemoving) {
         return removeReaction(authStore.token!, nodeId.value, content)
       }

@@ -2,6 +2,7 @@ import { watch } from 'vue'
 import { useOnline } from '@vueuse/core'
 import { toast } from 'vue-sonner'
 import { postComment } from '@/lib/github/mutations'
+import type { ReactionContent } from '@/types/index'
 
 const QUEUE_KEY = 'offline_action_queue'
 
@@ -47,13 +48,13 @@ export function useOfflineQueue() {
             await removeReaction(
               token,
               action.payload.nodeId as string,
-              action.payload.content as string,
+              action.payload.content as ReactionContent,
             )
           } else {
             await addReaction(
               token,
               action.payload.nodeId as string,
-              action.payload.content as string,
+              action.payload.content as ReactionContent,
             )
           }
         }
