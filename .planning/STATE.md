@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: planning
-stopped_at: Phase 4 context gathered
-last_updated: "2026-03-24T21:41:53.389Z"
+stopped_at: Completed 04-01-PLAN.md
+last_updated: "2026-03-25T06:07:19.609Z"
 last_activity: 2026-03-14 — Roadmap created, phases derived from 64 v1 requirements across 8 categories
 progress:
   total_phases: 4
   completed_phases: 3
-  total_plans: 9
-  completed_plans: 9
+  total_plans: 12
+  completed_plans: 10
   percent: 0
 ---
 
@@ -59,6 +59,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 03-community-and-profiles P01 | 6min | 2 tasks | 10 files |
 | Phase 03-community-and-profiles P02 | 3min | 2 tasks | 10 files |
 | Phase 03-community-and-profiles P03 | 12min | 2 tasks | 11 files |
+| Phase 04-admin-and-pwa P01 | 5min | 2 tasks | 8 files |
 
 ## Accumulated Context
 
@@ -93,6 +94,9 @@ Recent decisions affecting current work:
 - [Phase 03-community-and-profiles]: window.confirm() for flag confirmation — no Dialog component; inline sign-in CTA div in ReactionBar
 - [Phase 03-community-and-profiles]: ProfileRedirectView thin component replaces require() router redirect — avoids CommonJS require in ESM context, auth-store accessible via composable at render time
 - [Phase 03-community-and-profiles]: useUserProfile spec tests data via queryClient.getQueryData() not composable computed — avoids reactivity race conditions in test environment
+- [Phase 04-admin-and-pwa]: deleteIssueGraphQL accepts GraphQL base64 node ID (not integer issue number) — enforces correct API contract
+- [Phase 04-admin-and-pwa]: getIssueComments defined in plan 01 (queries.ts) so plan 02 can import without modifying queries.ts
+- [Phase 04-admin-and-pwa]: Wave 0 spec stubs use it.todo() with import commented out — compile and run as pending before plan 02 composables exist
 
 ### Pending Todos
 
@@ -104,6 +108,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-24T21:41:53.387Z
-Stopped at: Phase 4 context gathered
-Resume file: .planning/phases/04-admin-and-pwa/04-CONTEXT.md
+Last session: 2026-03-25T06:07:14.772Z
+Stopped at: Completed 04-01-PLAN.md
+Resume file: None

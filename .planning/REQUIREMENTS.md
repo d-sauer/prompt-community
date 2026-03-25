@@ -62,14 +62,14 @@ Requirements for initial release. All screens must ship together (experience MVP
 
 ### Administration & Moderation (ADMN)
 
-- [ ] **ADMN-01**: Maintainer/Curator can access the admin panel (non-maintainers redirected immediately)
-- [ ] **ADMN-02**: Maintainer/Curator can view stats overview: total prompts, flagged count, featured count
-- [ ] **ADMN-03**: Maintainer/Curator can view the moderation queue of flagged prompts
-- [ ] **ADMN-04**: Maintainer/Curator can approve, hide, or delete prompts from the moderation queue
-- [ ] **ADMN-05**: Maintainer/Curator can perform bulk actions across multiple items in the moderation queue
-- [ ] **ADMN-06**: Maintainer/Curator can add, edit, and delete GitHub labels with namespace prefix conventions enforced
-- [ ] **ADMN-07**: Maintainer/Curator can mark prompts as featured to elevate their visibility
-- [ ] **ADMN-08**: Maintainer/Curator can view a moderation log with full action history, filterable by date
+- [x] **ADMN-01**: Maintainer/Curator can access the admin panel (non-maintainers redirected immediately)
+- [x] **ADMN-02**: Maintainer/Curator can view stats overview: total prompts, flagged count, featured count
+- [x] **ADMN-03**: Maintainer/Curator can view the moderation queue of flagged prompts
+- [x] **ADMN-04**: Maintainer/Curator can approve, hide, or delete prompts from the moderation queue
+- [x] **ADMN-05**: Maintainer/Curator can perform bulk actions across multiple items in the moderation queue
+- [x] **ADMN-06**: Maintainer/Curator can add, edit, and delete GitHub labels with namespace prefix conventions enforced
+- [x] **ADMN-07**: Maintainer/Curator can mark prompts as featured to elevate their visibility
+- [x] **ADMN-08**: Maintainer/Curator can view a moderation log with full action history, filterable by date
 
 ### App Shell & Navigation (SHEL)
 
@@ -176,14 +176,14 @@ Which phases cover which requirements. Updated during roadmap creation.
 | USER-04 | Phase 3 | Complete |
 | USER-05 | Phase 3 | Complete |
 | USER-06 | Phase 3 | Complete |
-| ADMN-01 | Phase 4 | Pending |
-| ADMN-02 | Phase 4 | Pending |
-| ADMN-03 | Phase 4 | Pending |
-| ADMN-04 | Phase 4 | Pending |
-| ADMN-05 | Phase 4 | Pending |
-| ADMN-06 | Phase 4 | Pending |
-| ADMN-07 | Phase 4 | Pending |
-| ADMN-08 | Phase 4 | Pending |
+| ADMN-01 | Phase 4 | Complete |
+| ADMN-02 | Phase 4 | Complete |
+| ADMN-03 | Phase 4 | Complete |
+| ADMN-04 | Phase 4 | Complete |
+| ADMN-05 | Phase 4 | Complete |
+| ADMN-06 | Phase 4 | Complete |
+| ADMN-07 | Phase 4 | Complete |
+| ADMN-08 | Phase 4 | Complete |
 | SHEL-07 | Phase 4 | Pending |
 | SHEL-08 | Phase 4 | Pending |
 
