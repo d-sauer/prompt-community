@@ -197,3 +197,142 @@ export async function removeReaction(
   })
   return data.removeReaction.reactionGroups
 }
+
+// ── Admin mutations (ADMN-03 / ADMN-04 / ADMN-05 / ADMN-06) ──────────────────
+
+/**
+ * Add a label to a GitHub issue by name (ADMN-03).
+ * Used for status:hidden, status:featured, etc.
+ */
+export async function addLabelToIssue(
+  token: string,
+  issueNumber: number,
+  labelName: string,
+): Promise<void> {
+  const octokit = createRestClient(token)
+  await octokit.request('POST /repos/{owner}/{repo}/issues/{issue_number}/labels', {
+    owner: owner(),
+    repo: repo(),
+    issue_number: issueNumber,
+    labels: [labelName],
+    headers: { 'X-GitHub-Api-Version': '2022-11-28' },
+  })
+}
+
+/**
+ * Remove a label from a GitHub issue by name (ADMN-03).
+ * Octokit handles URL-encoding of the label name.
+ */
+export async function removeLabelFromIssue(
+  token: string,
+  issueNumber: number,
+  labelName: string,
+): Promise<void> {
+  const octokit = createRestClient(token)
+  await octokit.request('DELETE /repos/{owner}/{repo}/issues/{issue_number}/labels/{name}', {
+    owner: owner(),
+    repo: repo(),
+    issue_number: issueNumber,
+    name: labelName,
+    headers: { 'X-GitHub-Api-Version': '2022-11-28' },
+  })
+}
+
+const DELETE_ISSUE = `
+  mutation DeleteIssue($issueId: ID!) {
+    deleteIssue(input: { issueId: $issueId }) {
+      repository { id }
+    }
+  }
+`
+
+/**
+ * Delete a GitHub issue via GraphQL (ADMN-04).
+ * nodeId is the base64 GraphQL node ID (the `id` field from GET_FLAGGED_ISSUES),
+ * NOT the integer issue number.
+ */
+export async function deleteIssueGraphQL(token: string, nodeId: string): Promise<void> {
+  const client = createGraphqlClient(token)
+  await client(DELETE_ISSUE, { issueId: nodeId })
+}
+
+/**
+ * Post a standardised moderation comment on an issue (ADMN-05).
+ * Body format: "✓ {action} by @{login} on YYYY-MM-DD"
+ * action examples: "Approved", "Hidden", "Deleted", "Featured", "Unfeatured"
+ */
+export async function postModerationComment(
+  token: string,
+  issueNumber: number,
+  action: string,
+  login: string,
+): Promise<void> {
+  const octokit = createRestClient(token)
+  const date = new Date().toISOString().split('T')[0]
+  const body = `✓ ${action} by @${login} on ${date}`
+  await octokit.request('POST /repos/{owner}/{repo}/issues/{issue_number}/comments', {
+    owner: owner(),
+    repo: repo(),
+    issue_number: issueNumber,
+    body,
+    headers: { 'X-GitHub-Api-Version': '2022-11-28' },
+  })
+}
+
+/**
+ * Create a new label in the data repo (ADMN-06).
+ * color should be a 6-character hex string without the leading `#`.
+ */
+export async function createRepoLabel(
+  token: string,
+  name: string,
+  color: string,
+  description: string,
+): Promise<void> {
+  const octokit = createRestClient(token)
+  await octokit.request('POST /repos/{owner}/{repo}/labels', {
+    owner: owner(),
+    repo: repo(),
+    name,
+    color,
+    description,
+    headers: { 'X-GitHub-Api-Version': '2022-11-28' },
+  })
+}
+
+/**
+ * Update an existing repo label (ADMN-06).
+ * oldName identifies the label; newName, color, description are the new values.
+ * color should be a 6-character hex string without `#`.
+ */
+export async function updateRepoLabel(
+  token: string,
+  oldName: string,
+  newName: string,
+  color: string,
+  description: string,
+): Promise<void> {
+  const octokit = createRestClient(token)
+  await octokit.request('PATCH /repos/{owner}/{repo}/labels/{name}', {
+    owner: owner(),
+    repo: repo(),
+    name: oldName,
+    new_name: newName,
+    color,
+    description,
+    headers: { 'X-GitHub-Api-Version': '2022-11-28' },
+  })
+}
+
+/**
+ * Delete a repo label by name (ADMN-06).
+ */
+export async function deleteRepoLabel(token: string, name: string): Promise<void> {
+  const octokit = createRestClient(token)
+  await octokit.request('DELETE /repos/{owner}/{repo}/labels/{name}', {
+    owner: owner(),
+    repo: repo(),
+    name,
+    headers: { 'X-GitHub-Api-Version': '2022-11-28' },
+  })
+}
