@@ -70,3 +70,10 @@ describe('router guards', () => {
     expect(router.currentRoute.value.path).toBe('/admin')
   })
 })
+
+// Wave 0 stubs — will be filled in plan 02 (ADMN-01)
+import { describe as _describe, it as _it } from 'vitest'
+_describe('router admin guard (ADMN-01)', () => {
+  _it.todo('non-maintainer navigating to /admin is redirected away (e.g. to /)')
+  _it.todo('authenticated maintainer navigating to /admin is allowed through')
+})
