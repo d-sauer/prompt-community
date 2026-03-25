@@ -71,9 +71,34 @@ describe('router guards', () => {
   })
 })
 
-// Wave 0 stubs — will be filled in plan 02 (ADMN-01)
-import { describe as _describe, it as _it } from 'vitest'
-_describe('router admin guard (ADMN-01)', () => {
-  _it.todo('non-maintainer navigating to /admin is redirected away (e.g. to /)')
-  _it.todo('authenticated maintainer navigating to /admin is allowed through')
+describe('router admin guard (ADMN-01)', () => {
+  it('non-maintainer navigating to /admin is redirected away', async () => {
+    const { verifyMaintainerStatus } = await import('@/lib/github/auth')
+    const mockVerify = vi.mocked(verifyMaintainerStatus)
+    mockVerify.mockResolvedValue(false)
+
+    const { router } = await import('./index')
+    const authStore = useAuthStore()
+    authStore.receiveToken('non-maintainer-token')
+
+    await router.push('/browse')
+    await router.push('/admin')
+
+    expect(router.currentRoute.value.path).not.toBe('/admin')
+    expect(router.currentRoute.value.path).toBe('/browse')
+  })
+
+  it('authenticated maintainer navigating to /admin is allowed through', async () => {
+    const { verifyMaintainerStatus } = await import('@/lib/github/auth')
+    const mockVerify = vi.mocked(verifyMaintainerStatus)
+    mockVerify.mockResolvedValue(true)
+
+    const { router } = await import('./index')
+    const authStore = useAuthStore()
+    authStore.receiveToken('verified-maintainer-token')
+
+    await router.push('/admin')
+
+    expect(router.currentRoute.value.path).toBe('/admin')
+  })
 })
