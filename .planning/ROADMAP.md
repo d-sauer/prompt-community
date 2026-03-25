@@ -15,7 +15,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 1: Foundation** - App shell, GitHub data layer, OAuth authentication, and infrastructure scaffolding (completed 2026-03-15)
 - [ ] **Phase 2: Read & Contribute** - Browse/discover prompts, content editor, and version history (the core product loop)
 - [x] **Phase 3: Community & Profiles** - Reactions, comments, user profiles, saves, and flags (completed 2026-03-15)
-- [ ] **Phase 4: Admin & PWA** - Moderation panel, label management, offline support, and background sync
+- [x] **Phase 4: Admin & PWA** - Moderation panel, label management, offline support, and background sync
 
 ## Phase Details
 
@@ -83,9 +83,9 @@ Plans:
 **Plans**: 3 plans
 
 Plans:
-- [ ] 04-01-PLAN.md — GitHub API layer for admin: mutations (addLabel, removeLabel, deleteIssueGraphQL, postModerationComment, label CRUD) + admin GraphQL queries + Wave 0 spec stubs
-- [ ] 04-02-PLAN.md — Admin panel UI: 5 composables (stats/queue/actions/labels/log) + AdminView with Queue/Labels/Log tabs + AdminStatsBar
-- [ ] 04-03-PLAN.md — PWA: vite-plugin-pwa config, service worker cache strategies, useOfflineQueue composable, offline UX wiring
+- [x] 04-01-PLAN.md — GitHub API layer for admin: mutations (addLabel, removeLabel, deleteIssueGraphQL, postModerationComment, label CRUD) + admin GraphQL queries + Wave 0 spec stubs
+- [x] 04-02-PLAN.md — Admin panel UI: 5 composables (stats/queue/actions/labels/log) + AdminView with Queue/Labels/Log tabs + AdminStatsBar
+- [x] 04-03-PLAN.md — PWA: vite-plugin-pwa config, service worker cache strategies, useOfflineQueue composable, offline UX wiring
 
 ## Progress
 
@@ -95,6 +95,6 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Foundation | 3/3 | Complete   | 2026-03-15 |
-| 2. Read & Contribute | 2/3 | In Progress|  |
+| 2. Read & Contribute | 3/3 | Complete   | 2026-03-15 |
 | 3. Community & Profiles | 3/3 | Complete   | 2026-03-15 |
-| 4. Admin & PWA | 2/3 | In Progress|  |
+| 4. Admin & PWA | 3/3 | Complete   | 2026-03-25 |
