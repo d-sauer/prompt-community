@@ -25,7 +25,7 @@ vi.mock('@/lib/github/queries', () => ({
   GET_FLAGGED_ISSUES: '',
   GET_ADMIN_STATS: '',
   getRepoLabels: vi.fn().mockResolvedValue([]),
-  getIssueComments: vi.fn((token: string, issueNumber: number) => {
+  getIssueComments: vi.fn((_token: string, issueNumber: number) => {
     if (issueNumber === 10) {
       return Promise.resolve([
         {
@@ -125,10 +125,7 @@ describe('useAdminLog', () => {
       expect(composable.entries.value.length).toBeGreaterThan(0)
     })
 
-    const hasVersionComment = composable.entries.value.some(
-      (e) => e.action.startsWith('## Version') || e.promptTitle.includes('Version'),
-    )
-    // Technically it should exclude the comment with body "## Version..."
+    // Verify the comment with body "## Version..." is excluded
     const allEntries = composable.entries.value
     expect(allEntries.every((e) => !e.action.includes('##'))).toBe(true)
   })
