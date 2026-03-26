@@ -3,11 +3,45 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 // STORAGE_KEY format used by the new etag.ts implementation
 const STORAGE_KEY = (login: string) => `etag-cache:${login}`
 
+// In-memory localStorage substitute (setup.ts spies on Storage.prototype break direct localStorage use)
+function makeStoreMock() {
+  const store: Record<string, string> = {}
+  return {
+    getItem: vi.fn((key: string): string | null => store[key] ?? null),
+    setItem: vi.fn((key: string, value: string): void => {
+      store[key] = value
+    }),
+    removeItem: vi.fn((key: string): void => {
+      delete store[key]
+    }),
+    clear: vi.fn((): void => {
+      Object.keys(store).forEach((k) => delete store[k])
+    }),
+    get length(): number {
+      return Object.keys(store).length
+    },
+    key: vi.fn((index: number): string | null => Object.keys(store)[index] ?? null),
+    _store: store,
+  }
+}
+
+let storageMock: ReturnType<typeof makeStoreMock>
+
 describe('etag localStorage store', () => {
-  beforeEach(() => {
-    // Clear all localStorage keys (jsdom provides this via Object.keys pattern)
-    Object.keys(localStorage).forEach((key) => localStorage.removeItem(key))
-    vi.restoreAllMocks()
+  beforeEach(async () => {
+    storageMock = makeStoreMock()
+    vi.stubGlobal('localStorage', storageMock)
+    vi.clearAllMocks()
+    // Reset mock implementations (clearAllMocks clears them)
+    storageMock.getItem.mockImplementation((key: string) => storageMock._store[key] ?? null)
+    storageMock.setItem.mockImplementation((key: string, value: string) => {
+      storageMock._store[key] = value
+    })
+    storageMock.removeItem.mockImplementation((key: string) => {
+      delete storageMock._store[key]
+    })
+    // Re-import with fresh module (no state leak between tests)
+    vi.resetModules()
   })
 
   it('getEtag returns undefined when no entry exists for (login, key)', async () => {
@@ -56,21 +90,21 @@ describe('etag localStorage store', () => {
     setEtag('alice', '/path/a', '"etag-a"')
     setEtag('bob', '/path/a', '"etag-bob"')
     clearUserEtags('alice')
-    expect(localStorage.getItem(STORAGE_KEY('alice'))).toBeNull()
+    expect(storageMock.getItem(STORAGE_KEY('alice'))).toBeNull()
     // bob unaffected
     expect(getEtag('bob', '/path/a')).toBe('"etag-bob"')
   })
 
   it('localStorage read wrapped in try/catch — corrupted JSON returns empty Map (simulate by writing invalid JSON to STORAGE_KEY)', async () => {
+    storageMock.setItem(STORAGE_KEY('alice'), 'not-json')
     const { getEtag } = await import('./etag')
-    localStorage.setItem(STORAGE_KEY('alice'), 'not-json')
     // Should not throw — returns undefined (empty Map)
     expect(getEtag('alice', '/any-key')).toBeUndefined()
   })
 
   it('localStorage write degrades silently when setItem throws (simulate QuotaExceededError)', async () => {
     const { setEtag } = await import('./etag')
-    vi.spyOn(Storage.prototype, 'setItem').mockImplementationOnce(() => {
+    storageMock.setItem.mockImplementationOnce(() => {
       throw new DOMException('QuotaExceededError')
     })
     // Should not throw
@@ -79,9 +113,18 @@ describe('etag localStorage store', () => {
 })
 
 describe('etagFetchWrapper', () => {
-  beforeEach(() => {
-    Object.keys(localStorage).forEach((key) => localStorage.removeItem(key))
-    vi.restoreAllMocks()
+  beforeEach(async () => {
+    storageMock = makeStoreMock()
+    vi.stubGlobal('localStorage', storageMock)
+    vi.clearAllMocks()
+    storageMock.getItem.mockImplementation((key: string) => storageMock._store[key] ?? null)
+    storageMock.setItem.mockImplementation((key: string, value: string) => {
+      storageMock._store[key] = value
+    })
+    storageMock.removeItem.mockImplementation((key: string) => {
+      delete storageMock._store[key]
+    })
+    vi.resetModules()
   })
 
   it('etagFetchWrapper sets If-None-Match header when a cached ETag exists for (login, key)', async () => {

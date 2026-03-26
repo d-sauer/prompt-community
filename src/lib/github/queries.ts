@@ -196,7 +196,7 @@ const repo = () => import.meta.env.VITE_GITHUB_REPO as string
  * Fetch all repo labels via REST (ADMN-06).
  * Returns up to 100 labels per request.
  */
-export async function getRepoLabels(token: string): Promise<
+export async function getRepoLabels(token: string, userLogin: string = ''): Promise<
   Array<{
     id: number
     node_id: string
@@ -205,7 +205,7 @@ export async function getRepoLabels(token: string): Promise<
     description: string | null
   }>
 > {
-  const octokit = createRestClient(token)
+  const octokit = createRestClient(token, userLogin)
   const response = await octokit.request('GET /repos/{owner}/{repo}/labels', {
     owner: owner(),
     repo: repo(),
@@ -229,6 +229,7 @@ export async function getRepoLabels(token: string): Promise<
 export async function getIssueComments(
   token: string,
   issueNumber: number,
+  userLogin: string = '',
 ): Promise<
   Array<{
     id: number
@@ -237,7 +238,7 @@ export async function getIssueComments(
     user: { login: string } | null
   }>
 > {
-  const octokit = createRestClient(token)
+  const octokit = createRestClient(token, userLogin)
   const response = await octokit.request(
     'GET /repos/{owner}/{repo}/issues/{issue_number}/comments',
     {

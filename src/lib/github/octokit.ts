@@ -1,5 +1,6 @@
 import { graphql } from '@octokit/graphql'
 import { Octokit } from '@octokit/core'
+import { makeBoundFetch } from './etag'
 
 export function createGraphqlClient(token?: string) {
   return graphql.defaults({
@@ -10,6 +11,11 @@ export function createGraphqlClient(token?: string) {
   })
 }
 
-export function createRestClient(token: string) {
-  return new Octokit({ auth: token })
+export function createRestClient(token: string, userLogin: string = '') {
+  return new Octokit({
+    auth: token,
+    request: {
+      fetch: makeBoundFetch(userLogin),
+    },
+  })
 }
