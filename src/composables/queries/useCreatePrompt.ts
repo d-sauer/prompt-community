@@ -3,7 +3,6 @@ import { useRouter } from 'vue-router'
 import { createIssue } from '@/lib/github/mutations'
 import { buildFrontmatter } from '@/lib/frontmatter'
 import { useAuthStore } from '@/stores/useAuthStore'
-import { useSearchStore } from '@/stores/useSearchStore'
 import { useDraftStore } from '@/stores/useDraftStore'
 import type { PromptFrontmatter } from '@/lib/frontmatter'
 
@@ -20,7 +19,6 @@ export interface CreatePromptInput {
  */
 export function useCreatePrompt() {
   const authStore = useAuthStore()
-  const searchStore = useSearchStore()
   const draftStore = useDraftStore()
   const queryClient = useQueryClient()
   const router = useRouter()
@@ -50,11 +48,6 @@ export function useCreatePrompt() {
     onSuccess: async (issueNumber: number) => {
       // Reset queries to refetch from page 1 (avoids duplicate prompts)
       await queryClient.resetQueries({ queryKey: ['prompts'] })
-
-      // Rebuild search index with new prompt included
-      // Note: search store will rebuild on next prompts query fetch
-      // For immediate update, invalidate and let TanStack refetch
-      void searchStore
 
       // Discard saved draft
       draftStore.clear()
