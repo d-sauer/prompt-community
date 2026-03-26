@@ -17,7 +17,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 3: Community & Profiles** - Reactions, comments, user profiles, saves, and flags (completed 2026-03-15)
 - [x] **Phase 4: Admin & PWA** - Moderation panel, label management, offline support, and background sync
 - [x] **Phase 5: Fix User Identity & Profile Navigation** - Implement fetchCurrentUser, fix /profile redirect race condition, wire Navbar Profile menu (gap closure) (completed 2026-03-26)
-- [ ] **Phase 6: Fix Command Palette & Admin Sidebar** - Wire ⌘K search to useSearchStore, write isMaintainer after router guard verification (gap closure)
+- [x] **Phase 6: Fix Command Palette & Admin Sidebar** - Wire ⌘K search to useSearchStore, write isMaintainer after router guard verification (gap closure) (completed 2026-03-26)
 - [ ] **Phase 7: Wire ETag Caching** - Integrate etagFetchWrapper into GitHub API request path to activate INFR-05 (gap closure)
 
 ## Phase Details
@@ -126,5 +126,5 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 | 3. Community & Profiles | 3/3 | Complete   | 2026-03-15 |
 | 4. Admin & PWA | 3/3 | Complete   | 2026-03-25 |
 | 5. Fix User Identity & Profile Navigation | 1/1 | Complete   | 2026-03-26 |
-| 6. Fix Command Palette & Admin Sidebar | 0/1 | Pending | — |
+| 6. Fix Command Palette & Admin Sidebar | 1/1 | Complete   | 2026-03-26 |
 | 7. Wire ETag Caching | 0/1 | Pending | — |

@@ -62,7 +62,7 @@ Requirements for initial release. All screens must ship together (experience MVP
 
 ### Administration & Moderation (ADMN)
 
-- [ ] **ADMN-01**: Maintainer/Curator can access the admin panel (non-maintainers redirected immediately)
+- [x] **ADMN-01**: Maintainer/Curator can access the admin panel (non-maintainers redirected immediately)
 - [x] **ADMN-02**: Maintainer/Curator can view stats overview: total prompts, flagged count, featured count
 - [x] **ADMN-03**: Maintainer/Curator can view the moderation queue of flagged prompts
 - [x] **ADMN-04**: Maintainer/Curator can approve, hide, or delete prompts from the moderation queue
@@ -176,7 +176,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | USER-04 | Phase 5 | Complete |
 | USER-05 | Phase 3 | Complete |
 | USER-06 | Phase 3 | Complete |
-| ADMN-01 | Phase 6 | Pending |
+| ADMN-01 | Phase 6 | Complete |
 | ADMN-02 | Phase 4 | Complete |
 | ADMN-03 | Phase 4 | Complete |
 | ADMN-04 | Phase 4 | Complete |
