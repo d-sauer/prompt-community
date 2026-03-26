@@ -1,6 +1,12 @@
 import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest'
 import { setActivePinia, createPinia } from 'pinia'
 import { useAuthStore } from './useAuthStore'
+import * as octokit from '@/lib/github/octokit'
+import * as auth from '@/lib/github/auth'
+
+vi.mock('@/lib/github/octokit')
+vi.mock('@/lib/github/auth')
+vi.mock('vue-sonner', () => ({ toast: { error: vi.fn() } }))
 
 describe('useAuthStore', () => {
   beforeEach(() => {
@@ -185,5 +191,79 @@ describe('useAuthStore', () => {
       ([, value]) => typeof value === 'string' && value.includes('secret-token-value'),
     )
     expect(tokenWritten).toBe(false)
+  })
+})
+
+describe('fetchCurrentUser', () => {
+  const mockViewerData = {
+    viewer: {
+      login: 'testuser',
+      name: 'Test User',
+      avatarUrl: 'https://avatars.example.com/u/1',
+      bio: 'A test bio',
+      company: 'Test Corp',
+      location: 'Earth',
+      followers: { totalCount: 42 },
+      following: { totalCount: 7 },
+      repositories: { totalCount: 15 },
+    },
+  }
+
+  beforeEach(() => {
+    setActivePinia(createPinia())
+    vi.clearAllMocks()
+    vi.stubEnv('VITE_CF_WORKER_URL', 'https://worker.test')
+  })
+
+  afterEach(() => {
+    vi.restoreAllMocks()
+    vi.unstubAllEnvs()
+  })
+
+  it('Test A: On success, sets authStore.user with all 9 GitHubUser fields mapped correctly', async () => {
+    const mockClient = vi.fn().mockResolvedValue(mockViewerData)
+    vi.spyOn(octokit, 'createGraphqlClient').mockReturnValue(mockClient as ReturnType<typeof octokit.createGraphqlClient>)
+    vi.spyOn(auth, 'verifyMaintainerStatus').mockResolvedValue(false)
+
+    const store = useAuthStore()
+    await store.fetchCurrentUser('test-token')
+
+    expect(store.user).toEqual({
+      login: 'testuser',
+      name: 'Test User',
+      avatarUrl: 'https://avatars.example.com/u/1',
+      bio: 'A test bio',
+      company: 'Test Corp',
+      location: 'Earth',
+      followers: 42,
+      following: 7,
+      publicRepos: 15,
+    })
+  })
+
+  it('Test B: On success, calls verifyMaintainerStatus(token) and sets isMaintainer', async () => {
+    const mockClient = vi.fn().mockResolvedValue(mockViewerData)
+    vi.spyOn(octokit, 'createGraphqlClient').mockReturnValue(mockClient as ReturnType<typeof octokit.createGraphqlClient>)
+    vi.spyOn(auth, 'verifyMaintainerStatus').mockResolvedValue(true)
+
+    const store = useAuthStore()
+    await store.fetchCurrentUser('test-token')
+
+    expect(auth.verifyMaintainerStatus).toHaveBeenCalledWith('test-token')
+    expect(store.isMaintainer).toBe(true)
+  })
+
+  it('Test C: On failure (GraphQL throws), keeps token set, leaves user null, calls toast.error', async () => {
+    const { toast } = await import('vue-sonner')
+    const mockClient = vi.fn().mockRejectedValue(new Error('GraphQL error'))
+    vi.spyOn(octokit, 'createGraphqlClient').mockReturnValue(mockClient as ReturnType<typeof octokit.createGraphqlClient>)
+
+    const store = useAuthStore()
+    store.receiveToken('test-token')
+    await store.fetchCurrentUser('test-token')
+
+    expect(store.token).toBe('test-token')
+    expect(store.user).toBeNull()
+    expect(toast.error).toHaveBeenCalledWith('Sign-in failed, please try again')
   })
 })
