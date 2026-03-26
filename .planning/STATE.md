@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: completed
-stopped_at: Phase 8 context gathered
-last_updated: "2026-03-26T20:29:38.106Z"
+stopped_at: Completed 08-fix-admin-search-tech-debt-01-PLAN.md
+last_updated: "2026-03-26T21:19:45.907Z"
 last_activity: 2026-03-25 — Phase 4 complete; all 12 plans done; v1.0 milestone achieved
 progress:
   total_phases: 8
-  completed_phases: 7
-  total_plans: 15
-  completed_plans: 15
+  completed_phases: 8
+  total_plans: 16
+  completed_plans: 16
   percent: 100
 ---
 
@@ -65,6 +65,7 @@ Progress: [██████████] 100%
 | Phase 05-fix-user-identity P01 | 4min | 2 tasks | 7 files |
 | Phase 06-fix-command-palette-admin-sidebar P01 | 4min | 2 tasks | 4 files |
 | Phase 07-wire-etag-caching P01 | 6min | 3 tasks | 7 files |
+| Phase 08-fix-admin-search-tech-debt P01 | 2min | 3 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -113,6 +114,9 @@ Recent decisions affecting current work:
 - [Phase 06-fix-command-palette-admin-sidebar]: authStore.isMaintainer write-back applies for both true and false outcomes — sidebar v-if needs both paths to write the ref for reactivity
 - [Phase 07-wire-etag-caching]: etag.spec.ts uses vi.stubGlobal localStorage mock — setup.ts Storage.prototype spies break direct localStorage access after vi.clearAllMocks(); in-memory mock pattern matches useOfflineQueue.spec.ts convention
 - [Phase 07-wire-etag-caching]: STORAGE_KEY = etag-cache:{login}: scopes ETag cache per GitHub user; makeBoundFetch derives cacheKey as {userLogin}:{pathname}; default userLogin='' preserves backward compatibility
+- [Phase 08-fix-admin-search-tech-debt]: invalidateAdmin() adds ['admin','log'] alongside queue and stats — no staleTime removal, no ETag clearing (locked from CONTEXT.md)
+- [Phase 08-fix-admin-search-tech-debt]: ETag scoping via authStore.user?.login ?? '' as third arg to getIssueComments in useAdminLog — consistent with STORAGE_KEY = etag-cache:{login} pattern
+- [Phase 08-fix-admin-search-tech-debt]: useSearchStore import/instantiation/void expression removed from useCreatePrompt — dead code, no replacement needed
 
 ### Pending Todos
 
@@ -124,6 +128,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-26T20:29:38.104Z
-Stopped at: Phase 8 context gathered
-Resume file: .planning/phases/08-fix-admin-search-tech-debt/08-CONTEXT.md
+Last session: 2026-03-26T21:19:45.905Z
+Stopped at: Completed 08-fix-admin-search-tech-debt-01-PLAN.md
+Resume file: None
