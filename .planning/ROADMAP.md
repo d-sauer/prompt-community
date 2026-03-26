@@ -42,9 +42,10 @@ Plans:
 **Goal:** All cacheable GitHub API reads send If-None-Match headers; 304 responses consume zero rate-limit quota
 **Requirements:** INFR-05
 **Gap Closure:** Closes gaps from v1.0 audit — etagFetchWrapper integrated into Octokit fetch adapter
+**Plans:** 1 plan
 
 Plans:
-- [ ] 07-01-PLAN.md — Integrate etagFetchWrapper as fetch adapter in src/lib/github/octokit.ts
+- [ ] 07-01-PLAN.md — Replace in-memory Map with localStorage LRU in etag.ts; wire makeBoundFetch as Octokit request.fetch; add clearEtag to label mutation onSuccess and clearUserEtags to logout
 
 ### Phase 1: Foundation
 **Goal**: The app shell is deployed and navigable; users can authenticate via GitHub OAuth and the GitHub API layer is operational
