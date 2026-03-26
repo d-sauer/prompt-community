@@ -171,6 +171,22 @@ export const GET_FLAGGED_ISSUES = `
   }
 `
 
+export const GET_VIEWER = `
+  query GetViewer {
+    viewer {
+      login
+      name
+      avatarUrl
+      bio
+      company
+      location
+      followers { totalCount }
+      following { totalCount }
+      repositories(privacy: PUBLIC) { totalCount }
+    }
+  }
+`
+
 import { createRestClient } from '@/lib/github/octokit'
 
 const owner = () => import.meta.env.VITE_GITHUB_OWNER as string

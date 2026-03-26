@@ -1,6 +1,10 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import type { GitHubUser } from '@/types/index'
+import { createGraphqlClient } from '@/lib/github/octokit'
+import { GET_VIEWER } from '@/lib/github/queries'
+import { verifyMaintainerStatus } from '@/lib/github/auth'
+import { toast } from 'vue-sonner'
 
 export const useAuthStore = defineStore('auth', () => {
   // SECURITY: plain ref, never localStorage — INFR-07
@@ -50,9 +54,38 @@ export const useAuthStore = defineStore('auth', () => {
     isMaintainer.value = false
   }
 
-  // Stub: Phase 2 fills in GraphQL query to fetch authenticated user
-  async function fetchCurrentUser(_token: string): Promise<void> {
-    // TODO Phase 2: query GitHub GraphQL API for viewer { login, name, avatarUrl, ... }
+  async function fetchCurrentUser(token: string): Promise<void> {
+    try {
+      const client = createGraphqlClient(token)
+      const data = await client<{
+        viewer: {
+          login: string
+          name: string | null
+          avatarUrl: string
+          bio: string | null
+          company: string | null
+          location: string | null
+          followers: { totalCount: number }
+          following: { totalCount: number }
+          repositories: { totalCount: number }
+        }
+      }>(GET_VIEWER)
+      user.value = {
+        login: data.viewer.login,
+        name: data.viewer.name,
+        avatarUrl: data.viewer.avatarUrl,
+        bio: data.viewer.bio,
+        company: data.viewer.company,
+        location: data.viewer.location,
+        followers: data.viewer.followers.totalCount,
+        following: data.viewer.following.totalCount,
+        publicRepos: data.viewer.repositories.totalCount,
+      }
+      isMaintainer.value = await verifyMaintainerStatus(token)
+    } catch {
+      toast.error('Sign-in failed, please try again')
+      // token stays set (INFR-07); user stays null; isMaintainer stays false
+    }
   }
 
   return {

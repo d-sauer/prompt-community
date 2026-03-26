@@ -153,7 +153,10 @@ function openMobileSidebar() {
           align="end"
           class="bg-[#0d0d12] border-[#2a2a3a] text-white w-40"
         >
-          <DropdownMenuItem class="hover:bg-[#1a1a27] cursor-pointer">
+          <DropdownMenuItem
+            class="hover:bg-[#1a1a27] cursor-pointer"
+            @click="router.push('/profile')"
+          >
             Profile
           </DropdownMenuItem>
           <DropdownMenuItem
