@@ -48,7 +48,7 @@ export function useAdminLog() {
       // Fetch comments for all issues in parallel (reads, not writes)
       const commentArrays = await Promise.all(
         issues.map((issue) =>
-          getIssueComments(authStore.token!, issue.number).then((comments) =>
+          getIssueComments(authStore.token!, issue.number, authStore.user?.login ?? '').then((comments) =>
             comments.map((c) => ({ ...c, issueNumber: issue.number, issueTitle: issue.title })),
           ),
         ),

@@ -4,6 +4,7 @@ import { VueQueryPlugin, QueryClient } from '@tanstack/vue-query'
 import { createTestingPinia } from '@pinia/testing'
 import { useAuthStore } from '@/stores/useAuthStore'
 import { useAdminLog } from './useAdminLog'
+import * as queries from '@/lib/github/queries'
 
 vi.mock('@/lib/github/octokit', () => ({
   createGraphqlClient: vi.fn(() =>
@@ -164,5 +165,42 @@ describe('useAdminLog', () => {
     expect(entry.promptTitle).toBe('Great Prompt')
     expect(entry.maintainerLogin).toBe('maintainer')
     expect(typeof entry.issueNumber).toBe('number')
+  })
+
+  it('passes userLogin as third argument to getIssueComments for per-user ETag scoping', async () => {
+    const queryClient = new QueryClient({
+      defaultOptions: { queries: { retry: false }, mutations: { retry: false } },
+    })
+
+    let composable: ReturnType<typeof useAdminLog> | undefined
+
+    mount(
+      {
+        setup() {
+          const authStore = useAuthStore()
+          authStore.receiveToken('test-token')
+          authStore.$patch({ user: { login: 'maintainer', avatarUrl: '' } })
+          composable = useAdminLog()
+          return {}
+        },
+        template: '<div />',
+      },
+      {
+        global: {
+          plugins: [
+            [VueQueryPlugin, { queryClient }],
+            createTestingPinia({ createSpy: vi.fn, stubActions: false }),
+          ],
+        },
+      },
+    )
+
+    await vi.waitFor(() => expect(composable!.entries.value.length).toBeGreaterThan(0))
+
+    expect(vi.mocked(queries.getIssueComments)).toHaveBeenCalledWith(
+      'test-token',
+      expect.any(Number),
+      'maintainer',
+    )
   })
 })
