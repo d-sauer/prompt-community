@@ -88,7 +88,7 @@ Requirements for initial release. All screens must ship together (experience MVP
 - [x] **INFR-02**: Initial prompt list load < 2s (single GraphQL query + TanStack Query cache)
 - [x] **INFR-03**: Client-side search response < 50ms (MiniSearch — no network round-trip)
 - [x] **INFR-04**: GitHub OAuth popup completes token exchange in < 5s
-- [ ] **INFR-05**: ETag conditional requests used for all cacheable GitHub API reads (304 responses = zero rate limit cost)
+- [x] **INFR-05**: ETag conditional requests used for all cacheable GitHub API reads (304 responses = zero rate limit cost)
 - [x] **INFR-06**: MiniSearch index eliminates all dependency on GitHub Search API for user-facing search
 - [x] **INFR-07**: GitHub OAuth access tokens held in Pinia memory only — never localStorage or cookies
 - [x] **INFR-08**: Admin panel access control enforced via GitHub API on every panel load — client-side check alone not sufficient
@@ -164,7 +164,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | INFR-01 | Phase 2 | Complete |
 | INFR-02 | Phase 2 | Complete |
 | INFR-03 | Phase 2 | Complete |
-| INFR-05 | Phase 7 | Pending |
+| INFR-05 | Phase 7 | Complete |
 | INFR-06 | Phase 2 | Complete |
 | COMM-01 | Phase 3 | Complete |
 | COMM-02 | Phase 3 | Complete |

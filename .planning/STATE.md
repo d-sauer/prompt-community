@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: completed
-stopped_at: Phase 7 context gathered
-last_updated: "2026-03-26T16:05:48.111Z"
+stopped_at: Completed 07-wire-etag-caching/07-01-PLAN.md
+last_updated: "2026-03-26T16:37:00.007Z"
 last_activity: 2026-03-25 — Phase 4 complete; all 12 plans done; v1.0 milestone achieved
 progress:
   total_phases: 7
-  completed_phases: 6
-  total_plans: 14
-  completed_plans: 14
+  completed_phases: 7
+  total_plans: 15
+  completed_plans: 15
   percent: 100
 ---
 
@@ -64,6 +64,7 @@ Progress: [██████████] 100%
 | Phase 04-admin-and-pwa P02 | 10min | 3 tasks | 17 files |
 | Phase 05-fix-user-identity P01 | 4min | 2 tasks | 7 files |
 | Phase 06-fix-command-palette-admin-sidebar P01 | 4min | 2 tasks | 4 files |
+| Phase 07-wire-etag-caching P01 | 6min | 3 tasks | 7 files |
 
 ## Accumulated Context
 
@@ -110,6 +111,8 @@ Recent decisions affecting current work:
 - [Phase 05-fix-user-identity]: Stub reka-ui-based DropdownMenuItem in Navbar tests to avoid MenuRootContext injection error in isolation mount
 - [Phase 06-fix-command-palette-admin-sidebar]: CommandInput stub in tests uses inheritAttrs:false + v-bind=$attrs to forward @input listener — setValue() works when attrs forwarded to stub inner input
 - [Phase 06-fix-command-palette-admin-sidebar]: authStore.isMaintainer write-back applies for both true and false outcomes — sidebar v-if needs both paths to write the ref for reactivity
+- [Phase 07-wire-etag-caching]: etag.spec.ts uses vi.stubGlobal localStorage mock — setup.ts Storage.prototype spies break direct localStorage access after vi.clearAllMocks(); in-memory mock pattern matches useOfflineQueue.spec.ts convention
+- [Phase 07-wire-etag-caching]: STORAGE_KEY = etag-cache:{login}: scopes ETag cache per GitHub user; makeBoundFetch derives cacheKey as {userLogin}:{pathname}; default userLogin='' preserves backward compatibility
 
 ### Pending Todos
 
@@ -121,6 +124,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-26T16:05:48.108Z
-Stopped at: Phase 7 context gathered
-Resume file: .planning/phases/07-wire-etag-caching/07-CONTEXT.md
+Last session: 2026-03-26T16:37:00.004Z
+Stopped at: Completed 07-wire-etag-caching/07-01-PLAN.md
+Resume file: None

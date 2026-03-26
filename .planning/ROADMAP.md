@@ -18,7 +18,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 4: Admin & PWA** - Moderation panel, label management, offline support, and background sync
 - [x] **Phase 5: Fix User Identity & Profile Navigation** - Implement fetchCurrentUser, fix /profile redirect race condition, wire Navbar Profile menu (gap closure) (completed 2026-03-26)
 - [x] **Phase 6: Fix Command Palette & Admin Sidebar** - Wire ⌘K search to useSearchStore, write isMaintainer after router guard verification (gap closure) (completed 2026-03-26)
-- [ ] **Phase 7: Wire ETag Caching** - Integrate etagFetchWrapper into GitHub API request path to activate INFR-05 (gap closure)
+- [x] **Phase 7: Wire ETag Caching** - Integrate etagFetchWrapper into GitHub API request path to activate INFR-05 (gap closure) (completed 2026-03-26)
 
 ## Phase Details
 
@@ -42,7 +42,7 @@ Plans:
 **Goal:** All cacheable GitHub API reads send If-None-Match headers; 304 responses consume zero rate-limit quota
 **Requirements:** INFR-05
 **Gap Closure:** Closes gaps from v1.0 audit — etagFetchWrapper integrated into Octokit fetch adapter
-**Plans:** 1 plan
+**Plans:** 1/1 plans complete
 
 Plans:
 - [ ] 07-01-PLAN.md — Replace in-memory Map with localStorage LRU in etag.ts; wire makeBoundFetch as Octokit request.fetch; add clearEtag to label mutation onSuccess and clearUserEtags to logout
@@ -128,4 +128,4 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 | 4. Admin & PWA | 3/3 | Complete   | 2026-03-25 |
 | 5. Fix User Identity & Profile Navigation | 1/1 | Complete   | 2026-03-26 |
 | 6. Fix Command Palette & Admin Sidebar | 1/1 | Complete   | 2026-03-26 |
-| 7. Wire ETag Caching | 0/1 | Pending | — |
+| 7. Wire ETag Caching | 1/1 | Complete   | 2026-03-26 |
