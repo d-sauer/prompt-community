@@ -19,6 +19,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 5: Fix User Identity & Profile Navigation** - Implement fetchCurrentUser, fix /profile redirect race condition, wire Navbar Profile menu (gap closure) (completed 2026-03-26)
 - [x] **Phase 6: Fix Command Palette & Admin Sidebar** - Wire ⌘K search to useSearchStore, write isMaintainer after router guard verification (gap closure) (completed 2026-03-26)
 - [x] **Phase 7: Wire ETag Caching** - Integrate etagFetchWrapper into GitHub API request path to activate INFR-05 (gap closure) (completed 2026-03-26)
+- [ ] **Phase 8: Fix Admin & Search Tech Debt** - Fix stale admin log after moderation actions, fix ETag scoping in admin log REST calls, remove dead searchStore stub (tech debt closure)
 
 ## Phase Details
 
@@ -46,6 +47,14 @@ Plans:
 
 Plans:
 - [ ] 07-01-PLAN.md — Replace in-memory Map with localStorage LRU in etag.ts; wire makeBoundFetch as Octokit request.fetch; add clearEtag to label mutation onSuccess and clearUserEtags to logout
+
+### Phase 8: Fix Admin & Search Tech Debt
+**Goal:** Admin log updates immediately after moderation actions; admin log REST calls use per-user ETag bucket; dead searchStore stub removed
+**Requirements:** ADMN-08, INFR-05 (tech debt), CONT-01 (dead code cleanup)
+**Gap Closure:** Closes tech_debt gaps from v1.0 audit — log invalidation missing, ETag scoping in useAdminLog, dead void searchStore expression
+
+Plans:
+- [ ] 08-01-PLAN.md — Add `['admin','log']` invalidation to `invalidateAdmin()`; pass `userLogin` to `getIssueComments()`; remove dead `void searchStore` in `useCreatePrompt.ts`
 
 ### Phase 1: Foundation
 **Goal**: The app shell is deployed and navigable; users can authenticate via GitHub OAuth and the GitHub API layer is operational
@@ -129,3 +138,4 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 | 5. Fix User Identity & Profile Navigation | 1/1 | Complete   | 2026-03-26 |
 | 6. Fix Command Palette & Admin Sidebar | 1/1 | Complete   | 2026-03-26 |
 | 7. Wire ETag Caching | 1/1 | Complete   | 2026-03-26 |
+| 8. Fix Admin & Search Tech Debt | 0/1 | Pending | — |
