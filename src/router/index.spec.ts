@@ -101,4 +101,35 @@ describe('router admin guard (ADMN-01)', () => {
 
     expect(router.currentRoute.value.path).toBe('/admin')
   })
+
+  it('authStore.isMaintainer is set to true when verifyMaintainerStatus returns true (ADMN-01)', async () => {
+    const { verifyMaintainerStatus } = await import('@/lib/github/auth')
+    const mockVerify = vi.mocked(verifyMaintainerStatus)
+    mockVerify.mockResolvedValue(true)
+
+    const { router } = await import('./index')
+    const authStore = useAuthStore()
+    authStore.receiveToken('maintainer-token')
+
+    await router.push('/admin')
+
+    expect(authStore.isMaintainer).toBe(true)
+  })
+
+  it('authStore.isMaintainer is set to false when verifyMaintainerStatus returns false (ADMN-01)', async () => {
+    const { verifyMaintainerStatus } = await import('@/lib/github/auth')
+    const mockVerify = vi.mocked(verifyMaintainerStatus)
+    mockVerify.mockResolvedValue(false)
+
+    const { router } = await import('./index')
+    const authStore = useAuthStore()
+    authStore.receiveToken('non-maintainer-token')
+    authStore.isMaintainer = true // start with stale true
+
+    await router.push('/browse')
+    await router.push('/admin')
+
+    expect(authStore.isMaintainer).toBe(false)
+    expect(router.currentRoute.value.path).toBe('/browse')
+  })
 })
