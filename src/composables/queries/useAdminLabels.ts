@@ -3,6 +3,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/vue-query'
 import { useAuthStore } from '@/stores/useAuthStore'
 import { getRepoLabels } from '@/lib/github/queries'
 import { createRepoLabel, updateRepoLabel, deleteRepoLabel } from '@/lib/github/mutations'
+import { clearEtag } from '@/lib/github/etag'
 
 export interface RepoLabel {
   id: number
@@ -26,9 +27,11 @@ export function useAdminLabels() {
   const authStore = useAuthStore()
   const labelError = ref<string | null>(null)
 
+  const labelsEtagKey = `${authStore.user?.login ?? ''}:/repos/${import.meta.env.VITE_GITHUB_OWNER}/${import.meta.env.VITE_GITHUB_REPO}/labels`
+
   const query = useQuery({
     queryKey: ['admin', 'labels'],
-    queryFn: () => getRepoLabels(authStore.token!),
+    queryFn: () => getRepoLabels(authStore.token!, authStore.user?.login ?? ''),
     staleTime: 60_000,
   })
 
@@ -66,7 +69,10 @@ export function useAdminLabels() {
       labelError.value = null
       await createRepoLabel(authStore.token!, name, color, description)
     },
-    onSuccess: invalidateLabels,
+    onSuccess: () => {
+      clearEtag(authStore.user?.login ?? '', labelsEtagKey)
+      invalidateLabels()
+    },
   })
 
   const updateLabelMutation = useMutation({
@@ -89,14 +95,20 @@ export function useAdminLabels() {
       labelError.value = null
       await updateRepoLabel(authStore.token!, oldName, newName, color, description)
     },
-    onSuccess: invalidateLabels,
+    onSuccess: () => {
+      clearEtag(authStore.user?.login ?? '', labelsEtagKey)
+      invalidateLabels()
+    },
   })
 
   const deleteLabelMutation = useMutation({
     mutationFn: async (name: string) => {
       await deleteRepoLabel(authStore.token!, name)
     },
-    onSuccess: invalidateLabels,
+    onSuccess: () => {
+      clearEtag(authStore.user?.login ?? '', labelsEtagKey)
+      invalidateLabels()
+    },
   })
 
   return {

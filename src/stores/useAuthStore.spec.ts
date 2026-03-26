@@ -3,10 +3,19 @@ import { setActivePinia, createPinia } from 'pinia'
 import { useAuthStore } from './useAuthStore'
 import * as octokit from '@/lib/github/octokit'
 import * as auth from '@/lib/github/auth'
+import * as etagModule from '@/lib/github/etag'
 
 vi.mock('@/lib/github/octokit')
 vi.mock('@/lib/github/auth')
 vi.mock('vue-sonner', () => ({ toast: { error: vi.fn() } }))
+vi.mock('@/lib/github/etag', () => ({
+  clearUserEtags: vi.fn(),
+  clearEtag: vi.fn(),
+  getEtag: vi.fn(),
+  setEtag: vi.fn(),
+  etagFetchWrapper: vi.fn(),
+  makeBoundFetch: vi.fn(),
+}))
 
 describe('useAuthStore', () => {
   beforeEach(() => {
@@ -160,6 +169,17 @@ describe('useAuthStore', () => {
     expect(store.user).toBeNull()
     expect(store.isMaintainer).toBe(false)
     expect(store.isAuthenticated).toBe(false)
+  })
+
+  it('logout calls clearUserEtags with user login', () => {
+    const store = useAuthStore()
+    store.receiveToken('tok')
+    // Manually set user (bypass fetchCurrentUser to avoid async)
+    store.user = { login: 'testuser', name: 'Test User', avatarUrl: '', bio: null, company: null, location: null, followers: 0, following: 0, publicRepos: 0 }
+
+    store.logout()
+
+    expect(etagModule.clearUserEtags).toHaveBeenCalledWith('testuser')
   })
 
   it('Test 11: INFR-07 regression — localStorage.setItem never called with token value after postMessage', async () => {

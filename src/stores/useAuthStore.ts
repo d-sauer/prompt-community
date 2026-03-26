@@ -4,6 +4,7 @@ import type { GitHubUser } from '@/types/index'
 import { createGraphqlClient } from '@/lib/github/octokit'
 import { GET_VIEWER } from '@/lib/github/queries'
 import { verifyMaintainerStatus } from '@/lib/github/auth'
+import { clearUserEtags } from '@/lib/github/etag'
 import { toast } from 'vue-sonner'
 
 export const useAuthStore = defineStore('auth', () => {
@@ -49,9 +50,11 @@ export const useAuthStore = defineStore('auth', () => {
   }
 
   function logout() {
+    const login = user.value?.login
     token.value = null
     user.value = null
     isMaintainer.value = false
+    if (login) clearUserEtags(login)
   }
 
   async function fetchCurrentUser(token: string): Promise<void> {

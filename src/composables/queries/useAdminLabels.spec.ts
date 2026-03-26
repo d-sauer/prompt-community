@@ -6,6 +6,7 @@ import { useAuthStore } from '@/stores/useAuthStore'
 import { useAdminLabels, validateLabel } from './useAdminLabels'
 import * as mutations from '@/lib/github/mutations'
 import * as queries from '@/lib/github/queries'
+import * as etag from '@/lib/github/etag'
 
 vi.mock('@/lib/github/mutations', () => ({
   addLabelToIssue: vi.fn().mockResolvedValue(undefined),
@@ -29,9 +30,19 @@ vi.mock('@/lib/github/queries', () => ({
   getIssueComments: vi.fn().mockResolvedValue([]),
 }))
 
+vi.mock('@/lib/github/etag', () => ({
+  clearEtag: vi.fn(),
+  clearUserEtags: vi.fn(),
+  getEtag: vi.fn(),
+  setEtag: vi.fn(),
+  etagFetchWrapper: vi.fn(),
+  makeBoundFetch: vi.fn(),
+}))
+
 const mockCreateRepoLabel = vi.mocked(mutations.createRepoLabel)
 const mockUpdateRepoLabel = vi.mocked(mutations.updateRepoLabel)
 const mockDeleteRepoLabel = vi.mocked(mutations.deleteRepoLabel)
+const mockClearEtag = vi.mocked(etag.clearEtag)
 
 function setupTest() {
   const queryClient = new QueryClient({
@@ -135,5 +146,44 @@ describe('useAdminLabels', () => {
 
     await composable.deleteLabelMutation.mutateAsync('flag:review')
     expect(mockDeleteRepoLabel).toHaveBeenCalledWith('test-token', 'flag:review')
+  })
+
+  it('createLabel onSuccess clears labels ETag', async () => {
+    const { composable } = setupTest()
+
+    await composable.createLabelMutation.mutateAsync({
+      name: 'category:test',
+      color: 'abc123',
+      description: 'Test',
+    })
+
+    await vi.waitFor(() => {
+      expect(mockClearEtag).toHaveBeenCalled()
+    })
+  })
+
+  it('updateLabel onSuccess clears labels ETag', async () => {
+    const { composable } = setupTest()
+
+    await composable.updateLabelMutation.mutateAsync({
+      oldName: 'category:writing',
+      newName: 'category:writing-updated',
+      color: 'abc123',
+      description: 'Updated',
+    })
+
+    await vi.waitFor(() => {
+      expect(mockClearEtag).toHaveBeenCalled()
+    })
+  })
+
+  it('deleteLabel onSuccess clears labels ETag', async () => {
+    const { composable } = setupTest()
+
+    await composable.deleteLabelMutation.mutateAsync('flag:review')
+
+    await vi.waitFor(() => {
+      expect(mockClearEtag).toHaveBeenCalled()
+    })
   })
 })
