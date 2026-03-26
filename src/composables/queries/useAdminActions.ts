@@ -28,6 +28,7 @@ export function useAdminActions() {
   function invalidateAdmin() {
     void queryClient.invalidateQueries({ queryKey: ['admin', 'queue'] })
     void queryClient.invalidateQueries({ queryKey: ['admin', 'stats'] })
+    void queryClient.invalidateQueries({ queryKey: ['admin', 'log'] })
   }
 
   const approveMutation = useMutation({

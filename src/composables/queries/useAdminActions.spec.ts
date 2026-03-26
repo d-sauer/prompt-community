@@ -140,5 +140,6 @@ describe('useAdminActions', () => {
 
     expect(invalidateSpy).toHaveBeenCalledWith({ queryKey: ['admin', 'queue'] })
     expect(invalidateSpy).toHaveBeenCalledWith({ queryKey: ['admin', 'stats'] })
+    expect(invalidateSpy).toHaveBeenCalledWith({ queryKey: ['admin', 'log'] })
   })
 })
