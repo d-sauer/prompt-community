@@ -74,6 +74,7 @@ router.beforeEach(async (to, from) => {
     }
     // Re-verify via GitHub API on every admin navigation (INFR-08)
     const confirmed = await verifyMaintainerStatus(authStore.token)
+    authStore.isMaintainer = confirmed
     if (!confirmed) return { path: '/browse' }
   }
 

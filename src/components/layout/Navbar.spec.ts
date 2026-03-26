@@ -99,7 +99,7 @@ const paletteConfig = (pinia: ReturnType<typeof createTestingPinia>) => ({
     // Expanded stubs: allow palette children to render
     CommandDialog: { template: '<div><slot /></div>' },
     CommandInput: {
-      template: '<input data-testid="cmd-input" />',
+      template: '<input data-testid="cmd-input" v-bind="$attrs" />',
       inheritAttrs: false,
     },
     CommandList: { template: '<div><slot /></div>' },
@@ -164,7 +164,7 @@ describe('Navbar command palette (SHEL-01)', () => {
     const searchStore = useSearchStore(pinia)
 
     const input = wrapper.find('[data-testid="cmd-input"]')
-    await input.trigger('input', { target: { value: 'python' } })
+    await input.setValue('python')
 
     expect(searchStore.setQuery).toHaveBeenCalledWith('python')
   })

@@ -1,14 +1,17 @@
 <script setup lang="ts">
+import { watch } from 'vue'
 import { useDark } from '@vueuse/core'
 import { RouterLink, useRouter } from 'vue-router'
 import { storeToRefs } from 'pinia'
 import { useAuthStore } from '@/stores/useAuthStore'
 import { useUIStore } from '@/stores/useUIStore'
+import { useSearchStore } from '@/stores/useSearchStore'
 import {
   CommandDialog,
   CommandInput,
   CommandList,
   CommandEmpty,
+  CommandItem,
 } from '@/components/ui/command'
 import {
   DropdownMenu,
@@ -24,11 +27,40 @@ import { Bell, Search, Menu, Plus, Moon, Sun } from 'lucide-vue-next'
 const router = useRouter()
 const authStore = useAuthStore()
 const uiStore = useUIStore()
+const searchStore = useSearchStore()
 
 const { isAuthenticated, user } = storeToRefs(authStore)
 const { commandPaletteOpen, notificationCount } = storeToRefs(uiStore)
+const { query: searchQuery, results: searchResults } = storeToRefs(searchStore)
 
 const isDark = useDark()
+
+const CATEGORY_COLORS: Record<string, string> = {
+  Coding:   '#3b82f6',
+  Writing:  '#10b981',
+  Analysis: '#f59e0b',
+  Creative: '#ec4899',
+  System:   '#8b5cf6',
+  Other:    '#6b7280',
+}
+
+function categoryColor(category: string): string {
+  return CATEGORY_COLORS[category] ?? CATEGORY_COLORS.Other
+}
+
+function onCommandInput(e: Event) {
+  searchStore.setQuery((e.target as HTMLInputElement).value)
+}
+
+function onSelectResult(prompt: { id: number | string; title: string; frontmatter: { category: string } }) {
+  searchStore.setQuery('')
+  uiStore.closeCommandPalette()
+  router.push(`/prompts/${prompt.id}`)
+}
+
+watch(commandPaletteOpen, (open) => {
+  if (!open) searchStore.setQuery('')
+})
 
 function openMobileSidebar() {
   uiStore.sidebarMobileOpen = true
@@ -182,9 +214,30 @@ function openMobileSidebar() {
 
     <!-- Command dialog (palette) -->
     <CommandDialog v-model:open="commandPaletteOpen">
-      <CommandInput placeholder="Search prompts..." />
+      <CommandInput
+        placeholder="Search prompts..."
+        @input="onCommandInput"
+      />
       <CommandList>
-        <CommandEmpty>No results found.</CommandEmpty>
+        <template v-if="searchQuery.trim()">
+          <CommandItem
+            v-for="prompt in searchResults.slice(0, 8)"
+            :key="prompt.id"
+            :value="prompt.title"
+            @select="onSelectResult(prompt)"
+          >
+            <span
+              class="size-2 rounded-full shrink-0"
+              :style="{ backgroundColor: categoryColor(prompt.frontmatter?.category ?? '') }"
+            />
+            <span class="font-medium flex-1 truncate">{{ prompt.title }}</span>
+            <span class="text-muted-foreground text-xs ml-auto shrink-0">{{ prompt.frontmatter?.category }}</span>
+          </CommandItem>
+          <CommandEmpty v-if="searchResults.length === 0">No results found.</CommandEmpty>
+        </template>
+        <template v-else>
+          <div class="py-6 text-center text-sm text-muted-foreground">Type to search prompts...</div>
+        </template>
       </CommandList>
     </CommandDialog>
   </nav>
