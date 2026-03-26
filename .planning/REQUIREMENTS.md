@@ -56,7 +56,7 @@ Requirements for initial release. All screens must ship together (experience MVP
 - [x] **USER-01**: Any user can authenticate via GitHub OAuth using a popup flow (no page redirect; popup closes automatically)
 - [x] **USER-02**: Authenticated user can sign out from the platform
 - [x] **USER-03**: Any user can view another user's public profile showing submissions and aggregate stats
-- [ ] **USER-04**: Authenticated user can view their own profile with submitted prompts, saved prompts, and activity tabs
+- [x] **USER-04**: Authenticated user can view their own profile with submitted prompts, saved prompts, and activity tabs
 - [x] **USER-05**: Authenticated user can bookmark/save a prompt to their saved tab (persisted to localStorage)
 - [x] **USER-06**: Authenticated user's profile displays total vote count and total submission count
 
@@ -73,7 +73,7 @@ Requirements for initial release. All screens must ship together (experience MVP
 
 ### App Shell & Navigation (SHEL)
 
-- [ ] **SHEL-01**: Any user can invoke global search from any screen using ⌘K keyboard shortcut
+- [x] **SHEL-01**: Any user can invoke global search from any screen using ⌘K keyboard shortcut
 - [x] **SHEL-02**: Any user can navigate to Browse (G+B) and New Prompt editor (G+N) via keyboard shortcuts
 - [x] **SHEL-03**: Any user can toggle between light and dark themes from the navbar, with preference persisted to localStorage
 - [x] **SHEL-04**: Any user can collapse the sidebar to icon-only mode (48px) to maximise content area
@@ -122,7 +122,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| SHEL-01 | Phase 6 | Pending |
+| SHEL-01 | Phase 6 | Complete |
 | SHEL-02 | Phase 1 | Complete |
 | SHEL-03 | Phase 1 | Complete |
 | SHEL-04 | Phase 1 | Complete |
@@ -173,7 +173,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | COMM-05 | Phase 3 | Complete |
 | COMM-06 | Phase 3 | Complete |
 | USER-03 | Phase 3 | Complete |
-| USER-04 | Phase 5 | Pending |
+| USER-04 | Phase 5 | Complete |
 | USER-05 | Phase 3 | Complete |
 | USER-06 | Phase 3 | Complete |
 | ADMN-01 | Phase 6 | Pending |

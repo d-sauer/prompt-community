@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: completed
-stopped_at: Phase 5 context gathered
-last_updated: "2026-03-26T10:07:25.421Z"
+stopped_at: Completed 05-fix-user-identity-01-PLAN.md
+last_updated: "2026-03-26T10:38:08.812Z"
 last_activity: 2026-03-25 — Phase 4 complete; all 12 plans done; v1.0 milestone achieved
 progress:
   total_phases: 7
-  completed_phases: 4
-  total_plans: 12
-  completed_plans: 12
+  completed_phases: 5
+  total_plans: 13
+  completed_plans: 13
   percent: 100
 ---
 
@@ -62,6 +62,7 @@ Progress: [██████████] 100%
 | Phase 04-admin-and-pwa P01 | 5min | 2 tasks | 8 files |
 | Phase 04-admin-and-pwa P03 | 5min | 2 tasks | 8 files |
 | Phase 04-admin-and-pwa P02 | 10min | 3 tasks | 17 files |
+| Phase 05-fix-user-identity P01 | 4min | 2 tasks | 7 files |
 
 ## Accumulated Context
 
@@ -103,6 +104,9 @@ Recent decisions affecting current work:
 - [Phase 04-admin-and-pwa]: Token stripped from QueuedAction.payload before localStorage.setItem — tested with spy assertion; vi.stubGlobal localStorage mock required in jsdom+spied environment
 - [Phase 04-admin-and-pwa]: bulkDelete/bulkApprove/bulkHide use sequential for...of (not Promise.all) to avoid GitHub API rate limit bursts
 - [Phase 04-admin-and-pwa]: validateLabel() returns null|string and blocks API call before network round-trip; window.confirm for label delete, shadcn Dialog for issue delete (irreversible)
+- [Phase 05-fix-user-identity]: GET_VIEWER uses followers/following/repositories connection totalCount fields — GitHub GraphQL API does not support scalar fields on viewer
+- [Phase 05-fix-user-identity]: ProfileRedirectView watch() + setTimeout pattern instead of synchronous router.replace — async fetch must resolve before redirect fires
+- [Phase 05-fix-user-identity]: Stub reka-ui-based DropdownMenuItem in Navbar tests to avoid MenuRootContext injection error in isolation mount
 
 ### Pending Todos
 
@@ -114,6 +118,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-26T10:07:25.419Z
-Stopped at: Phase 5 context gathered
-Resume file: .planning/phases/05-fix-user-identity/05-CONTEXT.md
+Last session: 2026-03-26T10:38:08.809Z
+Stopped at: Completed 05-fix-user-identity-01-PLAN.md
+Resume file: None
