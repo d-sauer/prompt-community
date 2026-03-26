@@ -16,8 +16,35 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [ ] **Phase 2: Read & Contribute** - Browse/discover prompts, content editor, and version history (the core product loop)
 - [x] **Phase 3: Community & Profiles** - Reactions, comments, user profiles, saves, and flags (completed 2026-03-15)
 - [x] **Phase 4: Admin & PWA** - Moderation panel, label management, offline support, and background sync
+- [ ] **Phase 5: Fix User Identity & Profile Navigation** - Implement fetchCurrentUser, fix /profile redirect race condition, wire Navbar Profile menu (gap closure)
+- [ ] **Phase 6: Fix Command Palette & Admin Sidebar** - Wire ⌘K search to useSearchStore, write isMaintainer after router guard verification (gap closure)
+- [ ] **Phase 7: Wire ETag Caching** - Integrate etagFetchWrapper into GitHub API request path to activate INFR-05 (gap closure)
 
 ## Phase Details
+
+### Phase 5: Fix User Identity & Profile Navigation
+**Goal:** `authStore.user` is populated after OAuth login; `/profile` redirects correctly; Navbar Profile menu item navigates
+**Requirements:** USER-04, SHEL-01 (cascade fix)
+**Gap Closure:** Closes gaps from v1.0 audit — fetchCurrentUser stub (critical), ProfileRedirectView race condition, dead Navbar Profile @click
+
+Plans:
+- [ ] 05-01-PLAN.md — Implement fetchCurrentUser (GraphQL viewer query), fix ProfileRedirectView async redirect, add @click to Navbar Profile DropdownMenuItem
+
+### Phase 6: Fix Command Palette & Admin Sidebar
+**Goal:** ⌘K search overlay shows real results from useSearchStore; sidebar admin links are visible to verified maintainers
+**Requirements:** SHEL-01, ADMN-01
+**Gap Closure:** Closes gaps from v1.0 audit — CommandList wired to useSearchStore, isMaintainer written back in router guard
+
+Plans:
+- [ ] 06-01-PLAN.md — Wire CommandInput + CommandItem list in Navbar.vue, write authStore.isMaintainer in router/index.ts
+
+### Phase 7: Wire ETag Caching
+**Goal:** All cacheable GitHub API reads send If-None-Match headers; 304 responses consume zero rate-limit quota
+**Requirements:** INFR-05
+**Gap Closure:** Closes gaps from v1.0 audit — etagFetchWrapper integrated into Octokit fetch adapter
+
+Plans:
+- [ ] 07-01-PLAN.md — Integrate etagFetchWrapper as fetch adapter in src/lib/github/octokit.ts
 
 ### Phase 1: Foundation
 **Goal**: The app shell is deployed and navigable; users can authenticate via GitHub OAuth and the GitHub API layer is operational
@@ -98,3 +125,6 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 | 2. Read & Contribute | 3/3 | Complete   | 2026-03-15 |
 | 3. Community & Profiles | 3/3 | Complete   | 2026-03-15 |
 | 4. Admin & PWA | 3/3 | Complete   | 2026-03-25 |
+| 5. Fix User Identity & Profile Navigation | 0/1 | Pending | — |
+| 6. Fix Command Palette & Admin Sidebar | 0/1 | Pending | — |
+| 7. Wire ETag Caching | 0/1 | Pending | — |

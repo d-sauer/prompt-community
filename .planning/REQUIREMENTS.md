@@ -56,13 +56,13 @@ Requirements for initial release. All screens must ship together (experience MVP
 - [x] **USER-01**: Any user can authenticate via GitHub OAuth using a popup flow (no page redirect; popup closes automatically)
 - [x] **USER-02**: Authenticated user can sign out from the platform
 - [x] **USER-03**: Any user can view another user's public profile showing submissions and aggregate stats
-- [x] **USER-04**: Authenticated user can view their own profile with submitted prompts, saved prompts, and activity tabs
+- [ ] **USER-04**: Authenticated user can view their own profile with submitted prompts, saved prompts, and activity tabs
 - [x] **USER-05**: Authenticated user can bookmark/save a prompt to their saved tab (persisted to localStorage)
 - [x] **USER-06**: Authenticated user's profile displays total vote count and total submission count
 
 ### Administration & Moderation (ADMN)
 
-- [x] **ADMN-01**: Maintainer/Curator can access the admin panel (non-maintainers redirected immediately)
+- [ ] **ADMN-01**: Maintainer/Curator can access the admin panel (non-maintainers redirected immediately)
 - [x] **ADMN-02**: Maintainer/Curator can view stats overview: total prompts, flagged count, featured count
 - [x] **ADMN-03**: Maintainer/Curator can view the moderation queue of flagged prompts
 - [x] **ADMN-04**: Maintainer/Curator can approve, hide, or delete prompts from the moderation queue
@@ -73,7 +73,7 @@ Requirements for initial release. All screens must ship together (experience MVP
 
 ### App Shell & Navigation (SHEL)
 
-- [x] **SHEL-01**: Any user can invoke global search from any screen using ⌘K keyboard shortcut
+- [ ] **SHEL-01**: Any user can invoke global search from any screen using ⌘K keyboard shortcut
 - [x] **SHEL-02**: Any user can navigate to Browse (G+B) and New Prompt editor (G+N) via keyboard shortcuts
 - [x] **SHEL-03**: Any user can toggle between light and dark themes from the navbar, with preference persisted to localStorage
 - [x] **SHEL-04**: Any user can collapse the sidebar to icon-only mode (48px) to maximise content area
@@ -88,7 +88,7 @@ Requirements for initial release. All screens must ship together (experience MVP
 - [x] **INFR-02**: Initial prompt list load < 2s (single GraphQL query + TanStack Query cache)
 - [x] **INFR-03**: Client-side search response < 50ms (MiniSearch — no network round-trip)
 - [x] **INFR-04**: GitHub OAuth popup completes token exchange in < 5s
-- [x] **INFR-05**: ETag conditional requests used for all cacheable GitHub API reads (304 responses = zero rate limit cost)
+- [ ] **INFR-05**: ETag conditional requests used for all cacheable GitHub API reads (304 responses = zero rate limit cost)
 - [x] **INFR-06**: MiniSearch index eliminates all dependency on GitHub Search API for user-facing search
 - [x] **INFR-07**: GitHub OAuth access tokens held in Pinia memory only — never localStorage or cookies
 - [x] **INFR-08**: Admin panel access control enforced via GitHub API on every panel load — client-side check alone not sufficient
@@ -122,7 +122,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| SHEL-01 | Phase 1 | Complete |
+| SHEL-01 | Phase 6 | Pending |
 | SHEL-02 | Phase 1 | Complete |
 | SHEL-03 | Phase 1 | Complete |
 | SHEL-04 | Phase 1 | Complete |
@@ -164,7 +164,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | INFR-01 | Phase 2 | Complete |
 | INFR-02 | Phase 2 | Complete |
 | INFR-03 | Phase 2 | Complete |
-| INFR-05 | Phase 2 | Complete |
+| INFR-05 | Phase 7 | Pending |
 | INFR-06 | Phase 2 | Complete |
 | COMM-01 | Phase 3 | Complete |
 | COMM-02 | Phase 3 | Complete |
@@ -173,10 +173,10 @@ Which phases cover which requirements. Updated during roadmap creation.
 | COMM-05 | Phase 3 | Complete |
 | COMM-06 | Phase 3 | Complete |
 | USER-03 | Phase 3 | Complete |
-| USER-04 | Phase 3 | Complete |
+| USER-04 | Phase 5 | Pending |
 | USER-05 | Phase 3 | Complete |
 | USER-06 | Phase 3 | Complete |
-| ADMN-01 | Phase 4 | Complete |
+| ADMN-01 | Phase 6 | Pending |
 | ADMN-02 | Phase 4 | Complete |
 | ADMN-03 | Phase 4 | Complete |
 | ADMN-04 | Phase 4 | Complete |
@@ -191,6 +191,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 - v1 requirements: 64 total (DISC×10, CONT×11, VERS×5, COMM×6, USER×6, ADMN×8, SHEL×8, INFR×10)
 - Mapped to phases: 64/64 ✓
 - Unmapped: 0 ✓
+- Pending (gap closure): 4 — SHEL-01 (Phase 6), USER-04 (Phase 5), ADMN-01 (Phase 6), INFR-05 (Phase 7)
 
 **Note:** The requirements file header stated 54 total but the actual count across all 8 categories is 64. All 64 are mapped.
 
