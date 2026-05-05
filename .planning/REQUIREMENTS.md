@@ -104,9 +104,9 @@ D1 FTS5 server-side search alongside MiniSearch for offline PWA browsing.
 
 Airplane-mode dev workflow with `wrangler dev`, local D1, and dev-login.
 
-- [ ] **DEV-01**: `.dev.vars` template documents `ENV`, `GITHUB_CLIENT_ID`, `GITHUB_CLIENT_SECRET`, `JWT_SECRET`
-- [ ] **DEV-02**: `.env.example` provides `VITE_API_URL=http://localhost:8787`
-- [ ] **DEV-03**: Two-terminal dev workflow (`npm run dev` + `wrangler dev`) documented in `CONTRIBUTING.md` or equivalent
+- [x] **DEV-01**: `.dev.vars` template documents `ENV`, `GITHUB_CLIENT_ID`, `GITHUB_CLIENT_SECRET`, `JWT_SECRET`
+- [x] **DEV-02**: `.env.example` provides `VITE_API_URL=http://localhost:8787`
+- [x] **DEV-03**: Two-terminal dev workflow (`npm run dev` + `wrangler dev`) documented in `CONTRIBUTING.md` or equivalent
 - [ ] **DEV-04**: Separate GitHub OAuth Apps registered for `dev` (localhost callback) and `prod`
 - [ ] **DEV-05**: Local D1 inspectable via `wrangler d1 execute --local` (documented)
 
@@ -181,9 +181,9 @@ Which phases cover which requirements. Updated during roadmap creation.
 | BACK-04 | Phase 9 | Pending |
 | BACK-05 | Phase 9 | Pending |
 | BACK-06 | Phase 9 | Pending |
-| DEV-01 | Phase 9 | Pending |
-| DEV-02 | Phase 9 | Pending |
-| DEV-03 | Phase 9 | Pending |
+| DEV-01 | Phase 9 | Complete |
+| DEV-02 | Phase 9 | Complete |
+| DEV-03 | Phase 9 | Complete |
 | DEV-05 | Phase 9 | Pending |
 | AUTH-01 | Phase 10 | Pending |
 | AUTH-02 | Phase 10 | Pending |
