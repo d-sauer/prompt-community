@@ -17,6 +17,10 @@ dist-ssr
 .env.local
 .env.*.local
 
+# Local secrets and env (templates are committed as *.example)
+.dev.vars
+.wrangler/
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

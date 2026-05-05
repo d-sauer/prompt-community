@@ -1,0 +1,6 @@
+# .dev.vars.example — copy to .dev.vars (gitignored) for local wrangler dev.
+# Loaded automatically by `wrangler dev` for the API worker.
+ENV=dev
+GITHUB_CLIENT_ID=Iv1.localdev...
+GITHUB_CLIENT_SECRET=xxx
+JWT_SECRET=any-random-string-for-dev
