@@ -48,9 +48,9 @@ created: 2026-05-05
 | 10-02-01 | 02 | 1 | AUTH-05 | integration | `npm run test:workers` | ❌ W0 | ⬜ pending |
 | 10-02-02 | 02 | 1 | AUTH-06 | integration | `npm run test:workers` | ❌ W0 | ⬜ pending |
 | 10-02-03 | 02 | 1 | AUTH-07 | integration | `npm run test:workers` | ❌ W0 | ⬜ pending |
-| 10-03-01 | 03 | 1 | AUTH-08 | integration | `npm run test:workers` | ❌ W0 | ⬜ pending |
-| 10-04-01 | 04 | 2 | AUTH-10 | unit (jsdom) | `npm run test` | ❌ W0 | ⬜ pending |
-| 10-05-01 | 05 | 2 | DEV-04 | manual | — | manual only | ⬜ pending |
+| 10-03-01 | 03 | 2 | AUTH-08 | integration | `npm run test:workers` | ❌ W0 | ⬜ pending |
+| 10-04-01 | 04 | 3 | AUTH-10 | unit (jsdom) | `npm run test` | ❌ W0 | ⬜ pending |
+| 10-04-02 | 04 | 3 | DEV-04 | manual | — | manual only | ⬜ pending |
 
 *Status: ⬜ pending · ✅ green · ❌ red · ⚠️ flaky*
 
