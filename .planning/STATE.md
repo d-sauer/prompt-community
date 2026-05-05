@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: Backend Migration
 status: planning
-stopped_at: Completed 09-backend-foundation/09-02-PLAN.md
-last_updated: "2026-05-05T11:52:51.396Z"
+stopped_at: Completed 09-backend-foundation/09-03-PLAN.md
+last_updated: "2026-05-05T11:56:38.725Z"
 last_activity: 2026-05-05 — Roadmap created; 7 phases defined, 81/81 v2.0 requirements mapped
 progress:
   total_phases: 7
   completed_phases: 0
   total_plans: 4
-  completed_plans: 2
+  completed_plans: 3
   percent: 0
 ---
 
@@ -52,6 +52,7 @@ Progress: [░░░░░░░░░░] 0%
 *Updated after each plan completion*
 | Phase 09-backend-foundation P01 | 4min | 3 tasks | 9 files |
 | Phase 09-backend-foundation P02 | 3min | 2 tasks | 15 files |
+| Phase 09-backend-foundation P03 | 2min | 2 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -70,6 +71,9 @@ Recent decisions affecting current work:
 - [Phase 09-backend-foundation]: D1 database_id kept as 'local' placeholder — wrangler d1 create requires auth; local D1 works; Plan 04 assigns real UUID for cloud
 - [Phase 09-backend-foundation]: vitest.config.ts exclude added for src/workers/** to prevent jsdom suite picking up cloudflare:test imports
 - [Phase 09-backend-foundation]: tsconfig.worker.json types extended with @cloudflare/vitest-pool-workers/types to resolve cloudflare:test for tsc
+- [Phase 09-backend-foundation]: tsNow sql template reused for all timestamp defaults — DRY + identical ISO 8601ms SQLite semantics
+- [Phase 09-backend-foundation]: moderation_log FKs have no onDelete:cascade — preserve audit trail even when prompt/user is removed
+- [Phase 09-backend-foundation]: FTS5 NOT in schema.ts per RESEARCH Pitfall 1 — virtual table owned by Plan 04 raw SQL migration
 
 ### Roadmap Evolution
 
@@ -85,6 +89,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-05-05T11:52:51.394Z
-Stopped at: Completed 09-backend-foundation/09-02-PLAN.md
+Last session: 2026-05-05T11:56:38.724Z
+Stopped at: Completed 09-backend-foundation/09-03-PLAN.md
 Resume file: None
