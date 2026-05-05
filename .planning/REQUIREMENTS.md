@@ -12,12 +12,12 @@ Requirements for the v2.0 milestone. Every REQ-ID maps to a roadmap phase.
 
 Hono API worker, Cloudflare D1, Drizzle ORM, schema, migrations.
 
-- [ ] **BACK-01**: Hono API worker scaffolded under `src/workers/api/` with route modules per resource
-- [ ] **BACK-02**: Cloudflare D1 binding configured in `wrangler.toml` for both local and production
+- [x] **BACK-01**: Hono API worker scaffolded under `src/workers/api/` with route modules per resource
+- [x] **BACK-02**: Cloudflare D1 binding configured in `wrangler.toml` for both local and production
 - [ ] **BACK-03**: Drizzle ORM schema defined for all tables: `users`, `prompts`, `prompt_tags`, `prompt_versions`, `comments`, `reactions`, `bookmarks`, `moderation_log`, `labels`, `notifications`
 - [ ] **BACK-04**: `drizzle-kit` migrations runnable via `drizzle-kit push` (dev) and `drizzle-kit migrate` (prod)
 - [ ] **BACK-05**: `npm run seed` script seeds dev users and sample prompts into local D1
-- [ ] **BACK-06**: API worker runs locally via `wrangler dev` against local D1 with no cloud dependencies
+- [x] **BACK-06**: API worker runs locally via `wrangler dev` against local D1 with no cloud dependencies
 
 ### Authentication (AUTH)
 
@@ -175,12 +175,12 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | REQ-ID | Phase | Status |
 |--------|-------|--------|
-| BACK-01 | Phase 9 | Pending |
-| BACK-02 | Phase 9 | Pending |
+| BACK-01 | Phase 9 | Complete |
+| BACK-02 | Phase 9 | Complete |
 | BACK-03 | Phase 9 | Pending |
 | BACK-04 | Phase 9 | Pending |
 | BACK-05 | Phase 9 | Pending |
-| BACK-06 | Phase 9 | Pending |
+| BACK-06 | Phase 9 | Complete |
 | DEV-01 | Phase 9 | Complete |
 | DEV-02 | Phase 9 | Complete |
 | DEV-03 | Phase 9 | Complete |
