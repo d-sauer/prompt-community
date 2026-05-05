@@ -28,8 +28,26 @@ forthcoming `/auth/dev-login` endpoint — see Phase 10).
    Fill in real values for `GITHUB_CLIENT_ID`, `GITHUB_CLIENT_SECRET`, `JWT_SECRET` in `.dev.vars`.
    `.env.local` defaults are fine for local dev.
 
-3. Local D1 setup — TBD (filled in by Plan 04 after the schema and migrations land).
-   <!-- PLAN-04: insert wrangler d1 create, drizzle-kit push, FTS5 migration, npm run seed steps -->
+3. Create the local D1 database (one time only):
+   ```bash
+   npx wrangler d1 create prompt-community-db
+   ```
+   Copy the `database_id` UUID it prints into `src/workers/api/wrangler.toml`
+   (replace the `database_id = "local"` placeholder).
+
+   If you are offline and cannot run `wrangler d1 create`, the placeholder
+   `"local"` works for local-only dev — you can revisit this step before
+   deploying.
+
+4. Bootstrap, migrate, and seed local D1:
+   ```bash
+   npm run db:setup     # bootstraps the local SQLite + applies schema + creates FTS5 table
+   npm run seed         # populates dev-user, dev-maintainer, and sample prompts
+   ```
+
+   `db:setup` is a composite of three commands you can run individually if
+   something fails: `db:bootstrap`, `db:push`, `db:fts5`. Re-running `seed`
+   is safe (idempotent via `INSERT OR IGNORE`).
 
 ### Two-terminal dev workflow
 
@@ -49,7 +67,29 @@ Both servers must be running for the SPA to talk to the API.
 
 ### Inspecting the local D1 database
 
-<!-- PLAN-04: document the wrangler d1 execute --local command + sample queries -->
+The local SQLite file lives under `.wrangler/state/v3/d1/miniflare-D1DatabaseObject/`
+(relative to `src/workers/api/`).
+Inspect it via `wrangler d1 execute --local`:
+
+```bash
+# List all tables
+npx wrangler d1 execute prompt-community-db --local \
+  --command "SELECT name FROM sqlite_master WHERE type='table'" \
+  --config src/workers/api/wrangler.toml
+
+# See seeded prompts
+npx wrangler d1 execute prompt-community-db --local \
+  --command "SELECT id, title, status FROM prompts" \
+  --config src/workers/api/wrangler.toml
+
+# FTS5 search test
+npx wrangler d1 execute prompt-community-db --local \
+  --command "SELECT title FROM prompts_fts WHERE prompts_fts MATCH 'bug'" \
+  --config src/workers/api/wrangler.toml
+```
+
+Resetting local D1: delete the `src/workers/api/.wrangler/state/v3/d1/` directory and re-run
+`npm run db:setup && npm run seed`.
 
 ## Tests
 
