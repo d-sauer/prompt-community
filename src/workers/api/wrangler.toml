@@ -1,0 +1,12 @@
+# src/workers/api/wrangler.toml
+# Wave 0 placeholder — Plan 02 fills in the full configuration.
+# Required for vitest-pool-workers to initialize the test pool.
+name = "prompt-community-api"
+main = "index.ts"
+compatibility_date = "2024-09-23"
+compatibility_flags = ["nodejs_compat"]
+
+[[d1_databases]]
+binding = "DB"
+database_name = "prompt-community-db"
+database_id = "placeholder-local-only"
