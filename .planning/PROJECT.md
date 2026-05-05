@@ -10,6 +10,22 @@ The v1.0 MVP shipped a complete feature set: full prompt lifecycle (browse → c
 
 Any employee can find a proven AI prompt and use it immediately — no login, no friction, zero time between discovery and value.
 
+## Current Milestone: v2.0 Backend Migration
+
+**Goal:** Replace the GitHub-Issues-as-database architecture with a first-party Cloudflare backend (Workers + D1 + Drizzle + Hono + JWT) while keeping the Vue 3 SPA UI and the GitHub OAuth login flow intact.
+
+**Source spec:** `design/change-request-v2.md` (PRD — locked)
+
+**Target deliverables:**
+- First-party REST API on Cloudflare Workers (Hono) with D1 storage and Drizzle ORM
+- OAuth → app JWT (HttpOnly cookie) replaces postMessage of GitHub access tokens
+- Server-side D1 FTS5 search; MiniSearch retained for offline PWA browsing
+- Frontend swap from `src/lib/github/*` to `src/lib/api/*` (UI components untouched)
+- Decommission `prompt-community-data` repo and v1 GitHub-Issues code paths
+- Local-first dev workflow (`wrangler dev` + local D1 + dev-login endpoint)
+
+**Out of v2.0 scope:** No data migration script (pre-launch confirmed — no production users on v1).
+
 ## Requirements
 
 ### Validated
@@ -28,11 +44,15 @@ Any employee can find a proven AI prompt and use it immediately — no login, no
 
 ### Active
 
-- [ ] Team collections — curated prompt sets per squad or domain (GROW-01)
-- [ ] Slack/Teams integration hooks for new/featured prompts (GROW-02)
-- [ ] AI-assisted discovery — surface prompts based on role or browsing behaviour (GROW-03)
-- [ ] Activity tab — user activity history (currently "coming soon" placeholder)
-- [ ] Human end-to-end verification of admin panel, PWA, and OAuth flows in live browser
+<!-- v2.0 Backend Migration — see REQUIREMENTS.md for full REQ-IDs -->
+
+- [ ] First-party backend on Cloudflare Workers + D1 + Drizzle (replaces GitHub Issues data store)
+- [ ] OAuth → JWT auth (HttpOnly cookie session, dev-login endpoint for offline development)
+- [ ] REST API surface for all read/write operations (prompts, comments, reactions, versions, admin)
+- [ ] Frontend rewired from `src/lib/github/*` → `src/lib/api/*` (UI untouched)
+- [ ] D1 FTS5 server-side search; MiniSearch retained for offline PWA
+- [ ] Decommission `prompt-community-data` repo and remove GitHub Issues code paths
+- [ ] Activity tab — wired to `/users/:login/activity` (replaces "coming soon" placeholder)
 
 ### Out of Scope
 
@@ -41,7 +61,15 @@ Any employee can find a proven AI prompt and use it immediately — no login, no
 - Mobile app — web-first; PWA covers mobile use case adequately
 - SSR / Nuxt 3 — no benefit when backend is GitHub API; static CDN is the right deployment model
 - GitHub App (vs OAuth App) — simpler setup for trusted internal users; upgrade path documented but deferred
-- Separate backend/database — zero-cost constraint; GitHub Issues + Cloudflare free tiers is the entire stack
+- ~~Separate backend/database — zero-cost constraint; GitHub Issues + Cloudflare free tiers is the entire stack~~ — **superseded in v2.0:** first-party backend on Cloudflare Workers + D1 stays within free tier while removing the GitHub-Issues-as-database leak
+
+## Future Milestones
+
+Tracked but deferred until v2.0 ships.
+
+- **Team collections** (GROW-01) — curated prompt sets per squad or domain
+- **Slack/Teams integration hooks** (GROW-02) — push new/featured prompts to chat
+- **AI-assisted discovery** (GROW-03) — surface prompts based on role or browsing behaviour
 
 ## Context
 
@@ -89,6 +117,11 @@ Any employee can find a proven AI prompt and use it immediately — no login, no
 | Octokit makeBoundFetch adapter for ETag | Hooks into Octokit's fetch layer without modifying query callsites | ✓ Good — 0 callsite changes needed |
 | ProfileRedirectView watch() + setTimeout pattern | Async fetchCurrentUser must resolve before redirect fires; synchronous router.replace races | ✓ Good — no race condition |
 | invalidateAdmin() centralizes all 3 cache keys | queue + stats + log invalidated together; all 7 mutations benefit automatically | ✓ Good — log freshness fixed |
+| First-party backend (CF Workers + D1 + Drizzle + Hono) for v2.0 | GitHub-Issues-as-database hit limits (5k/hr rate limit, no real schema, two-repo split, opaque maintainer check); first-party backend stays on Cloudflare free tier and removes the leak | — Pending |
+| App JWT in HttpOnly cookie (not localStorage) | XSS exfiltration resistance; same-site setup makes CORS straightforward | — Pending |
+| Drop ETag layer in v2.0 | Without GitHub's 5k/hr ceiling, TanStack Query staleTime + standard HTTP cache headers are sufficient | — Pending |
+| Keep MiniSearch client-side alongside D1 FTS5 | Offline PWA browsing is a hard requirement; D1 FTS5 handles fresh queries; MiniSearch handles offline | — Pending |
+| `/auth/dev-login` endpoint, env-gated | Airplane-mode dev + fast E2E tests without GitHub round-trip; route registered only when ENV=dev | — Pending |
 
 ---
-*Last updated: 2026-03-26 after v1.0 milestone*
+*Last updated: 2026-05-05 — v2.0 Backend Migration milestone started*
