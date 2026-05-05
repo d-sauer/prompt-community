@@ -2,12 +2,12 @@
 gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: Backend Migration
-status: defining_requirements
+status: ready_to_plan
 stopped_at: null
 last_updated: "2026-05-05T00:00:00.000Z"
-last_activity: 2026-05-05 — Milestone v2.0 Backend Migration started; defining requirements
+last_activity: 2026-05-05 — Roadmap created; 7 phases (09–15) defined, 81/81 requirements mapped
 progress:
-  total_phases: 0
+  total_phases: 7
   completed_phases: 0
   total_plans: 0
   completed_plans: 0
@@ -21,21 +21,21 @@ progress:
 See: .planning/PROJECT.md (updated 2026-05-05 — v2.0 Backend Migration started)
 
 **Core value:** Any employee can find a proven AI prompt and use it immediately — no login, no friction, zero time between discovery and value.
-**Current focus:** v2.0 Backend Migration — defining requirements; PRD locked at `design/change-request-v2.md`
+**Current focus:** v2.0 Backend Migration — Phase 9: Backend Foundation (ready to plan)
 
 ## Current Position
 
-Phase: Not started (defining requirements)
-Plan: —
-Status: Defining requirements
-Last activity: 2026-05-05 — Milestone v2.0 Backend Migration started
+Phase: 9 of 15 (Backend Foundation — v2.0 phase 1 of 7)
+Plan: — (not yet planned)
+Status: Ready to plan
+Last activity: 2026-05-05 — Roadmap created; 7 phases defined, 81/81 v2.0 requirements mapped
 
 Progress: [░░░░░░░░░░] 0%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 0
+- Total plans completed: 0 (v2.0)
 - Average duration: -
 - Total execution time: -
 
@@ -50,32 +50,22 @@ Progress: [░░░░░░░░░░] 0%
 - Trend: -
 
 *Updated after each plan completion*
-| Phase 01-foundation P01 | 8 | 2 tasks | 100 files |
-| Phase 01-foundation P02 | 3 | 2 tasks | 8 files |
-| Phase 01-foundation P03 | 20min | 3 tasks | 11 files |
-| Phase 02-read-and-contribute P01 | 9min | 3 tasks | 38 files |
-| Phase 02-read-and-contribute P02 | 9min | 3 tasks | 16 files |
-| Phase 02-read-and-contribute P03 | 5min | 2 tasks | 15 files |
-| Phase 03-community-and-profiles P01 | 6min | 2 tasks | 10 files |
-| Phase 03-community-and-profiles P02 | 3min | 2 tasks | 10 files |
-| Phase 03-community-and-profiles P03 | 12min | 2 tasks | 11 files |
-| Phase 04-admin-and-pwa P01 | 5min | 2 tasks | 8 files |
-| Phase 04-admin-and-pwa P03 | 5min | 2 tasks | 8 files |
-| Phase 04-admin-and-pwa P02 | 10min | 3 tasks | 17 files |
-| Phase 05-fix-user-identity P01 | 4min | 2 tasks | 7 files |
-| Phase 06-fix-command-palette-admin-sidebar P01 | 4min | 2 tasks | 4 files |
-| Phase 07-wire-etag-caching P01 | 6min | 3 tasks | 7 files |
-| Phase 08-fix-admin-search-tech-debt P01 | 2min | 3 tasks | 5 files |
 
 ## Accumulated Context
 
 ### Decisions
 
-Full decision log in PROJECT.md Key Decisions table (updated 2026-05-05 — v2.0 milestone added 5 architectural decisions).
+Full decision log in PROJECT.md Key Decisions table (updated 2026-05-05 — v2.0 added 5 architectural decisions).
+
+Recent decisions affecting current work:
+- App JWT in HttpOnly cookie (not localStorage) — XSS resistance; same-site CORS
+- Drop ETag layer in v2.0 — TanStack Query staleTime + standard cache headers replace it
+- Keep MiniSearch client-side alongside D1 FTS5 — offline PWA browsing is a hard requirement
+- `/auth/dev-login` endpoint, env-gated — airplane-mode dev without GitHub round-trip
 
 ### Roadmap Evolution
 
-- 2026-05-05: Milestone v2.0 "Backend Migration" started — 7 phases (9–15) planned per `design/change-request-v2.md`
+- 2026-05-05: Roadmap v2.0 created — 7 phases (9–15), 81/81 requirements mapped
 
 ### Pending Todos
 
@@ -88,5 +78,5 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-05-05T00:00:00.000Z
-Stopped at: v2.0 milestone initialization
+Stopped at: Roadmap creation complete; ready for `/gsd:plan-phase 9`
 Resume file: None

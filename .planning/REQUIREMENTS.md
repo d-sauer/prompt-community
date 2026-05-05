@@ -168,13 +168,95 @@ Explicitly excluded from v2.0. Documented to prevent scope creep.
 
 Which phases cover which requirements. Updated during roadmap creation.
 
-*(populated by `gsd-roadmapper`)*
-
 **Coverage:**
 - v2.0 requirements: 81 total
-- Mapped to phases: 0 (pending roadmap)
-- Unmapped: 81 ⚠️
+- Mapped to phases: 81
+- Unmapped: 0 ✓
+
+| REQ-ID | Phase | Status |
+|--------|-------|--------|
+| BACK-01 | Phase 9 | Pending |
+| BACK-02 | Phase 9 | Pending |
+| BACK-03 | Phase 9 | Pending |
+| BACK-04 | Phase 9 | Pending |
+| BACK-05 | Phase 9 | Pending |
+| BACK-06 | Phase 9 | Pending |
+| DEV-01 | Phase 9 | Pending |
+| DEV-02 | Phase 9 | Pending |
+| DEV-03 | Phase 9 | Pending |
+| DEV-05 | Phase 9 | Pending |
+| AUTH-01 | Phase 10 | Pending |
+| AUTH-02 | Phase 10 | Pending |
+| AUTH-03 | Phase 10 | Pending |
+| AUTH-04 | Phase 10 | Pending |
+| AUTH-05 | Phase 10 | Pending |
+| AUTH-06 | Phase 10 | Pending |
+| AUTH-07 | Phase 10 | Pending |
+| AUTH-08 | Phase 10 | Pending |
+| AUTH-09 | Phase 10 | Pending |
+| AUTH-10 | Phase 10 | Pending |
+| DEV-04 | Phase 10 | Pending |
+| API-01 | Phase 11 | Pending |
+| API-02 | Phase 11 | Pending |
+| API-03 | Phase 11 | Pending |
+| API-04 | Phase 11 | Pending |
+| API-05 | Phase 11 | Pending |
+| API-06 | Phase 11 | Pending |
+| API-07 | Phase 11 | Pending |
+| API-08 | Phase 11 | Pending |
+| API-09 | Phase 11 | Pending |
+| API-10 | Phase 11 | Pending |
+| SEARCH-01 | Phase 11 | Pending |
+| SEARCH-02 | Phase 11 | Pending |
+| API-11 | Phase 12 | Pending |
+| API-12 | Phase 12 | Pending |
+| API-13 | Phase 12 | Pending |
+| API-14 | Phase 12 | Pending |
+| API-15 | Phase 12 | Pending |
+| API-16 | Phase 12 | Pending |
+| API-17 | Phase 12 | Pending |
+| API-18 | Phase 12 | Pending |
+| API-19 | Phase 12 | Pending |
+| API-20 | Phase 12 | Pending |
+| API-21 | Phase 12 | Pending |
+| FRONT-01 | Phase 13 | Pending |
+| FRONT-02 | Phase 13 | Pending |
+| FRONT-03 | Phase 13 | Pending |
+| FRONT-04 | Phase 13 | Pending |
+| FRONT-05 | Phase 13 | Pending |
+| FRONT-06 | Phase 13 | Pending |
+| FRONT-07 | Phase 13 | Pending |
+| FRONT-08 | Phase 13 | Pending |
+| FRONT-09 | Phase 13 | Pending |
+| FRONT-10 | Phase 13 | Pending |
+| FRONT-11 | Phase 13 | Pending |
+| SEARCH-03 | Phase 13 | Pending |
+| SEARCH-04 | Phase 13 | Pending |
+| API-22 | Phase 14 | Pending |
+| API-23 | Phase 14 | Pending |
+| API-24 | Phase 14 | Pending |
+| API-25 | Phase 14 | Pending |
+| API-26 | Phase 14 | Pending |
+| API-27 | Phase 14 | Pending |
+| API-28 | Phase 14 | Pending |
+| DECOM-01 | Phase 15 | Pending |
+| DECOM-02 | Phase 15 | Pending |
+| DECOM-03 | Phase 15 | Pending |
+| DECOM-04 | Phase 15 | Pending |
+| DECOM-05 | Phase 15 | Pending |
+| DECOM-06 | Phase 15 | Pending |
+| DECOM-07 | Phase 15 | Pending |
+| DECOM-08 | Phase 15 | Pending |
+| DECOM-09 | Phase 15 | Pending |
+| DECOM-10 | Phase 15 | Pending |
+| DECOM-11 | Phase 15 | Pending |
+| DECOM-12 | Phase 15 | Pending |
+| DECOM-13 | Phase 15 | Pending |
+| DEPLOY-01 | Phase 15 | Pending |
+| DEPLOY-02 | Phase 15 | Pending |
+| DEPLOY-03 | Phase 15 | Pending |
+| DEPLOY-04 | Phase 15 | Pending |
 
 ---
 *Requirements defined: 2026-05-05*
-*Last updated: 2026-05-05 after initial definition*
+*Last updated: 2026-05-05 — traceability populated by gsd-roadmapper*
