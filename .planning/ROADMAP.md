@@ -63,7 +63,12 @@ Full archive: `.planning/milestones/v1.0-ROADMAP.md`
   3. A request to a protected endpoint without a valid JWT receives a 401 response; a request from a user whose `role` is not `maintainer` to a maintainer-only route receives a 403
   4. `POST /auth/dev-login` returns a valid JWT cookie for a seeded test user when `ENV=dev`, and returns 404 in production
   5. Separate GitHub OAuth Apps are configured for `dev` (localhost callback) and `prod` (deployed worker callback), switchable via `GITHUB_CLIENT_ID`/`GITHUB_CLIENT_SECRET`
-**Plans**: TBD
+**Plans**: 4 plans
+Plans:
+- [ ] 10-01-PLAN.md — Wave 0: test scaffolds for all auth behaviors (AUTH-01 through AUTH-10)
+- [ ] 10-02-PLAN.md — Wave 1: Env type refactor + GitHub OAuth login/callback handlers (AUTH-01, AUTH-02, AUTH-03, AUTH-04, AUTH-09)
+- [ ] 10-03-PLAN.md — Wave 1: Auth middleware (requireAuth, optionalAuth, requireMaintainer) + GET /me + POST /auth/dev-login (AUTH-05, AUTH-06, AUTH-07, AUTH-08)
+- [ ] 10-04-PLAN.md — Wave 2: useAuthStore rewrite + /auth/callback SPA route + DEV-04 docs (AUTH-10, DEV-04)
 
 ### Phase 11: Read API
 **Goal**: All read operations — prompts listing, single prompt, versions, comments, user profiles, activity, labels, notifications, and full-text search — are served by the Hono worker from D1, replacing GitHub API reads.
