@@ -15,8 +15,8 @@ Hono API worker, Cloudflare D1, Drizzle ORM, schema, migrations.
 - [x] **BACK-01**: Hono API worker scaffolded under `src/workers/api/` with route modules per resource
 - [x] **BACK-02**: Cloudflare D1 binding configured in `wrangler.toml` for both local and production
 - [x] **BACK-03**: Drizzle ORM schema defined for all tables: `users`, `prompts`, `prompt_tags`, `prompt_versions`, `comments`, `reactions`, `bookmarks`, `moderation_log`, `labels`, `notifications`
-- [ ] **BACK-04**: `drizzle-kit` migrations runnable via `drizzle-kit push` (dev) and `drizzle-kit migrate` (prod)
-- [ ] **BACK-05**: `npm run seed` script seeds dev users and sample prompts into local D1
+- [x] **BACK-04**: `drizzle-kit` migrations runnable via `drizzle-kit push` (dev) and `drizzle-kit migrate` (prod)
+- [x] **BACK-05**: `npm run seed` script seeds dev users and sample prompts into local D1
 - [x] **BACK-06**: API worker runs locally via `wrangler dev` against local D1 with no cloud dependencies
 
 ### Authentication (AUTH)
@@ -108,7 +108,7 @@ Airplane-mode dev workflow with `wrangler dev`, local D1, and dev-login.
 - [x] **DEV-02**: `.env.example` provides `VITE_API_URL=http://localhost:8787`
 - [x] **DEV-03**: Two-terminal dev workflow (`npm run dev` + `wrangler dev`) documented in `CONTRIBUTING.md` or equivalent
 - [ ] **DEV-04**: Separate GitHub OAuth Apps registered for `dev` (localhost callback) and `prod`
-- [ ] **DEV-05**: Local D1 inspectable via `wrangler d1 execute --local` (documented)
+- [x] **DEV-05**: Local D1 inspectable via `wrangler d1 execute --local` (documented)
 
 ### Deployment (DEPLOY)
 
@@ -178,13 +178,13 @@ Which phases cover which requirements. Updated during roadmap creation.
 | BACK-01 | Phase 9 | Complete |
 | BACK-02 | Phase 9 | Complete |
 | BACK-03 | Phase 9 | Complete |
-| BACK-04 | Phase 9 | Pending |
-| BACK-05 | Phase 9 | Pending |
+| BACK-04 | Phase 9 | Complete |
+| BACK-05 | Phase 9 | Complete |
 | BACK-06 | Phase 9 | Complete |
 | DEV-01 | Phase 9 | Complete |
 | DEV-02 | Phase 9 | Complete |
 | DEV-03 | Phase 9 | Complete |
-| DEV-05 | Phase 9 | Pending |
+| DEV-05 | Phase 9 | Complete |
 | AUTH-01 | Phase 10 | Pending |
 | AUTH-02 | Phase 10 | Pending |
 | AUTH-03 | Phase 10 | Pending |
