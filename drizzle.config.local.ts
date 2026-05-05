@@ -10,11 +10,11 @@ import { readdirSync } from 'node:fs'
 import path from 'node:path'
 
 function findLocalD1(): string {
-  const d1Dir = '.wrangler/state/v3/d1/miniflare-D1DatabaseObject'
+  const d1Dir = 'src/workers/api/.wrangler/state/v3/d1/miniflare-D1DatabaseObject'
   let files: string[] = []
   try {
     files = readdirSync(d1Dir).filter((f) => f.endsWith('.sqlite'))
-  } catch (err) {
+  } catch {
     throw new Error(
       `Local D1 directory not found at ${d1Dir}. ` +
       `Bootstrap first: npm run db:bootstrap`
@@ -33,4 +33,9 @@ export default defineConfig({
   schema: './src/workers/api/db/schema.ts',
   dialect: 'sqlite',
   dbCredentials: { url: findLocalD1() },
+  // Exclude FTS5 virtual tables and drizzle-kit internal tables from push/introspect.
+  // FTS5 tables (prompts_fts and its internal shadow tables) are managed by
+  // 0002_fts5.sql, not drizzle-kit (RESEARCH.md Pitfall 1).
+  // _cf_METADATA is a Cloudflare D1 internal table that must not be touched.
+  tablesFilter: ['!prompts_fts', '!prompts_fts_*', '!_cf_METADATA'],
 })
