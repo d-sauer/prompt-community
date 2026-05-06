@@ -3,7 +3,7 @@
 import type { MiddlewareHandler } from 'hono'
 import type { Env } from '../index'
 
-export const requireAuth = (): MiddlewareHandler<{ Bindings: Env }> => async (c, next) => {
+export const requireAuth = (): MiddlewareHandler<Env> => async (c, next) => {
   // TODO(Phase 10): verify JWT from HttpOnly cookie, attach user to c.set('user', ...)
   await next()
 }

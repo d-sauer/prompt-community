@@ -12,16 +12,29 @@ import users from './routes/users'
 import search from './routes/search'
 import admin from './routes/admin'
 
-export type Env = {
-  DB: D1Database
-  ENV: string
-  APP_ORIGIN: string
-  GITHUB_CLIENT_ID?: string
-  GITHUB_CLIENT_SECRET?: string
-  JWT_SECRET?: string
+export type UserContext = {
+  id: string
+  login: string
+  name: string | null
+  avatar_url: string | null
+  role: 'user' | 'maintainer'
 }
 
-const app = new Hono<{ Bindings: Env }>()
+export type Env = {
+  Bindings: {
+    DB: D1Database
+    ENV: string
+    APP_ORIGIN: string
+    GITHUB_CLIENT_ID?: string
+    GITHUB_CLIENT_SECRET?: string
+    JWT_SECRET?: string
+  }
+  Variables: {
+    user: UserContext | null
+  }
+}
+
+const app = new Hono<Env>()
 
 // CORS — Vite frontend on :5173 talks to API on :8787. credentials:true is required
 // for Phase 10's HttpOnly cookie session.
