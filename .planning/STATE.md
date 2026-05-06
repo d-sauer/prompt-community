@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: Backend Migration
 status: planning
-stopped_at: Completed 11-read-api 11-01-PLAN.md
-last_updated: "2026-05-06T19:12:17.957Z"
+stopped_at: Completed 11-read-api 11-03-PLAN.md
+last_updated: "2026-05-06T19:20:47.289Z"
 last_activity: 2026-05-05 — Roadmap created; 7 phases defined, 81/81 v2.0 requirements mapped
 progress:
   total_phases: 7
   completed_phases: 2
   total_plans: 12
-  completed_plans: 9
+  completed_plans: 10
   percent: 0
 ---
 
@@ -59,6 +59,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 10-auth-migration P03 | 4min | 2 tasks | 4 files |
 | Phase 10-auth-migration P04 | 8min | 2 tasks | 4 files |
 | Phase 11-read-api P01 | 10min | 2 tasks | 4 files |
+| Phase 11-read-api P03 | 8min | 2 tasks | 1 files |
 
 ## Accumulated Context
 
@@ -97,6 +98,8 @@ Recent decisions affecting current work:
 - [Phase 11-read-api]: notifications.spec.ts 401 test confirms /notifications is not yet mounted (returns 404 from Hono) — Phase 11 plan-N creates route and mounts it
 - [Phase 11-read-api]: search.spec.ts uses 'bug' as seed-data probe word — appears in seeded prompt title, reliable FTS5 match
 - [Phase 11-read-api]: TDD RED spec pattern: seeded IDs declared as named constants at top of each spec, pagination shape asserted on all list endpoints before implementation
+- [Phase 11-read-api]: Activity feed derives from prompts table (status=published, author_id=user.id) not a separate activity_log table — keeps schema lean for v2.0
+- [Phase 11-read-api]: inArray() from drizzle-orm used for multi-ID WHERE IN clause — column.in() is not a valid Drizzle API
 
 ### Roadmap Evolution
 
@@ -112,6 +115,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-05-06T19:12:17.955Z
-Stopped at: Completed 11-read-api 11-01-PLAN.md
+Last session: 2026-05-06T19:20:47.287Z
+Stopped at: Completed 11-read-api 11-03-PLAN.md
 Resume file: None
