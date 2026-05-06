@@ -132,6 +132,37 @@ auth.get('/callback', async (c) => {
   return c.redirect(`${c.env.APP_ORIGIN}/auth/callback`)
 })
 
+auth.post('/dev-login', async (c) => {
+  if (c.env.ENV !== 'dev') return c.notFound()
+  if (!c.env.JWT_SECRET) throw new Error('JWT_SECRET not configured')
+
+  const body = await c.req.json<{ role?: 'user' | 'maintainer' }>().catch(() => ({}))
+  const role = body?.role === 'maintainer' ? 'maintainer' : 'user'
+  const fixtureId = role === 'maintainer' ? '01DEVMAINT00000000000000001' : '01DEVUSER000000000000000001'
+  const fixtureLogin = role === 'maintainer' ? 'dev-maintainer' : 'dev-user'
+
+  const token = await sign(
+    {
+      sub: fixtureId,
+      role,
+      login: fixtureLogin,
+      name: fixtureLogin,
+      avatar_url: null,
+      exp: Math.floor(Date.now() / 1000) + SEVEN_DAYS,
+    },
+    c.env.JWT_SECRET,
+    'HS256',
+  )
+  setCookie(c, 'pc_session', token, {
+    httpOnly: true,
+    secure: true,
+    sameSite: 'Lax',
+    maxAge: SEVEN_DAYS,
+    path: '/',
+  })
+  return c.json({ ok: true, role })
+})
+
 // Catch-all: return 400 for unrecognised /auth/* paths (avoids top-level 404 which would
 // cause the boot test to think the route is unregistered)
 auth.all('*', (c) => c.json({ error: 'not_found' }, 400))

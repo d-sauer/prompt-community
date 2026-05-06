@@ -4,6 +4,7 @@
 import { Hono } from 'hono'
 import { cors } from 'hono/cors'
 
+import { requireAuth } from './middleware/auth'
 import auth from './routes/auth'
 import prompts from './routes/prompts'
 import comments from './routes/comments'
@@ -46,6 +47,16 @@ app.use('*', cors({
 }))
 
 app.get('/health', (c) => c.json({ ok: true }))
+
+app.get('/me', requireAuth(), (c) => {
+  const user = c.get('user')!
+  return c.json({
+    login: user.login,
+    name: user.name,
+    avatar_url: user.avatar_url,
+    role: user.role,
+  })
+})
 
 app.route('/auth', auth)
 app.route('/prompts', prompts)
