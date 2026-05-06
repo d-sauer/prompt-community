@@ -88,3 +88,35 @@ describe('GET /search — SEARCH-01, SEARCH-02', () => {
     expect(Array.isArray(body.data)).toBe(true)
   })
 })
+
+describe('GET /labels — API-09', () => {
+  it('returns 200 with grouped label taxonomy', async () => {
+    const req = new Request('http://localhost/labels')
+    const res = await request(req)
+
+    expect(res.status).toBe(200)
+    const body = await res.json<Record<string, unknown>>()
+    expect(body).toHaveProperty('categories')
+    expect(body).toHaveProperty('models')
+    expect(body).toHaveProperty('difficulties')
+    expect(body).toHaveProperty('tags')
+    expect(Array.isArray(body.categories)).toBe(true)
+    expect(Array.isArray(body.models)).toBe(true)
+    expect(Array.isArray(body.difficulties)).toBe(true)
+    expect(Array.isArray(body.tags)).toBe(true)
+  })
+
+  it('returns Cache-Control: public, max-age=300 header', async () => {
+    const req = new Request('http://localhost/labels')
+    const res = await request(req)
+
+    expect(res.headers.get('Cache-Control')).toBe('public, max-age=300')
+  })
+
+  it('GET /search/labels returns 404 (labels not nested under /search)', async () => {
+    const req = new Request('http://localhost/search/labels')
+    const res = await request(req)
+
+    expect(res.status).toBe(404)
+  })
+})
