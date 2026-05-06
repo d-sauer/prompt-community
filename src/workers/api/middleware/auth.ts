@@ -7,3 +7,8 @@ export const requireAuth = (): MiddlewareHandler<Env> => async (c, next) => {
   // TODO(Phase 10): verify JWT from HttpOnly cookie, attach user to c.set('user', ...)
   await next()
 }
+
+export const optionalAuth = (): MiddlewareHandler<Env> => async (c, next) => {
+  // TODO(Phase 10): if cookie present and valid, attach user to c.set('user', ...); always call next()
+  await next()
+}
