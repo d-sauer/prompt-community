@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: Backend Migration
 status: planning
-stopped_at: Phase 11 context gathered
-last_updated: "2026-05-06T18:57:37.056Z"
+stopped_at: Completed 11-read-api 11-01-PLAN.md
+last_updated: "2026-05-06T19:12:17.957Z"
 last_activity: 2026-05-05 — Roadmap created; 7 phases defined, 81/81 v2.0 requirements mapped
 progress:
   total_phases: 7
   completed_phases: 2
-  total_plans: 8
-  completed_plans: 8
+  total_plans: 12
+  completed_plans: 9
   percent: 0
 ---
 
@@ -58,6 +58,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 10-auth-migration P02 | 25 | 2 tasks | 12 files |
 | Phase 10-auth-migration P03 | 4min | 2 tasks | 4 files |
 | Phase 10-auth-migration P04 | 8min | 2 tasks | 4 files |
+| Phase 11-read-api P01 | 10min | 2 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -93,6 +94,9 @@ Recent decisions affecting current work:
 - [Phase 10-auth-migration]: AuthCallbackView only calls window.close() — no fetch, no state, minimal popup concern
 - [Phase 10-auth-migration]: logout() clears user.value only — POST /auth/logout deferred to Phase 13 (cookie has 7-day hard expiry)
 - [Phase 10-auth-migration]: Poll-on-close popup pattern established: setInterval(200ms) checks popup.closed, calls fetchMe() on close — no postMessage
+- [Phase 11-read-api]: notifications.spec.ts 401 test confirms /notifications is not yet mounted (returns 404 from Hono) — Phase 11 plan-N creates route and mounts it
+- [Phase 11-read-api]: search.spec.ts uses 'bug' as seed-data probe word — appears in seeded prompt title, reliable FTS5 match
+- [Phase 11-read-api]: TDD RED spec pattern: seeded IDs declared as named constants at top of each spec, pagination shape asserted on all list endpoints before implementation
 
 ### Roadmap Evolution
 
@@ -108,6 +112,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-05-06T18:57:37.054Z
-Stopped at: Phase 11 context gathered
-Resume file: .planning/phases/11-read-api/11-CONTEXT.md
+Last session: 2026-05-06T19:12:17.955Z
+Stopped at: Completed 11-read-api 11-01-PLAN.md
+Resume file: None

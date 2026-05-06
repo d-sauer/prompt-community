@@ -40,16 +40,16 @@ REST endpoints for all read and write operations, plus admin and moderation surf
 
 #### Read endpoints
 
-- [ ] **API-01**: `GET /prompts` lists prompts with `category`, `model`, `difficulty`, `sort`, `cursor` query params
-- [ ] **API-02**: `GET /prompts/:id` returns a single prompt with author, tags, and reaction counts
-- [ ] **API-03**: `GET /prompts/:id/versions` lists version history with author and `created_at`
-- [ ] **API-04**: `GET /prompts/:id/comments` lists comments for a prompt
-- [ ] **API-05**: `GET /search?q=` performs server-side full-text search via D1 FTS5
-- [ ] **API-06**: `GET /users/:login` returns a user's public profile
-- [ ] **API-07**: `GET /users/:login/prompts` returns the user's submissions
-- [ ] **API-08**: `GET /users/:login/activity` returns the user's activity feed (replaces "coming soon" placeholder)
-- [ ] **API-09**: `GET /labels` lists labels (categories, models, difficulties, tags)
-- [ ] **API-10**: `GET /notifications` returns the current user's notifications
+- [x] **API-01**: `GET /prompts` lists prompts with `category`, `model`, `difficulty`, `sort`, `cursor` query params
+- [x] **API-02**: `GET /prompts/:id` returns a single prompt with author, tags, and reaction counts
+- [x] **API-03**: `GET /prompts/:id/versions` lists version history with author and `created_at`
+- [x] **API-04**: `GET /prompts/:id/comments` lists comments for a prompt
+- [x] **API-05**: `GET /search?q=` performs server-side full-text search via D1 FTS5
+- [x] **API-06**: `GET /users/:login` returns a user's public profile
+- [x] **API-07**: `GET /users/:login/prompts` returns the user's submissions
+- [x] **API-08**: `GET /users/:login/activity` returns the user's activity feed (replaces "coming soon" placeholder)
+- [x] **API-09**: `GET /labels` lists labels (categories, models, difficulties, tags)
+- [x] **API-10**: `GET /notifications` returns the current user's notifications
 
 #### Write endpoints
 
@@ -95,8 +95,8 @@ Replace `src/lib/github/*` consumers with `src/lib/api/*`. UI components remain 
 
 D1 FTS5 server-side search alongside MiniSearch for offline PWA browsing.
 
-- [ ] **SEARCH-01**: D1 FTS5 virtual table indexes prompt `title`, `body`, and `tags`
-- [ ] **SEARCH-02**: `GET /search` uses FTS5 `MATCH` for ranked results
+- [x] **SEARCH-01**: D1 FTS5 virtual table indexes prompt `title`, `body`, and `tags`
+- [x] **SEARCH-02**: `GET /search` uses FTS5 `MATCH` for ranked results
 - [ ] **SEARCH-03**: MiniSearch client-side index retained for offline PWA browsing (built from API responses)
 - [ ] **SEARCH-04**: Service worker continues caching prompt list responses for offline read
 
@@ -196,18 +196,18 @@ Which phases cover which requirements. Updated during roadmap creation.
 | AUTH-09 | Phase 10 | Complete |
 | AUTH-10 | Phase 10 | Complete |
 | DEV-04 | Phase 10 | Complete |
-| API-01 | Phase 11 | Pending |
-| API-02 | Phase 11 | Pending |
-| API-03 | Phase 11 | Pending |
-| API-04 | Phase 11 | Pending |
-| API-05 | Phase 11 | Pending |
-| API-06 | Phase 11 | Pending |
-| API-07 | Phase 11 | Pending |
-| API-08 | Phase 11 | Pending |
-| API-09 | Phase 11 | Pending |
-| API-10 | Phase 11 | Pending |
-| SEARCH-01 | Phase 11 | Pending |
-| SEARCH-02 | Phase 11 | Pending |
+| API-01 | Phase 11 | Complete |
+| API-02 | Phase 11 | Complete |
+| API-03 | Phase 11 | Complete |
+| API-04 | Phase 11 | Complete |
+| API-05 | Phase 11 | Complete |
+| API-06 | Phase 11 | Complete |
+| API-07 | Phase 11 | Complete |
+| API-08 | Phase 11 | Complete |
+| API-09 | Phase 11 | Complete |
+| API-10 | Phase 11 | Complete |
+| SEARCH-01 | Phase 11 | Complete |
+| SEARCH-02 | Phase 11 | Complete |
 | API-11 | Phase 12 | Pending |
 | API-12 | Phase 12 | Pending |
 | API-13 | Phase 12 | Pending |
