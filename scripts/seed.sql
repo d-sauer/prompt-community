@@ -1,13 +1,13 @@
 -- scripts/seed.sql
 -- Local-D1 seed data. Idempotent via INSERT OR IGNORE on PK uniqueness.
--- Re-runnable safely; will not duplicate rows.
+-- Re-runnable safely (will not duplicate rows).
 
 -- Users (dev-user + dev-maintainer match Phase 10's dev-login fixture set)
 INSERT OR IGNORE INTO users (id, github_id, github_login, name, role) VALUES
   ('01DEVUSER000000000000000001', 999001, 'dev-user',       'Dev User',       'user'),
   ('01DEVMAINT00000000000000001', 999002, 'dev-maintainer', 'Dev Maintainer', 'maintainer');
 
--- Labels (admin-managed taxonomy — Phase 14 manages CRUD; seeded for the Browse screen)
+-- Labels (admin-managed taxonomy — Phase 14 manages CRUD, seeded for the Browse screen)
 INSERT OR IGNORE INTO labels (id, prefix, value, color, description) VALUES
   ('01LABEL00000000000000000001', 'category',   'engineering',       '#3b82f6', 'Software engineering prompts'),
   ('01LABEL00000000000000000002', 'category',   'productivity',      '#10b981', 'Productivity and meeting prompts'),
