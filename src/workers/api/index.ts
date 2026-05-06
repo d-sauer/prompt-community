@@ -8,6 +8,7 @@ import { requireAuth } from './middleware/auth'
 import auth from './routes/auth'
 import prompts from './routes/prompts'
 import comments from './routes/comments'
+import labels from './routes/labels'
 import reactions from './routes/reactions'
 import users from './routes/users'
 import search from './routes/search'
@@ -62,6 +63,7 @@ app.get('/me', requireAuth(), (c) => {
 app.route('/auth', auth)
 app.route('/prompts', prompts)
 app.route('/comments', comments)
+app.route('/labels', labels)
 app.route('/reactions', reactions)
 app.route('/users', users)
 app.route('/search', search)
