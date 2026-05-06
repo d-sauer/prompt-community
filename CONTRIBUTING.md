@@ -49,6 +49,44 @@ forthcoming `/auth/dev-login` endpoint — see Phase 10).
    something fails: `db:bootstrap`, `db:push`, `db:fts5`. Re-running `seed`
    is safe (idempotent via `INSERT OR IGNORE`).
 
+### GitHub OAuth Setup (DEV-04)
+
+The GitHub OAuth login flow requires two separate GitHub OAuth Apps — one for local development and one for production. This is because each OAuth App has a fixed callback URL.
+
+**Register GitHub OAuth Apps:**
+
+Go to: GitHub Settings → Developer Settings → OAuth Apps → New OAuth App
+
+**Dev app (for local development):**
+- Application name: `prompt-community-dev` (or similar)
+- Homepage URL: `http://localhost:5173`
+- Authorization callback URL: `http://localhost:8787/auth/callback`
+
+After creating the dev app, copy the Client ID and generate a Client Secret.
+
+**Prod app (for production deployment):**
+- Application name: `prompt-community`
+- Homepage URL: `https://YOUR_WORKER.workers.dev`
+- Authorization callback URL: `https://YOUR_WORKER.workers.dev/auth/callback`
+
+**Switching between dev and prod:**
+
+Local dev — set in `.dev.vars` (gitignored):
+```
+GITHUB_CLIENT_ID=<dev-app-client-id>
+GITHUB_CLIENT_SECRET=<dev-app-client-secret>
+JWT_SECRET=<any-random-secret-for-local>
+```
+
+Production — set via wrangler secrets:
+```bash
+wrangler secret put GITHUB_CLIENT_ID --config src/workers/api/wrangler.toml
+wrangler secret put GITHUB_CLIENT_SECRET --config src/workers/api/wrangler.toml
+wrangler secret put JWT_SECRET --config src/workers/api/wrangler.toml
+```
+
+There is no code change needed to switch environments — the correct `GITHUB_CLIENT_ID` and `GITHUB_CLIENT_SECRET` are selected automatically by which values are present in `.dev.vars` vs wrangler secrets.
+
 ### Two-terminal dev workflow
 
 Run these in two separate terminals from the project root:
