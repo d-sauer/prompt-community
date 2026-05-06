@@ -3,8 +3,8 @@ gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: Backend Migration
 status: planning
-stopped_at: Completed 11-read-api 11-02-PLAN.md
-last_updated: "2026-05-06T19:23:20.050Z"
+stopped_at: Completed 11-read-api 11-04-PLAN.md
+last_updated: "2026-05-06T19:23:28.476Z"
 last_activity: 2026-05-05 — Roadmap created; 7 phases defined, 81/81 v2.0 requirements mapped
 progress:
   total_phases: 7
@@ -105,6 +105,9 @@ Recent decisions affecting current work:
 - [Phase 11-read-api]: Seed SQL injection via vitest provide/inject for worker test environments requiring seeded D1 data
 - [Phase 11-read-api]: trimTrailingSlash() middleware added to all Hono sub-apps — sub-app GET / does not match /prefix/ trailing slash requests
 - [Phase 11-read-api]: inArray() batch queries + JS aggregation for reaction counts and tags in listing — avoids D1 GROUP BY subquery limitations
+- [Phase 11-read-api]: Raw D1 prepare() used for FTS5 MATCH queries — Drizzle ORM cannot query FTS5 virtual tables
+- [Phase 11-read-api]: GET /labels groups labels by prefix in JS — simple aggregation consistent with codebase patterns
+- [Phase 11-read-api]: trimTrailingSlash added to all route files — fixes trailing slash 404s in boot test after stub replacement
 
 ### Roadmap Evolution
 
@@ -120,6 +123,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-05-06T19:23:10.959Z
-Stopped at: Completed 11-read-api 11-02-PLAN.md
+Last session: 2026-05-06T19:23:28.474Z
+Stopped at: Completed 11-read-api 11-04-PLAN.md
 Resume file: None
