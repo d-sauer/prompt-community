@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: Backend Migration
 status: planning
-stopped_at: Completed 11-read-api 11-03-PLAN.md
-last_updated: "2026-05-06T19:20:47.289Z"
+stopped_at: Completed 11-read-api 11-02-PLAN.md
+last_updated: "2026-05-06T19:23:20.050Z"
 last_activity: 2026-05-05 — Roadmap created; 7 phases defined, 81/81 v2.0 requirements mapped
 progress:
   total_phases: 7
-  completed_phases: 2
+  completed_phases: 3
   total_plans: 12
-  completed_plans: 10
+  completed_plans: 12
   percent: 0
 ---
 
@@ -60,6 +60,8 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 10-auth-migration P04 | 8min | 2 tasks | 4 files |
 | Phase 11-read-api P01 | 10min | 2 tasks | 4 files |
 | Phase 11-read-api P03 | 8min | 2 tasks | 1 files |
+| Phase 11-read-api P02 | 525533min | 2 tasks | 5 files |
+| Phase 11-read-api P04 | 8min | 2 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -100,6 +102,9 @@ Recent decisions affecting current work:
 - [Phase 11-read-api]: TDD RED spec pattern: seeded IDs declared as named constants at top of each spec, pagination shape asserted on all list endpoints before implementation
 - [Phase 11-read-api]: Activity feed derives from prompts table (status=published, author_id=user.id) not a separate activity_log table — keeps schema lean for v2.0
 - [Phase 11-read-api]: inArray() from drizzle-orm used for multi-ID WHERE IN clause — column.in() is not a valid Drizzle API
+- [Phase 11-read-api]: Seed SQL injection via vitest provide/inject for worker test environments requiring seeded D1 data
+- [Phase 11-read-api]: trimTrailingSlash() middleware added to all Hono sub-apps — sub-app GET / does not match /prefix/ trailing slash requests
+- [Phase 11-read-api]: inArray() batch queries + JS aggregation for reaction counts and tags in listing — avoids D1 GROUP BY subquery limitations
 
 ### Roadmap Evolution
 
@@ -115,6 +120,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-05-06T19:20:47.287Z
-Stopped at: Completed 11-read-api 11-03-PLAN.md
+Last session: 2026-05-06T19:23:10.959Z
+Stopped at: Completed 11-read-api 11-02-PLAN.md
 Resume file: None
