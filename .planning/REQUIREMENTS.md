@@ -95,7 +95,7 @@ Replace `src/lib/github/*` consumers with `src/lib/api/*`. UI components remain 
 
 D1 FTS5 server-side search alongside MiniSearch for offline PWA browsing.
 
-- [x] **SEARCH-01**: D1 FTS5 virtual table indexes prompt `title`, `body`, and `tags`
+- [x] **SEARCH-01**: D1 FTS5 virtual table indexes prompt `title` and `body` (tags are fetched from `prompt_tags` via JS aggregation after FTS5 match — no FTS5 column needed)
 - [x] **SEARCH-02**: `GET /search` uses FTS5 `MATCH` for ranked results
 - [ ] **SEARCH-03**: MiniSearch client-side index retained for offline PWA browsing (built from API responses)
 - [ ] **SEARCH-04**: Service worker continues caching prompt list responses for offline read
