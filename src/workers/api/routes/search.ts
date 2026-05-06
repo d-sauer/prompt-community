@@ -1,12 +1,14 @@
 // src/workers/api/routes/search.ts
 // Phase 11 Plan 04 — GET /search (FTS5) and GET /labels
 import { Hono } from 'hono'
+import { trimTrailingSlash } from 'hono/trailing-slash'
 import { drizzle } from 'drizzle-orm/d1'
 import { asc } from 'drizzle-orm'
 import type { Env } from '../index'
 import * as schema from '../db/schema'
 
 const app = new Hono<Env>()
+app.use('*', trimTrailingSlash())
 
 // GET /search?q=<term>
 // FTS5 full-text search against prompts_fts (title + body indexed)

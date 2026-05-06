@@ -5,6 +5,7 @@
 // API-03: GET /prompts/:id/versions — version history
 // API-04: GET /prompts/:id/comments — comments with soft-delete masking
 import { Hono } from 'hono'
+import { trimTrailingSlash } from 'hono/trailing-slash'
 import { drizzle } from 'drizzle-orm/d1'
 import { eq, and, lt, gt, inArray, desc, asc } from 'drizzle-orm'
 import * as schema from '../db/schema'
@@ -12,6 +13,8 @@ import { optionalAuth } from '../middleware/auth'
 import type { Env } from '../index'
 
 const app = new Hono<Env>()
+// Normalize trailing slashes so /prompts/ routes to the same handler as /prompts
+app.use('*', trimTrailingSlash())
 
 // ---------------------------------------------------------------------------
 // Shared helper: build a prompt summary item from raw data

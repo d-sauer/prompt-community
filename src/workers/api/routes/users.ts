@@ -1,12 +1,14 @@
 // src/workers/api/routes/users.ts
 // Phase 11-03: GET /users/:login, GET /users/:login/prompts, GET /users/:login/activity
 import { Hono } from 'hono'
+import { trimTrailingSlash } from 'hono/trailing-slash'
 import { drizzle } from 'drizzle-orm/d1'
 import { eq, and, lt, inArray } from 'drizzle-orm'
 import * as schema from '../db/schema'
 import type { Env } from '../index'
 
 const app = new Hono<Env>()
+app.use('*', trimTrailingSlash())
 
 // ─── GET /users/:login ──────────────────────────────────────────────────────
 // Returns public profile for a known user by github_login.
