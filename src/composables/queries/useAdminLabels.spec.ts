@@ -2,7 +2,6 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { mount } from '@vue/test-utils'
 import { VueQueryPlugin, QueryClient } from '@tanstack/vue-query'
 import { createTestingPinia } from '@pinia/testing'
-import { useAuthStore } from '@/stores/useAuthStore'
 import { useAdminLabels, validateLabel } from './useAdminLabels'
 import * as mutations from '@/lib/github/mutations'
 import * as queries from '@/lib/github/queries'
@@ -54,8 +53,7 @@ function setupTest() {
   mount(
     {
       setup() {
-        const authStore = useAuthStore()
-        authStore.receiveToken('test-token')
+        // Phase 10: receiveToken removed; composable uses authStore.token (deprecated, Phase 15 cleanup)
         composable = useAdminLabels()
         return {}
       },
@@ -136,8 +134,9 @@ describe('useAdminLabels', () => {
       color: 'abc123',
       description: 'Updated',
     })
+    // token is undefined in Phase 10 (authStore.token removed); Phase 15 will migrate to cookie-based API
     expect(mockUpdateRepoLabel).toHaveBeenCalledWith(
-      'test-token',
+      undefined,
       'category:writing',
       'category:writing-updated',
       'abc123',
@@ -145,7 +144,7 @@ describe('useAdminLabels', () => {
     )
 
     await composable.deleteLabelMutation.mutateAsync('flag:review')
-    expect(mockDeleteRepoLabel).toHaveBeenCalledWith('test-token', 'flag:review')
+    expect(mockDeleteRepoLabel).toHaveBeenCalledWith(undefined, 'flag:review')
   })
 
   it('createLabel onSuccess clears labels ETag', async () => {

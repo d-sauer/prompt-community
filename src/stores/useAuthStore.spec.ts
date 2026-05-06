@@ -53,10 +53,11 @@ describe('useAuthStore — AUTH-10 (cookie-based auth, poll-on-close)', () => {
     const store = useAuthStore()
 
     // Mock /me fetch
-    const fetchSpy = vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
+    const fetchSpy = vi.fn().mockResolvedValue({
       ok: true,
       json: () => Promise.resolve({ login: 'testuser', name: 'Test', avatar_url: 'https://example.com/avatar', role: 'user' }),
-    }))
+    })
+    vi.stubGlobal('fetch', fetchSpy)
 
     // Create a fake popup that starts open, then closes after a tick
     const fakePopup = { closed: false } as Window
@@ -86,10 +87,11 @@ describe('useAuthStore — AUTH-10 (cookie-based auth, poll-on-close)', () => {
   it('AUTH-10: fetchMe() calls GET /me with credentials: "include" and no Authorization header', async () => {
     const store = useAuthStore()
 
-    const fetchSpy = vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
+    const fetchSpy = vi.fn().mockResolvedValue({
       ok: true,
       json: () => Promise.resolve({ login: 'testuser', name: 'Test', avatar_url: 'https://example.com/avatar', role: 'user' }),
-    }))
+    })
+    vi.stubGlobal('fetch', fetchSpy)
 
     await store.fetchMe()
 

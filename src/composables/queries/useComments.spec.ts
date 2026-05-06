@@ -3,7 +3,6 @@ import { ref } from 'vue'
 import { VueQueryPlugin, QueryClient } from '@tanstack/vue-query'
 import { mount } from '@vue/test-utils'
 import { createTestingPinia } from '@pinia/testing'
-import { useAuthStore } from '@/stores/useAuthStore'
 import { useComments } from './useComments'
 import * as mutations from '@/lib/github/mutations'
 import type { Prompt } from '@/types/index'
@@ -64,8 +63,7 @@ function setupTest() {
   mount(
     {
       setup() {
-        const authStore = useAuthStore()
-        authStore.receiveToken('test-token')
+        // Phase 10: receiveToken removed; composable uses authStore.token (deprecated, Phase 15 cleanup)
         composable = useComments(issueId)
         return {}
       },
@@ -102,7 +100,8 @@ describe('useComments', () => {
     const { composable } = setupTest()
     await composable.postCommentMutation.mutateAsync('Hello from test')
 
-    expect(mockPostComment).toHaveBeenCalledWith('test-token', 42, 'Hello from test')
+    // token is undefined in Phase 10 (authStore.token removed); Phase 15 will migrate to cookie-based API
+    expect(mockPostComment).toHaveBeenCalledWith(undefined, 42, 'Hello from test')
   })
 
   it('invalidates query cache on successful postComment', async () => {

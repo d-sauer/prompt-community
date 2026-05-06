@@ -2,7 +2,6 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { mount } from '@vue/test-utils'
 import { VueQueryPlugin, QueryClient } from '@tanstack/vue-query'
 import { createTestingPinia } from '@pinia/testing'
-import { useAuthStore } from '@/stores/useAuthStore'
 import { useAdminQueue } from './useAdminQueue'
 
 const mockFlaggedNode = {
@@ -37,8 +36,7 @@ function setupTest() {
   mount(
     {
       setup() {
-        const authStore = useAuthStore()
-        authStore.receiveToken('test-token')
+        // Phase 10: receiveToken removed; composable uses authStore.token (deprecated, Phase 15 cleanup)
         composable = useAdminQueue()
         return {}
       },

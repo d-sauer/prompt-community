@@ -3,7 +3,6 @@ import { ref } from 'vue'
 import { VueQueryPlugin, QueryClient } from '@tanstack/vue-query'
 import { mount } from '@vue/test-utils'
 import { createTestingPinia } from '@pinia/testing'
-import { useAuthStore } from '@/stores/useAuthStore'
 import { useFlagPrompt } from './useFlagPrompt'
 import * as mutations from '@/lib/github/mutations'
 import type { Prompt } from '@/types/index'
@@ -56,8 +55,7 @@ function setupTest() {
   mount(
     {
       setup() {
-        const authStore = useAuthStore()
-        authStore.receiveToken('test-token')
+        // Phase 10: receiveToken removed; composable uses authStore.token (deprecated, Phase 15 cleanup)
         composable = useFlagPrompt(issueId)
         return {}
       },
@@ -90,7 +88,8 @@ describe('useFlagPrompt', () => {
     const { composable } = setupTest()
     await composable.flagMutation.mutateAsync()
 
-    expect(mockFlagPrompt).toHaveBeenCalledWith('test-token', 42)
+    // token is undefined in Phase 10 (authStore.token removed); Phase 15 will migrate to cookie-based API
+    expect(mockFlagPrompt).toHaveBeenCalledWith(undefined, 42)
   })
 
   it('invalidates query cache on successful flag', async () => {

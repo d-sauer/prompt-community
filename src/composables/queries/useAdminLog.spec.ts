@@ -6,6 +6,10 @@ import { useAuthStore } from '@/stores/useAuthStore'
 import { useAdminLog } from './useAdminLog'
 import * as queries from '@/lib/github/queries'
 
+// Phase 10: useAdminLog uses authStore.token (deprecated GitHub API pattern).
+// token is now undefined (removed from store in Phase 10). Phase 15 will rewrite
+// these composables to use the cookie-based backend API.
+
 vi.mock('@/lib/github/octokit', () => ({
   createGraphqlClient: vi.fn(() =>
     vi.fn().mockResolvedValue({
@@ -79,8 +83,7 @@ function setupTest() {
   mount(
     {
       setup() {
-        const authStore = useAuthStore()
-        authStore.receiveToken('test-token')
+        // Phase 10: receiveToken removed; composable uses authStore.token (deprecated, Phase 15 cleanup)
         composable = useAdminLog()
         return {}
       },
@@ -178,8 +181,8 @@ describe('useAdminLog', () => {
       {
         setup() {
           const authStore = useAuthStore()
-          authStore.receiveToken('test-token')
-          authStore.$patch({ user: { login: 'maintainer', avatarUrl: '' } })
+          // Phase 10: set user via new ApiUser shape (token is removed; Phase 15 cleanup)
+          authStore.$patch({ user: { login: 'maintainer', name: null, avatar_url: '', role: 'maintainer' } })
           composable = useAdminLog()
           return {}
         },
@@ -197,8 +200,9 @@ describe('useAdminLog', () => {
 
     await vi.waitFor(() => expect(composable!.entries.value.length).toBeGreaterThan(0))
 
+    // token is undefined in Phase 10 (authStore.token removed); Phase 15 will migrate to cookie-based API
     expect(vi.mocked(queries.getIssueComments)).toHaveBeenCalledWith(
-      'test-token',
+      undefined,
       expect.any(Number),
       'maintainer',
     )

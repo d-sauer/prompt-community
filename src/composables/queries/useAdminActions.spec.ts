@@ -6,6 +6,10 @@ import { useAuthStore } from '@/stores/useAuthStore'
 import { useAdminActions } from './useAdminActions'
 import * as mutations from '@/lib/github/mutations'
 
+// Phase 10: useAdminActions uses authStore.token (deprecated GitHub API pattern).
+// token is now undefined (removed from store in Phase 10). Phase 15 will rewrite
+// these composables to use the cookie-based backend API.
+
 vi.mock('@/lib/github/mutations', () => ({
   addLabelToIssue: vi.fn().mockResolvedValue(undefined),
   removeLabelFromIssue: vi.fn().mockResolvedValue(undefined),
@@ -32,8 +36,8 @@ function setupTest() {
     {
       setup() {
         const authStore = useAuthStore()
-        authStore.receiveToken('test-token')
-        authStore.$patch({ user: { login: 'maintainer', avatarUrl: '' } })
+        // Phase 10: set user via new ApiUser shape (token is removed; Phase 15 cleanup)
+        authStore.$patch({ user: { login: 'maintainer', name: null, avatar_url: '', role: 'maintainer' } })
         composable = useAdminActions()
         return {}
       },
@@ -62,8 +66,9 @@ describe('useAdminActions', () => {
 
     await composable.approveMutation.mutateAsync({ issueNumber: 42, nodeId: 'I_kwDO123' })
 
-    expect(mockRemoveLabelFromIssue).toHaveBeenCalledWith('test-token', 42, 'flag:review')
-    expect(mockPostModerationComment).toHaveBeenCalledWith('test-token', 42, 'Approved', 'maintainer')
+    // token is undefined in Phase 10 (authStore.token removed); Phase 15 will migrate to cookie-based API
+    expect(mockRemoveLabelFromIssue).toHaveBeenCalledWith(undefined, 42, 'flag:review')
+    expect(mockPostModerationComment).toHaveBeenCalledWith(undefined, 42, 'Approved', 'maintainer')
   })
 
   it('hide: calls addLabelToIssue(status:hidden) then postModerationComment(Hidden)', async () => {
@@ -71,8 +76,8 @@ describe('useAdminActions', () => {
 
     await composable.hideMutation.mutateAsync({ issueNumber: 42 })
 
-    expect(mockAddLabelToIssue).toHaveBeenCalledWith('test-token', 42, 'status:hidden')
-    expect(mockPostModerationComment).toHaveBeenCalledWith('test-token', 42, 'Hidden', 'maintainer')
+    expect(mockAddLabelToIssue).toHaveBeenCalledWith(undefined, 42, 'status:hidden')
+    expect(mockPostModerationComment).toHaveBeenCalledWith(undefined, 42, 'Hidden', 'maintainer')
   })
 
   it('delete: calls deleteIssueGraphQL with nodeId (not issue number)', async () => {
@@ -80,9 +85,9 @@ describe('useAdminActions', () => {
 
     await composable.deleteMutation.mutateAsync('I_kwDOAbc123')
 
-    expect(mockDeleteIssueGraphQL).toHaveBeenCalledWith('test-token', 'I_kwDOAbc123')
+    expect(mockDeleteIssueGraphQL).toHaveBeenCalledWith(undefined, 'I_kwDOAbc123')
     // Must NOT be called with a number
-    expect(mockDeleteIssueGraphQL).not.toHaveBeenCalledWith('test-token', 42)
+    expect(mockDeleteIssueGraphQL).not.toHaveBeenCalledWith(undefined, 42)
   })
 
   it('feature: calls addLabelToIssue(status:featured); unfeature removes it', async () => {
@@ -93,7 +98,7 @@ describe('useAdminActions', () => {
       issueNumber: 42,
       currentLabels: [{ name: 'flag:review' }],
     })
-    expect(mockAddLabelToIssue).toHaveBeenCalledWith('test-token', 42, 'status:featured')
+    expect(mockAddLabelToIssue).toHaveBeenCalledWith(undefined, 42, 'status:featured')
 
     vi.clearAllMocks()
 
@@ -102,7 +107,7 @@ describe('useAdminActions', () => {
       issueNumber: 42,
       currentLabels: [{ name: 'status:featured' }],
     })
-    expect(mockRemoveLabelFromIssue).toHaveBeenCalledWith('test-token', 42, 'status:featured')
+    expect(mockRemoveLabelFromIssue).toHaveBeenCalledWith(undefined, 42, 'status:featured')
   })
 
   it('bulk approve: iterates over all selected issue numbers sequentially', async () => {
@@ -116,9 +121,9 @@ describe('useAdminActions', () => {
 
     expect(mockRemoveLabelFromIssue).toHaveBeenCalledTimes(3)
     expect(mockPostModerationComment).toHaveBeenCalledTimes(3)
-    expect(mockRemoveLabelFromIssue).toHaveBeenNthCalledWith(1, 'test-token', 1, 'flag:review')
-    expect(mockRemoveLabelFromIssue).toHaveBeenNthCalledWith(2, 'test-token', 2, 'flag:review')
-    expect(mockRemoveLabelFromIssue).toHaveBeenNthCalledWith(3, 'test-token', 3, 'flag:review')
+    expect(mockRemoveLabelFromIssue).toHaveBeenNthCalledWith(1, undefined, 1, 'flag:review')
+    expect(mockRemoveLabelFromIssue).toHaveBeenNthCalledWith(2, undefined, 2, 'flag:review')
+    expect(mockRemoveLabelFromIssue).toHaveBeenNthCalledWith(3, undefined, 3, 'flag:review')
   })
 
   it('bulk delete: accepts array of nodeIds and deletes each', async () => {
@@ -127,8 +132,8 @@ describe('useAdminActions', () => {
     await composable.bulkDeleteMutation.mutateAsync(['I_kwDO1', 'I_kwDO2'])
 
     expect(mockDeleteIssueGraphQL).toHaveBeenCalledTimes(2)
-    expect(mockDeleteIssueGraphQL).toHaveBeenNthCalledWith(1, 'test-token', 'I_kwDO1')
-    expect(mockDeleteIssueGraphQL).toHaveBeenNthCalledWith(2, 'test-token', 'I_kwDO2')
+    expect(mockDeleteIssueGraphQL).toHaveBeenNthCalledWith(1, undefined, 'I_kwDO1')
+    expect(mockDeleteIssueGraphQL).toHaveBeenNthCalledWith(2, undefined, 'I_kwDO2')
   })
 
   it('each action invalidates admin queue query cache on success', async () => {

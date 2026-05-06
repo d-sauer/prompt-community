@@ -1,8 +1,10 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { useAuthStore } from '@/stores/useAuthStore'
-import { verifyMaintainerStatus } from '@/lib/github/auth'
 
-export { verifyMaintainerStatus }
+// NOTE: verifyMaintainerStatus re-export removed in Phase 10 (cookie-based auth).
+// The router now uses authStore.isMaintainer (derived from user.role in JWT cookie).
+// Any callers that imported verifyMaintainerStatus from here should import directly
+// from @/lib/github/auth, or update to Phase 13 approach (to be cleaned up in Phase 15).
 
 export const router = createRouter({
   history: createWebHistory(),
@@ -56,6 +58,11 @@ export const router = createRouter({
           component: () => import('@/views/AdminView.vue'),
           meta: { requiresMaintainer: true },
         },
+        {
+          path: 'auth/callback',
+          name: 'auth-callback',
+          component: () => import('@/views/AuthCallbackView.vue'),
+        },
       ],
     },
   ],
@@ -72,10 +79,9 @@ router.beforeEach(async (to, from) => {
     if (!authStore.isAuthenticated) {
       return { path: '/browse' }
     }
-    // Re-verify via GitHub API on every admin navigation (INFR-08)
-    const confirmed = await verifyMaintainerStatus(authStore.token)
-    authStore.isMaintainer = confirmed
-    if (!confirmed) return { path: '/browse' }
+    // isMaintainer is derived from user.role in the JWT cookie (Phase 10).
+    // Phase 13 will add server-side role re-verification on each admin navigation.
+    if (!authStore.isMaintainer) return { path: '/browse' }
   }
 
   // Unsaved-changes guard (CONT-11): warn before navigating away from editor

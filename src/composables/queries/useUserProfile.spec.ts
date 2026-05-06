@@ -3,7 +3,6 @@ import { ref } from 'vue'
 import { VueQueryPlugin, QueryClient } from '@tanstack/vue-query'
 import { mount } from '@vue/test-utils'
 import { createTestingPinia } from '@pinia/testing'
-import { useAuthStore } from '@/stores/useAuthStore'
 import { useUserProfile } from './useUserProfile'
 
 // Mock createGraphqlClient before importing useUserProfile
@@ -54,8 +53,7 @@ function setupTest(login: string) {
   mount(
     {
       setup() {
-        const authStore = useAuthStore()
-        authStore.receiveToken('test-token')
+        // Phase 10: receiveToken removed; composable uses authStore.token (deprecated, Phase 15 cleanup)
         composable = useUserProfile(loginRef)
         return {}
       },

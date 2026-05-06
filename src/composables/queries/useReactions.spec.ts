@@ -3,7 +3,6 @@ import { ref } from 'vue'
 import { VueQueryPlugin, QueryClient } from '@tanstack/vue-query'
 import { mount } from '@vue/test-utils'
 import { createTestingPinia } from '@pinia/testing'
-import { useAuthStore } from '@/stores/useAuthStore'
 import { useReactions } from './useReactions'
 import * as mutations from '@/lib/github/mutations'
 import type { Prompt, ReactionGroup } from '@/types/index'
@@ -64,8 +63,7 @@ function setupTestWithPrompt(viewerHasReacted: boolean) {
   mount(
     {
       setup() {
-        const authStore = useAuthStore()
-        authStore.receiveToken('test-token')
+        // Phase 10: receiveToken removed; composable uses authStore.token (deprecated, Phase 15 cleanup)
         composable = useReactions(issueId, nodeId)
         return {}
       },
@@ -100,7 +98,8 @@ describe('useReactions', () => {
     // Use toggle() which reads current state before onMutate
     await composable.toggle('THUMBS_UP')
 
-    expect(mockAddReaction).toHaveBeenCalledWith('test-token', 'MDU6SXNzdWU0Mg==', 'THUMBS_UP')
+    // token is undefined in Phase 10 (authStore.token removed); Phase 15 will migrate to cookie-based API
+    expect(mockAddReaction).toHaveBeenCalledWith(undefined, 'MDU6SXNzdWU0Mg==', 'THUMBS_UP')
     expect(mockRemoveReaction).not.toHaveBeenCalled()
   })
 
@@ -111,7 +110,8 @@ describe('useReactions', () => {
     const { composable } = setupTestWithPrompt(true)
     await composable.toggle('THUMBS_UP')
 
-    expect(mockRemoveReaction).toHaveBeenCalledWith('test-token', 'MDU6SXNzdWU0Mg==', 'THUMBS_UP')
+    // token is undefined in Phase 10 (authStore.token removed); Phase 15 will migrate to cookie-based API
+    expect(mockRemoveReaction).toHaveBeenCalledWith(undefined, 'MDU6SXNzdWU0Mg==', 'THUMBS_UP')
     expect(mockAddReaction).not.toHaveBeenCalled()
   })
 
