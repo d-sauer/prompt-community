@@ -16,5 +16,7 @@ export default defineConfig({
   ],
   test: {
     include: ['src/workers/api/**/*.spec.ts'],
+    globalSetup: ['vitest.global-setup.ts'],
+    setupFiles: ['src/workers/api/test-setup.ts'],
   },
 })

@@ -5,6 +5,8 @@ compatibility_date = "2025-01-01"
 [vars]
 ENV = "dev"
 APP_ORIGIN = "http://localhost:5173"
+GITHUB_CLIENT_ID = "test-client-id"
+JWT_SECRET = "test-jwt-secret-for-local-dev-only"
 
 [[d1_databases]]
 binding = "DB"
