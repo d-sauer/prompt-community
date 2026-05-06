@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: Backend Migration
 status: planning
-stopped_at: Completed 11-read-api 11-04-PLAN.md
-last_updated: "2026-05-06T19:23:28.476Z"
+stopped_at: Completed 11-read-api 11-05-PLAN.md
+last_updated: "2026-05-06T20:04:52.044Z"
 last_activity: 2026-05-05 — Roadmap created; 7 phases defined, 81/81 v2.0 requirements mapped
 progress:
   total_phases: 7
   completed_phases: 3
-  total_plans: 12
-  completed_plans: 12
+  total_plans: 13
+  completed_plans: 13
   percent: 0
 ---
 
@@ -62,6 +62,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 11-read-api P03 | 8min | 2 tasks | 1 files |
 | Phase 11-read-api P02 | 525533min | 2 tasks | 5 files |
 | Phase 11-read-api P04 | 8min | 2 tasks | 4 files |
+| Phase 11-read-api P05 | 3min | 3 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -108,6 +109,8 @@ Recent decisions affecting current work:
 - [Phase 11-read-api]: Raw D1 prepare() used for FTS5 MATCH queries — Drizzle ORM cannot query FTS5 virtual tables
 - [Phase 11-read-api]: GET /labels groups labels by prefix in JS — simple aggregation consistent with codebase patterns
 - [Phase 11-read-api]: trimTrailingSlash added to all route files — fixes trailing slash 404s in boot test after stub replacement
+- [Phase 11-read-api]: GET /labels extracted to labels.ts — was incorrectly nested under /search sub-app causing wrong URL path /search/labels
+- [Phase 11-read-api]: SEARCH-01 updated: FTS5 indexes title+body only — tags fetched from prompt_tags via JS aggregation post-FTS5 (no FTS5 column needed)
 
 ### Roadmap Evolution
 
@@ -123,6 +126,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-05-06T19:23:28.474Z
-Stopped at: Completed 11-read-api 11-04-PLAN.md
+Last session: 2026-05-06T20:04:52.042Z
+Stopped at: Completed 11-read-api 11-05-PLAN.md
 Resume file: None
