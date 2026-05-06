@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: Backend Migration
 status: planning
-stopped_at: Completed 10-auth-migration 10-02-PLAN.md
-last_updated: "2026-05-06T04:24:15.887Z"
+stopped_at: Completed 10-auth-migration 10-03-PLAN.md
+last_updated: "2026-05-06T04:28:35.446Z"
 last_activity: 2026-05-05 — Roadmap created; 7 phases defined, 81/81 v2.0 requirements mapped
 progress:
   total_phases: 7
   completed_phases: 1
   total_plans: 8
-  completed_plans: 6
+  completed_plans: 7
   percent: 0
 ---
 
@@ -56,6 +56,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 09-backend-foundation P04 | 30min | 3 tasks | 3 files |
 | Phase 10-auth-migration P01 | 7min | 3 tasks | 5 files |
 | Phase 10-auth-migration P02 | 25 | 2 tasks | 12 files |
+| Phase 10-auth-migration P03 | 4min | 2 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -86,6 +87,8 @@ Recent decisions affecting current work:
 - [Phase 10-auth-migration]: Env type refactored to { Bindings, Variables } shape for type-safe c.set('user') in Hono middleware
 - [Phase 10-auth-migration]: OAuth state validation only enforced when oauth_state cookie is present — allows test harness direct /callback access without full OAuth round-trip
 - [Phase 10-auth-migration]: D1 test migration strategy: Node.js globalSetup reads SQL via readD1Migrations+provide(); worker setupFiles inject()+applyD1Migrations pattern established
+- [Phase 10-auth-migration]: JwtTokenExpired from 'hono/utils/jwt/types' used for instanceof check to discriminate expired vs invalid tokens
+- [Phase 10-auth-migration]: GET /me mounted at top-level app (not auth router) so URL is /me not /auth/me
 
 ### Roadmap Evolution
 
@@ -101,6 +104,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-05-06T04:24:15.885Z
-Stopped at: Completed 10-auth-migration 10-02-PLAN.md
+Last session: 2026-05-06T04:28:35.444Z
+Stopped at: Completed 10-auth-migration 10-03-PLAN.md
 Resume file: None
