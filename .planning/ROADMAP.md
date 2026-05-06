@@ -80,7 +80,12 @@ Plans:
   3. `GET /users/:login/activity` returns a real activity feed for the user (the "coming soon" placeholder is now backed by data)
   4. All read endpoints return a consistent JSON shape; errors return the standard error envelope with appropriate HTTP status codes
   5. An unauthenticated request to public endpoints (`/prompts`, `/search`, `/users/:login`) succeeds; `/notifications` and `/me` require a valid JWT and return 401 without one
-**Plans**: TBD
+**Plans**: 4 plans
+Plans:
+- [ ] 11-01-PLAN.md — Wave 1: Test scaffolds (RED) for all 10 GET endpoints + search (API-01..10, SEARCH-01, SEARCH-02)
+- [ ] 11-02-PLAN.md — Wave 2: Prompts route handlers (GET /prompts, /prompts/:id, /prompts/:id/versions, /prompts/:id/comments) (API-01, API-02, API-03, API-04)
+- [ ] 11-03-PLAN.md — Wave 2: Users route handlers (GET /users/:login, /users/:login/prompts, /users/:login/activity) (API-06, API-07, API-08)
+- [ ] 11-04-PLAN.md — Wave 2: Search + Labels + Notifications handlers + mount /notifications (API-05, API-09, API-10, SEARCH-01, SEARCH-02)
 
 ### Phase 12: Write API
 **Goal**: All mutating operations — creating/updating/deleting prompts, versions, comments, reactions, bookmarks, and notifications — are handled by authenticated Hono endpoints backed by D1.
@@ -144,7 +149,7 @@ Plans:
 | 8. Fix Admin & Search Tech Debt | v1.0 | 1/1 | Complete | 2026-03-26 |
 | 9. Backend Foundation | 4/4 | Complete   | 2026-05-05 | - |
 | 10. Auth Migration | 4/4 | Complete    | 2026-05-06 | - |
-| 11. Read API | v2.0 | 0/? | Not started | - |
+| 11. Read API | v2.0 | 0/4 | Not started | - |
 | 12. Write API | v2.0 | 0/? | Not started | - |
 | 13. Frontend Rewire | v2.0 | 0/? | Not started | - |
 | 14. Admin & Moderation API | v2.0 | 0/? | Not started | - |
