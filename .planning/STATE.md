@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: Backend Migration
 status: planning
-stopped_at: Phase 10 context gathered
-last_updated: "2026-05-05T20:07:03.561Z"
+stopped_at: Completed 10-auth-migration 10-01-PLAN.md
+last_updated: "2026-05-06T04:20:07.380Z"
 last_activity: 2026-05-05 — Roadmap created; 7 phases defined, 81/81 v2.0 requirements mapped
 progress:
   total_phases: 7
   completed_phases: 1
-  total_plans: 4
-  completed_plans: 4
+  total_plans: 8
+  completed_plans: 5
   percent: 0
 ---
 
@@ -54,6 +54,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 09-backend-foundation P02 | 3min | 2 tasks | 15 files |
 | Phase 09-backend-foundation P03 | 2min | 2 tasks | 3 files |
 | Phase 09-backend-foundation P04 | 30min | 3 tasks | 3 files |
+| Phase 10-auth-migration P01 | 7min | 3 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -79,6 +80,8 @@ Recent decisions affecting current work:
 - [Phase 09-backend-foundation]: Seed uses hardcoded recognizable ID prefixes (01DEVUSER, 01PROMPT) not real ULIDs — raw SQL has no access to $defaultFn; prefixes aid DB inspection
 - [Phase 09-backend-foundation]: FTS5 content-table mode with sync triggers chosen over full-copy mode — avoids data duplication, triggers maintain FTS index on INSERT/UPDATE/DELETE
 - [Phase 09-backend-foundation]: INSERT OR IGNORE used throughout seed for idempotency — re-running seed is safe by design
+- [Phase 10-auth-migration]: optionalAuth stub added to auth.ts before plan-02 implements — test import requires it
+- [Phase 10-auth-migration]: Middleware tests use local Hono app, not full app import — isolates middleware behavior from route wiring
 
 ### Roadmap Evolution
 
@@ -94,6 +97,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-05-05T20:07:03.559Z
-Stopped at: Phase 10 context gathered
-Resume file: .planning/phases/10-auth-migration/10-CONTEXT.md
+Last session: 2026-05-06T04:20:07.378Z
+Stopped at: Completed 10-auth-migration 10-01-PLAN.md
+Resume file: None

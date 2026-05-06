@@ -23,16 +23,16 @@ Hono API worker, Cloudflare D1, Drizzle ORM, schema, migrations.
 
 OAuth → app JWT, HttpOnly cookie session, dev-login endpoint, role-based access.
 
-- [ ] **AUTH-01**: OAuth callback worker exchanges GitHub code for access token server-side (token never reaches the browser)
-- [ ] **AUTH-02**: OAuth callback UPSERTs user into `users` table by `github_id` (sets `login`, `name`, `avatar_url`, `role`)
-- [ ] **AUTH-03**: OAuth callback signs HS256 JWT with `{ sub, role }` claims and 7-day expiry
-- [ ] **AUTH-04**: Session JWT delivered via `HttpOnly + Secure + SameSite=Lax` cookie
-- [ ] **AUTH-05**: API middleware verifies JWT on every protected request and attaches the user to request context
-- [ ] **AUTH-06**: `users.role` (`user` | `maintainer`) replaces the GitHub `collaborators` API maintainer check
-- [ ] **AUTH-07**: `GET /me` returns the current user including their `role` flag
-- [ ] **AUTH-08**: `POST /auth/dev-login` mints a JWT for a seeded test user, gated by `ENV === 'dev'`, and returns 404 in production
-- [ ] **AUTH-09**: GitHub OAuth scope reduced from `public_repo` to `read:user user:email`
-- [ ] **AUTH-10**: Frontend `useAuthStore` holds no GitHub token; identity is read from `/me`
+- [x] **AUTH-01**: OAuth callback worker exchanges GitHub code for access token server-side (token never reaches the browser)
+- [x] **AUTH-02**: OAuth callback UPSERTs user into `users` table by `github_id` (sets `login`, `name`, `avatar_url`, `role`)
+- [x] **AUTH-03**: OAuth callback signs HS256 JWT with `{ sub, role }` claims and 7-day expiry
+- [x] **AUTH-04**: Session JWT delivered via `HttpOnly + Secure + SameSite=Lax` cookie
+- [x] **AUTH-05**: API middleware verifies JWT on every protected request and attaches the user to request context
+- [x] **AUTH-06**: `users.role` (`user` | `maintainer`) replaces the GitHub `collaborators` API maintainer check
+- [x] **AUTH-07**: `GET /me` returns the current user including their `role` flag
+- [x] **AUTH-08**: `POST /auth/dev-login` mints a JWT for a seeded test user, gated by `ENV === 'dev'`, and returns 404 in production
+- [x] **AUTH-09**: GitHub OAuth scope reduced from `public_repo` to `read:user user:email`
+- [x] **AUTH-10**: Frontend `useAuthStore` holds no GitHub token; identity is read from `/me`
 
 ### REST API (API)
 
@@ -185,16 +185,16 @@ Which phases cover which requirements. Updated during roadmap creation.
 | DEV-02 | Phase 9 | Complete |
 | DEV-03 | Phase 9 | Complete |
 | DEV-05 | Phase 9 | Complete |
-| AUTH-01 | Phase 10 | Pending |
-| AUTH-02 | Phase 10 | Pending |
-| AUTH-03 | Phase 10 | Pending |
-| AUTH-04 | Phase 10 | Pending |
-| AUTH-05 | Phase 10 | Pending |
-| AUTH-06 | Phase 10 | Pending |
-| AUTH-07 | Phase 10 | Pending |
-| AUTH-08 | Phase 10 | Pending |
-| AUTH-09 | Phase 10 | Pending |
-| AUTH-10 | Phase 10 | Pending |
+| AUTH-01 | Phase 10 | Complete |
+| AUTH-02 | Phase 10 | Complete |
+| AUTH-03 | Phase 10 | Complete |
+| AUTH-04 | Phase 10 | Complete |
+| AUTH-05 | Phase 10 | Complete |
+| AUTH-06 | Phase 10 | Complete |
+| AUTH-07 | Phase 10 | Complete |
+| AUTH-08 | Phase 10 | Complete |
+| AUTH-09 | Phase 10 | Complete |
+| AUTH-10 | Phase 10 | Complete |
 | DEV-04 | Phase 10 | Pending |
 | API-01 | Phase 11 | Pending |
 | API-02 | Phase 11 | Pending |
