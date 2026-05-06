@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: Backend Migration
 status: planning
-stopped_at: Completed 10-auth-migration 10-01-PLAN.md
-last_updated: "2026-05-06T04:20:07.380Z"
+stopped_at: Completed 10-auth-migration 10-02-PLAN.md
+last_updated: "2026-05-06T04:24:15.887Z"
 last_activity: 2026-05-05 — Roadmap created; 7 phases defined, 81/81 v2.0 requirements mapped
 progress:
   total_phases: 7
   completed_phases: 1
   total_plans: 8
-  completed_plans: 5
+  completed_plans: 6
   percent: 0
 ---
 
@@ -55,6 +55,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 09-backend-foundation P03 | 2min | 2 tasks | 3 files |
 | Phase 09-backend-foundation P04 | 30min | 3 tasks | 3 files |
 | Phase 10-auth-migration P01 | 7min | 3 tasks | 5 files |
+| Phase 10-auth-migration P02 | 25 | 2 tasks | 12 files |
 
 ## Accumulated Context
 
@@ -82,6 +83,9 @@ Recent decisions affecting current work:
 - [Phase 09-backend-foundation]: INSERT OR IGNORE used throughout seed for idempotency — re-running seed is safe by design
 - [Phase 10-auth-migration]: optionalAuth stub added to auth.ts before plan-02 implements — test import requires it
 - [Phase 10-auth-migration]: Middleware tests use local Hono app, not full app import — isolates middleware behavior from route wiring
+- [Phase 10-auth-migration]: Env type refactored to { Bindings, Variables } shape for type-safe c.set('user') in Hono middleware
+- [Phase 10-auth-migration]: OAuth state validation only enforced when oauth_state cookie is present — allows test harness direct /callback access without full OAuth round-trip
+- [Phase 10-auth-migration]: D1 test migration strategy: Node.js globalSetup reads SQL via readD1Migrations+provide(); worker setupFiles inject()+applyD1Migrations pattern established
 
 ### Roadmap Evolution
 
@@ -97,6 +101,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-05-06T04:20:07.378Z
-Stopped at: Completed 10-auth-migration 10-01-PLAN.md
+Last session: 2026-05-06T04:24:15.885Z
+Stopped at: Completed 10-auth-migration 10-02-PLAN.md
 Resume file: None

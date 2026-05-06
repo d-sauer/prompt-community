@@ -143,7 +143,7 @@ Plans:
 | 7. Wire ETag Caching | v1.0 | 1/1 | Complete | 2026-03-26 |
 | 8. Fix Admin & Search Tech Debt | v1.0 | 1/1 | Complete | 2026-03-26 |
 | 9. Backend Foundation | 4/4 | Complete   | 2026-05-05 | - |
-| 10. Auth Migration | 1/4 | In Progress|  | - |
+| 10. Auth Migration | 2/4 | In Progress|  | - |
 | 11. Read API | v2.0 | 0/? | Not started | - |
 | 12. Write API | v2.0 | 0/? | Not started | - |
 | 13. Frontend Rewire | v2.0 | 0/? | Not started | - |
