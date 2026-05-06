@@ -1,28 +1,21 @@
-import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest'
+// src/stores/useAuthStore.spec.ts
+// Phase 10 rewrite: cookie-based auth flow with poll-on-close popup pattern.
+// Previous v1 postMessage/token tests removed; new AUTH-10 tests added.
+// New AUTH-10 tests are RED (useAuthStore still has token ref and postMessage pattern).
+// Passing tests retained: logout() clearing user and isMaintainer.
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
 import { setActivePinia, createPinia } from 'pinia'
 import { useAuthStore } from './useAuthStore'
-import * as octokit from '@/lib/github/octokit'
-import * as auth from '@/lib/github/auth'
-import * as etagModule from '@/lib/github/etag'
 
-vi.mock('@/lib/github/octokit')
-vi.mock('@/lib/github/auth')
+// Stub VITE_API_URL for all tests
+vi.stubEnv('VITE_API_URL', 'http://localhost:8787')
 vi.mock('vue-sonner', () => ({ toast: { error: vi.fn() } }))
-vi.mock('@/lib/github/etag', () => ({
-  clearUserEtags: vi.fn(),
-  clearEtag: vi.fn(),
-  getEtag: vi.fn(),
-  setEtag: vi.fn(),
-  etagFetchWrapper: vi.fn(),
-  makeBoundFetch: vi.fn(),
-}))
 
-describe('useAuthStore', () => {
+describe('useAuthStore — AUTH-10 (cookie-based auth, poll-on-close)', () => {
   beforeEach(() => {
     setActivePinia(createPinia())
     vi.clearAllMocks()
-    // Set the worker URL env var for login tests
-    vi.stubEnv('VITE_CF_WORKER_URL', 'https://worker.test')
+    vi.stubEnv('VITE_API_URL', 'http://localhost:8787')
   })
 
   afterEach(() => {
@@ -30,260 +23,195 @@ describe('useAuthStore', () => {
     vi.unstubAllEnvs()
   })
 
-  // --- Existing tests from Plan 01-01 ---
-
-  it('token is null by default', () => {
+  // AUTH-10: store.token does NOT exist as a public property (or is always null/removed)
+  it('AUTH-10: store does not expose token as a public reactive property', () => {
     const store = useAuthStore()
-    expect(store.token).toBeNull()
+    // After v2.0 rewire: token should not exist or should be undefined
+    // In v1 it's a ref that starts null — in v2.0 it must be removed entirely
+    expect('token' in store).toBe(false)
   })
 
-  it('isAuthenticated is false by default', () => {
+  // AUTH-10: store.login() opens a popup to VITE_API_URL/auth/login
+  it('AUTH-10: login() opens popup to VITE_API_URL/auth/login (not VITE_CF_WORKER_URL/login)', () => {
     const store = useAuthStore()
-    expect(store.isAuthenticated).toBe(false)
-  })
-
-  it('receiveToken sets token and isAuthenticated becomes true', () => {
-    const store = useAuthStore()
-    store.receiveToken('tok')
-    expect(store.token).toBe('tok')
-    expect(store.isAuthenticated).toBe(true)
-  })
-
-  it('logout clears token, user, and isMaintainer', () => {
-    const store = useAuthStore()
-    store.receiveToken('tok')
-    store.isMaintainer = true
-    store.logout()
-    expect(store.token).toBeNull()
-    expect(store.user).toBeNull()
-    expect(store.isMaintainer).toBe(false)
-  })
-
-  it('INFR-07: localStorage.setItem is never called after receiveToken', () => {
-    const setItemSpy = vi.spyOn(Storage.prototype, 'setItem')
-    const store = useAuthStore()
-    store.receiveToken('tok')
-    expect(setItemSpy).not.toHaveBeenCalledWith('token', expect.anything())
-  })
-
-  // --- New tests for Plan 01-02 (full login flow) ---
-
-  it('Test 6: login() calls window.open with VITE_CF_WORKER_URL/login URL', () => {
-    const store = useAuthStore()
-    const openSpy = vi.spyOn(window, 'open').mockReturnValue({} as Window)
+    const openSpy = vi.spyOn(window, 'open').mockReturnValue({
+      closed: false,
+    } as Window)
 
     store.login()
 
     expect(openSpy).toHaveBeenCalledWith(
-      expect.stringContaining('https://worker.test/login'),
-      'github-oauth',
-      expect.any(String),
-    )
-    expect(openSpy).toHaveBeenCalledWith(
-      expect.stringContaining('state='),
+      expect.stringContaining('http://localhost:8787/auth/login'),
       expect.any(String),
       expect.any(String),
     )
   })
 
-  it('Test 7: after postMessage with matching token and state, isAuthenticated becomes true', async () => {
+  // AUTH-10: store.login() uses poll-on-close (not postMessage)
+  it('AUTH-10: login() polls popup.closed via setInterval and calls fetchMe() when closed', async () => {
+    vi.useFakeTimers()
     const store = useAuthStore()
 
-    // Capture the state that login() generates
-    let capturedState: string | null = null
-    vi.spyOn(window, 'open').mockImplementation((url) => {
-      const urlStr = url?.toString() ?? ''
-      const match = urlStr.match(/state=([^&]+)/)
-      if (match) capturedState = match[1]
-      return {} as Window
-    })
+    // Mock /me fetch
+    const fetchSpy = vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
+      ok: true,
+      json: () => Promise.resolve({ login: 'testuser', name: 'Test', avatar_url: 'https://example.com/avatar', role: 'user' }),
+    }))
+
+    // Create a fake popup that starts open, then closes after a tick
+    const fakePopup = { closed: false } as Window
+    vi.spyOn(window, 'open').mockReturnValue(fakePopup)
 
     store.login()
 
-    expect(capturedState).not.toBeNull()
+    // Popup not yet closed — fetchMe should NOT have been called
+    expect(fetchSpy).not.toHaveBeenCalled()
 
-    // Simulate the postMessage from the worker
-    const messageEvent = new MessageEvent('message', {
-      data: { token: 'test-token-abc', state: capturedState },
-      origin: 'https://worker.test',
-    })
-    window.dispatchEvent(messageEvent)
+    // Simulate popup closing
+    fakePopup.closed = true
 
-    // Allow microtasks to process
-    await new Promise((resolve) => setTimeout(resolve, 0))
+    // Advance timers past polling interval (200ms typical)
+    await vi.advanceTimersByTimeAsync(300)
 
-    expect(store.isAuthenticated).toBe(true)
-    expect(store.token).toBe('test-token-abc')
-  })
-
-  it('Test 8: postMessage from wrong origin is rejected (isAuthenticated stays false)', async () => {
-    const store = useAuthStore()
-
-    let capturedState: string | null = null
-    vi.spyOn(window, 'open').mockImplementation((url) => {
-      const urlStr = url?.toString() ?? ''
-      const match = urlStr.match(/state=([^&]+)/)
-      if (match) capturedState = match[1]
-      return {} as Window
-    })
-
-    store.login()
-
-    // Send from wrong origin
-    const messageEvent = new MessageEvent('message', {
-      data: { token: 'evil-token', state: capturedState },
-      origin: 'https://evil.site',
-    })
-    window.dispatchEvent(messageEvent)
-
-    await new Promise((resolve) => setTimeout(resolve, 0))
-
-    expect(store.isAuthenticated).toBe(false)
-  })
-
-  it('Test 9: postMessage with mismatched state is rejected (isAuthenticated stays false)', async () => {
-    const store = useAuthStore()
-    vi.spyOn(window, 'open').mockReturnValue({} as Window)
-
-    store.login()
-
-    // Send with wrong state
-    const messageEvent = new MessageEvent('message', {
-      data: { token: 'test-token', state: 'wrong-state-value' },
-      origin: 'https://worker.test',
-    })
-    window.dispatchEvent(messageEvent)
-
-    await new Promise((resolve) => setTimeout(resolve, 0))
-
-    expect(store.isAuthenticated).toBe(false)
-  })
-
-  it('Test 10: logout() clears token, user, and isMaintainer', () => {
-    const store = useAuthStore()
-    store.receiveToken('tok')
-    store.isMaintainer = true
-    store.logout()
-
-    expect(store.token).toBeNull()
-    expect(store.user).toBeNull()
-    expect(store.isMaintainer).toBe(false)
-    expect(store.isAuthenticated).toBe(false)
-  })
-
-  it('logout calls clearUserEtags with user login', () => {
-    const store = useAuthStore()
-    store.receiveToken('tok')
-    // Manually set user (bypass fetchCurrentUser to avoid async)
-    store.user = { login: 'testuser', name: 'Test User', avatarUrl: '', bio: null, company: null, location: null, followers: 0, following: 0, publicRepos: 0 }
-
-    store.logout()
-
-    expect(etagModule.clearUserEtags).toHaveBeenCalledWith('testuser')
-  })
-
-  it('Test 11: INFR-07 regression — localStorage.setItem never called with token value after postMessage', async () => {
-    const setItemSpy = vi.spyOn(Storage.prototype, 'setItem')
-    const store = useAuthStore()
-
-    let capturedState: string | null = null
-    vi.spyOn(window, 'open').mockImplementation((url) => {
-      const urlStr = url?.toString() ?? ''
-      const match = urlStr.match(/state=([^&]+)/)
-      if (match) capturedState = match[1]
-      return {} as Window
-    })
-
-    store.login()
-
-    const messageEvent = new MessageEvent('message', {
-      data: { token: 'secret-token-value', state: capturedState },
-      origin: 'https://worker.test',
-    })
-    window.dispatchEvent(messageEvent)
-
-    await new Promise((resolve) => setTimeout(resolve, 0))
-
-    // Token must be in store (proves the postMessage worked)
-    expect(store.token).toBe('secret-token-value')
-    // But never written to localStorage
-    const tokenWritten = setItemSpy.mock.calls.some(
-      ([, value]) => typeof value === 'string' && value.includes('secret-token-value'),
+    // fetchMe should have been called with the /me URL and credentials:include
+    expect(fetchSpy).toHaveBeenCalledWith(
+      expect.stringContaining('/me'),
+      expect.objectContaining({ credentials: 'include' }),
     )
-    expect(tokenWritten).toBe(false)
-  })
-})
 
-describe('fetchCurrentUser', () => {
-  const mockViewerData = {
-    viewer: {
-      login: 'testuser',
-      name: 'Test User',
-      avatarUrl: 'https://avatars.example.com/u/1',
-      bio: 'A test bio',
-      company: 'Test Corp',
-      location: 'Earth',
-      followers: { totalCount: 42 },
-      following: { totalCount: 7 },
-      repositories: { totalCount: 15 },
-    },
-  }
-
-  beforeEach(() => {
-    setActivePinia(createPinia())
-    vi.clearAllMocks()
-    vi.stubEnv('VITE_CF_WORKER_URL', 'https://worker.test')
+    vi.useRealTimers()
   })
 
-  afterEach(() => {
-    vi.restoreAllMocks()
-    vi.unstubAllEnvs()
-  })
-
-  it('Test A: On success, sets authStore.user with all 9 GitHubUser fields mapped correctly', async () => {
-    const mockClient = vi.fn().mockResolvedValue(mockViewerData)
-    vi.spyOn(octokit, 'createGraphqlClient').mockReturnValue(mockClient as ReturnType<typeof octokit.createGraphqlClient>)
-    vi.spyOn(auth, 'verifyMaintainerStatus').mockResolvedValue(false)
-
+  // AUTH-10: store.fetchMe() calls GET /me with credentials: 'include' (no Authorization header)
+  it('AUTH-10: fetchMe() calls GET /me with credentials: "include" and no Authorization header', async () => {
     const store = useAuthStore()
-    await store.fetchCurrentUser('test-token')
 
-    expect(store.user).toEqual({
-      login: 'testuser',
-      name: 'Test User',
-      avatarUrl: 'https://avatars.example.com/u/1',
-      bio: 'A test bio',
-      company: 'Test Corp',
-      location: 'Earth',
-      followers: 42,
-      following: 7,
-      publicRepos: 15,
-    })
+    const fetchSpy = vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
+      ok: true,
+      json: () => Promise.resolve({ login: 'testuser', name: 'Test', avatar_url: 'https://example.com/avatar', role: 'user' }),
+    }))
+
+    await store.fetchMe()
+
+    expect(fetchSpy).toHaveBeenCalledWith(
+      expect.stringContaining('/me'),
+      expect.objectContaining({ credentials: 'include' }),
+    )
+
+    // Must not include Authorization header
+    const callArgs = fetchSpy.mock.calls[0][1] as RequestInit
+    const headers = callArgs?.headers as Record<string, string> | undefined
+    if (headers) {
+      expect(headers['Authorization']).toBeUndefined()
+      expect(headers['authorization']).toBeUndefined()
+    }
   })
 
-  it('Test B: On success, calls verifyMaintainerStatus(token) and sets isMaintainer', async () => {
-    const mockClient = vi.fn().mockResolvedValue(mockViewerData)
-    vi.spyOn(octokit, 'createGraphqlClient').mockReturnValue(mockClient as ReturnType<typeof octokit.createGraphqlClient>)
-    vi.spyOn(auth, 'verifyMaintainerStatus').mockResolvedValue(true)
-
+  // AUTH-10: fetchMe() on 200 response: sets user.value and isMaintainer from role field
+  it('AUTH-10: fetchMe() on 200 response sets user and isMaintainer from role field', async () => {
     const store = useAuthStore()
-    await store.fetchCurrentUser('test-token')
 
-    expect(auth.verifyMaintainerStatus).toHaveBeenCalledWith('test-token')
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
+      ok: true,
+      json: () => Promise.resolve({
+        login: 'testuser',
+        name: 'Test User',
+        avatar_url: 'https://avatars.example.com/1',
+        role: 'maintainer',
+      }),
+    }))
+
+    await store.fetchMe()
+
+    expect(store.user).not.toBeNull()
+    expect(store.user?.login).toBe('testuser')
     expect(store.isMaintainer).toBe(true)
   })
 
-  it('Test C: On failure (GraphQL throws), keeps token set, leaves user null, calls toast.error', async () => {
-    const { toast } = await import('vue-sonner')
-    const mockClient = vi.fn().mockRejectedValue(new Error('GraphQL error'))
-    vi.spyOn(octokit, 'createGraphqlClient').mockReturnValue(mockClient as ReturnType<typeof octokit.createGraphqlClient>)
-
+  // AUTH-10: fetchMe() on non-200 response: user remains null, no error thrown
+  it('AUTH-10: fetchMe() on non-200 response leaves user null (graceful)', async () => {
     const store = useAuthStore()
-    store.receiveToken('test-token')
-    await store.fetchCurrentUser('test-token')
 
-    expect(store.token).toBe('test-token')
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
+      ok: false,
+      status: 401,
+      json: () => Promise.resolve({ error: 'unauthorized' }),
+    }))
+
+    // Must not throw
+    await expect(store.fetchMe()).resolves.not.toThrow()
     expect(store.user).toBeNull()
-    expect(toast.error).toHaveBeenCalledWith('Sign-in failed, please try again')
+  })
+
+  // AUTH-10: isAuthenticated is computed from user !== null (not token !== null)
+  it('AUTH-10: isAuthenticated is true when user is set (not when token is set)', async () => {
+    const store = useAuthStore()
+
+    // Initially not authenticated
+    expect(store.isAuthenticated).toBe(false)
+
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
+      ok: true,
+      json: () => Promise.resolve({ login: 'testuser', name: 'Test', avatar_url: 'https://x.com', role: 'user' }),
+    }))
+
+    await store.fetchMe()
+
+    // isAuthenticated must be true because user is now set
+    expect(store.isAuthenticated).toBe(true)
+  })
+
+  // AUTH-10: No postMessage listener registered (window.addEventListener('message', ...) never called)
+  it('AUTH-10: login() does not register window message listener (no postMessage pattern)', () => {
+    const store = useAuthStore()
+    const addListenerSpy = vi.spyOn(window, 'addEventListener')
+
+    vi.spyOn(window, 'open').mockReturnValue({ closed: false } as Window)
+
+    store.login()
+
+    // No 'message' event listener should be registered
+    const messageListenerCalls = addListenerSpy.mock.calls.filter(([event]) => event === 'message')
+    expect(messageListenerCalls).toHaveLength(0)
+  })
+
+  // INFR-07 regression: localStorage.setItem never called with any token/credential
+  it('INFR-07 regression: localStorage.setItem never called during fetchMe()', async () => {
+    const setItemSpy = vi.spyOn(Storage.prototype, 'setItem')
+    const store = useAuthStore()
+
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
+      ok: true,
+      json: () => Promise.resolve({ login: 'testuser', name: 'Test', avatar_url: 'https://x.com', role: 'user' }),
+    }))
+
+    await store.fetchMe()
+
+    // Nothing credential-like should be written to localStorage
+    const credentialWrites = setItemSpy.mock.calls.filter(([, value]) =>
+      typeof value === 'string' && (value.includes('token') || value.includes('secret') || value.includes('Bearer')),
+    )
+    expect(credentialWrites).toHaveLength(0)
+  })
+
+  // Retained passing test: logout() clears user and isMaintainer
+  it('logout() clears user and isMaintainer', async () => {
+    const store = useAuthStore()
+
+    // Set up state first via fetchMe
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
+      ok: true,
+      json: () => Promise.resolve({ login: 'testuser', name: 'Test', avatar_url: 'https://x.com', role: 'maintainer' }),
+    }))
+    await store.fetchMe()
+
+    expect(store.user).not.toBeNull()
+    expect(store.isMaintainer).toBe(true)
+
+    store.logout()
+
+    expect(store.user).toBeNull()
+    expect(store.isMaintainer).toBe(false)
+    expect(store.isAuthenticated).toBe(false)
   })
 })
