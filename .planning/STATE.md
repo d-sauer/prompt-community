@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: Backend Migration
 status: planning
-stopped_at: Completed 10-auth-migration 10-03-PLAN.md
-last_updated: "2026-05-06T04:28:35.446Z"
+stopped_at: Completed 10-auth-migration 10-04-PLAN.md
+last_updated: "2026-05-06T16:27:29.641Z"
 last_activity: 2026-05-05 — Roadmap created; 7 phases defined, 81/81 v2.0 requirements mapped
 progress:
   total_phases: 7
-  completed_phases: 1
+  completed_phases: 2
   total_plans: 8
-  completed_plans: 7
+  completed_plans: 8
   percent: 0
 ---
 
@@ -57,6 +57,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 10-auth-migration P01 | 7min | 3 tasks | 5 files |
 | Phase 10-auth-migration P02 | 25 | 2 tasks | 12 files |
 | Phase 10-auth-migration P03 | 4min | 2 tasks | 4 files |
+| Phase 10-auth-migration P04 | 8min | 2 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -89,6 +90,9 @@ Recent decisions affecting current work:
 - [Phase 10-auth-migration]: D1 test migration strategy: Node.js globalSetup reads SQL via readD1Migrations+provide(); worker setupFiles inject()+applyD1Migrations pattern established
 - [Phase 10-auth-migration]: JwtTokenExpired from 'hono/utils/jwt/types' used for instanceof check to discriminate expired vs invalid tokens
 - [Phase 10-auth-migration]: GET /me mounted at top-level app (not auth router) so URL is /me not /auth/me
+- [Phase 10-auth-migration]: AuthCallbackView only calls window.close() — no fetch, no state, minimal popup concern
+- [Phase 10-auth-migration]: logout() clears user.value only — POST /auth/logout deferred to Phase 13 (cookie has 7-day hard expiry)
+- [Phase 10-auth-migration]: Poll-on-close popup pattern established: setInterval(200ms) checks popup.closed, calls fetchMe() on close — no postMessage
 
 ### Roadmap Evolution
 
@@ -104,6 +108,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-05-06T04:28:35.444Z
-Stopped at: Completed 10-auth-migration 10-03-PLAN.md
+Last session: 2026-05-06T16:27:29.639Z
+Stopped at: Completed 10-auth-migration 10-04-PLAN.md
 Resume file: None

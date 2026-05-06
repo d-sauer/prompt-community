@@ -28,7 +28,7 @@ Full archive: `.planning/milestones/v1.0-ROADMAP.md`
 **Milestone Goal:** Replace the GitHub-Issues-as-database architecture with a first-party Cloudflare Workers + D1 + Drizzle + Hono backend, migrate the frontend to a first-party REST API, and decommission all GitHub-Issues data paths — while the Vue 3 SPA UI and GitHub OAuth login flow remain intact.
 
 - [x] **Phase 9: Backend Foundation** — Hono worker, D1 binding, Drizzle schema + migrations, seed script, local dev workflow (completed 2026-05-05)
-- [ ] **Phase 10: Auth Migration** — OAuth → JWT (HttpOnly cookie), `/me`, dev-login endpoint, role-based middleware
+- [x] **Phase 10: Auth Migration** — OAuth → JWT (HttpOnly cookie), `/me`, dev-login endpoint, role-based middleware (completed 2026-05-06)
 - [ ] **Phase 11: Read API** — All GET endpoints (prompts, comments, versions, users, search via D1 FTS5)
 - [ ] **Phase 12: Write API** — Prompts/comments/reactions/versions/bookmarks/notifications POST/PATCH/DELETE
 - [ ] **Phase 13: Frontend Rewire** — Swap `src/lib/github/*` → `src/lib/api/*`, store updates, drop ETag layer
@@ -143,7 +143,7 @@ Plans:
 | 7. Wire ETag Caching | v1.0 | 1/1 | Complete | 2026-03-26 |
 | 8. Fix Admin & Search Tech Debt | v1.0 | 1/1 | Complete | 2026-03-26 |
 | 9. Backend Foundation | 4/4 | Complete   | 2026-05-05 | - |
-| 10. Auth Migration | 3/4 | In Progress|  | - |
+| 10. Auth Migration | 4/4 | Complete   | 2026-05-06 | - |
 | 11. Read API | v2.0 | 0/? | Not started | - |
 | 12. Write API | v2.0 | 0/? | Not started | - |
 | 13. Frontend Rewire | v2.0 | 0/? | Not started | - |

@@ -107,7 +107,7 @@ Airplane-mode dev workflow with `wrangler dev`, local D1, and dev-login.
 - [x] **DEV-01**: `.dev.vars` template documents `ENV`, `GITHUB_CLIENT_ID`, `GITHUB_CLIENT_SECRET`, `JWT_SECRET`
 - [x] **DEV-02**: `.env.example` provides `VITE_API_URL=http://localhost:8787`
 - [x] **DEV-03**: Two-terminal dev workflow (`npm run dev` + `wrangler dev`) documented in `CONTRIBUTING.md` or equivalent
-- [ ] **DEV-04**: Separate GitHub OAuth Apps registered for `dev` (localhost callback) and `prod`
+- [x] **DEV-04**: Separate GitHub OAuth Apps registered for `dev` (localhost callback) and `prod`
 - [x] **DEV-05**: Local D1 inspectable via `wrangler d1 execute --local` (documented)
 
 ### Deployment (DEPLOY)
@@ -195,7 +195,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | AUTH-08 | Phase 10 | Complete |
 | AUTH-09 | Phase 10 | Complete |
 | AUTH-10 | Phase 10 | Complete |
-| DEV-04 | Phase 10 | Pending |
+| DEV-04 | Phase 10 | Complete |
 | API-01 | Phase 11 | Pending |
 | API-02 | Phase 11 | Pending |
 | API-03 | Phase 11 | Pending |
