@@ -12,6 +12,7 @@ import reactions from './routes/reactions'
 import users from './routes/users'
 import search from './routes/search'
 import admin from './routes/admin'
+import notifications from './routes/notifications'
 
 export type UserContext = {
   id: string
@@ -65,5 +66,6 @@ app.route('/reactions', reactions)
 app.route('/users', users)
 app.route('/search', search)
 app.route('/admin', admin)
+app.route('/notifications', notifications)
 
 export default app
