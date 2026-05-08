@@ -27,7 +27,6 @@ describe('queries', () => {
     await getPrompts({ category: null, model: null })
     expect(mockApiFetch).toHaveBeenCalledWith(
       expect.stringContaining('/prompts'),
-      expect.anything(),
     )
   })
 
@@ -39,19 +38,18 @@ describe('queries', () => {
 
   it('getPromptDetail calls /prompts/:id path', async () => {
     await getPromptDetail('01PROMPT1')
-    expect(mockApiFetch).toHaveBeenCalledWith('/prompts/01PROMPT1', undefined)
+    expect(mockApiFetch).toHaveBeenCalledWith('/prompts/01PROMPT1')
   })
 
   it('getPromptVersions calls /prompts/:id/versions path', async () => {
     await getPromptVersions('01PROMPT1')
-    expect(mockApiFetch).toHaveBeenCalledWith('/prompts/01PROMPT1/versions', undefined)
+    expect(mockApiFetch).toHaveBeenCalledWith('/prompts/01PROMPT1/versions')
   })
 
   it('getPromptComments calls /prompts/:id/comments path', async () => {
     await getPromptComments('01PROMPT1')
     expect(mockApiFetch).toHaveBeenCalledWith(
       expect.stringContaining('/prompts/01PROMPT1/comments'),
-      undefined,
     )
   })
 
@@ -76,27 +74,25 @@ describe('queries', () => {
 
   it('getLabels calls /labels path', async () => {
     await getLabels()
-    expect(mockApiFetch).toHaveBeenCalledWith('/labels', undefined)
+    expect(mockApiFetch).toHaveBeenCalledWith('/labels')
   })
 
   it('getNotifications calls /notifications path', async () => {
     await getNotifications()
     expect(mockApiFetch).toHaveBeenCalledWith(
       expect.stringContaining('/notifications'),
-      undefined,
     )
   })
 
   it('getUserProfile calls /users/:login path', async () => {
     await getUserProfile('testuser')
-    expect(mockApiFetch).toHaveBeenCalledWith('/users/testuser', undefined)
+    expect(mockApiFetch).toHaveBeenCalledWith('/users/testuser')
   })
 
   it('getUserPrompts calls /users/:login/prompts path', async () => {
     await getUserPrompts('testuser')
     expect(mockApiFetch).toHaveBeenCalledWith(
       expect.stringContaining('/users/testuser/prompts'),
-      undefined,
     )
   })
 
@@ -104,7 +100,6 @@ describe('queries', () => {
     await getUserActivity('testuser')
     expect(mockApiFetch).toHaveBeenCalledWith(
       expect.stringContaining('/users/testuser/activity'),
-      undefined,
     )
   })
 })
