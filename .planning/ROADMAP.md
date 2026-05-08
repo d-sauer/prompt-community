@@ -113,10 +113,16 @@ Plans:
 **Success Criteria** (what must be TRUE):
   1. Every composable in `src/composables/queries/*.ts` and `src/composables/mutations/*.ts` imports from `@/lib/api/*`; no import references `@/lib/github/*`
   2. Logging in sets `useAuthStore` identity from `/me`; `isMaintainer` is derived from the `role` field returned by the API, not from a GitHub collaborators check
-  3. `src/lib/github/etag.ts` is deleted; TanStack Query `staleTime` + standard HTTP cache headers govern freshness with no ETag logic in the client
+  3. `src/lib/github/etag.ts` is not imported by any Phase 13 composable; TanStack Query `staleTime` + standard HTTP cache headers govern freshness with no ETag logic in active code paths
   4. The Activity tab on a user profile page displays real activity data fetched from `/users/:login/activity` instead of the "coming soon" placeholder
   5. The MiniSearch client-side index is rebuilt from API responses and the service worker continues caching prompt list responses, so offline PWA browsing works without any network calls
-**Plans**: TBD
+**Plans**: 5 plans
+Plans:
+- [ ] 13-01-PLAN.md — Wave 1: Type contracts (Prompt.id: string, drop nodeId) + src/lib/api/http.ts + queries.ts + mutations.ts (FRONT-01, FRONT-02, FRONT-03, FRONT-04, FRONT-05, FRONT-06)
+- [ ] 13-02-PLAN.md — Wave 1: POST /auth/logout backend endpoint + useAuthStore.logout() wiring (FRONT-09)
+- [ ] 13-03-PLAN.md — Wave 2: Migrate query composables (usePromptsQuery, usePromptDetail, usePromptVersions, useUserProfile) + new useUserActivity (FRONT-07, FRONT-11)
+- [ ] 13-04-PLAN.md — Wave 2: Migrate mutation composables (useComments, useReactions, useOfflineQueue, useCreatePrompt, useUpdatePrompt, useFlagPrompt, useRestoreVersion) (FRONT-08, FRONT-10)
+- [ ] 13-05-PLAN.md — Wave 3: Wire Activity tab in ProfileTabs.vue + fix ReactionBar.vue + Workbox SW cache update + spec cleanup + tsc/vitest gate (SEARCH-03, SEARCH-04)
 
 ### Phase 14: Admin & Moderation API
 **Goal**: Maintainers can manage the moderation queue, view the moderation log, and perform label CRUD through Hono endpoints backed by D1; the frontend admin panel is rewired to these endpoints with role guards enforced server-side.
@@ -158,6 +164,6 @@ Plans:
 | 10. Auth Migration | 4/4 | Complete    | 2026-05-06 | - |
 | 11. Read API | 5/5 | Complete    | 2026-05-06 | - |
 | 12. Write API | 5/5 | Complete    | 2026-05-08 | - |
-| 13. Frontend Rewire | v2.0 | 0/? | Not started | - |
+| 13. Frontend Rewire | v2.0 | 0/5 | Not started | - |
 | 14. Admin & Moderation API | v2.0 | 0/? | Not started | - |
 | 15. Decommission & Docs | v2.0 | 0/? | Not started | - |
