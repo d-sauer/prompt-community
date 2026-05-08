@@ -14,6 +14,7 @@ import users from './routes/users'
 import search from './routes/search'
 import admin from './routes/admin'
 import notifications from './routes/notifications'
+import bookmarks from './routes/bookmarks'
 
 export type UserContext = {
   id: string
@@ -69,5 +70,6 @@ app.route('/users', users)
 app.route('/search', search)
 app.route('/admin', admin)
 app.route('/notifications', notifications)
+app.route('/bookmarks', bookmarks)
 
 export default app
