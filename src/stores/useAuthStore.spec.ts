@@ -210,10 +210,62 @@ describe('useAuthStore — AUTH-10 (cookie-based auth, poll-on-close)', () => {
     expect(store.user).not.toBeNull()
     expect(store.isMaintainer).toBe(true)
 
-    store.logout()
+    await store.logout()
 
     expect(store.user).toBeNull()
     expect(store.isMaintainer).toBe(false)
     expect(store.isAuthenticated).toBe(false)
+  })
+
+  // FRONT-09: logout() POSTs to /auth/logout with credentials: include
+  it('FRONT-09: logout() calls POST /auth/logout with credentials: include', async () => {
+    const store = useAuthStore()
+    const fetchSpy = vi.fn().mockResolvedValue({ ok: true })
+    vi.stubGlobal('fetch', fetchSpy)
+
+    await store.logout()
+
+    expect(fetchSpy).toHaveBeenCalledWith(
+      'http://localhost:8787/auth/logout',
+      expect.objectContaining({ method: 'POST', credentials: 'include' }),
+    )
+  })
+
+  // FRONT-09: logout() clears user.value even when fetch throws a network error
+  it('FRONT-09: logout() clears user.value on network error (silent failure)', async () => {
+    const store = useAuthStore()
+
+    // Seed user state
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
+      ok: true,
+      json: () => Promise.resolve({ login: 'testuser', name: 'Test', avatar_url: 'https://x.com', role: 'user' }),
+    }))
+    await store.fetchMe()
+    expect(store.user).not.toBeNull()
+
+    // Now logout fetch throws
+    vi.stubGlobal('fetch', vi.fn().mockRejectedValue(new Error('Network Error')))
+    await store.logout()
+
+    expect(store.user).toBeNull()
+  })
+
+  // FRONT-09: logout() clears user.value on successful response
+  it('FRONT-09: logout() clears user.value on successful response', async () => {
+    const store = useAuthStore()
+
+    // Seed user state
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue({
+      ok: true,
+      json: () => Promise.resolve({ login: 'testuser', name: 'Test', avatar_url: 'https://x.com', role: 'user' }),
+    }))
+    await store.fetchMe()
+    expect(store.user).not.toBeNull()
+
+    // Successful logout
+    vi.stubGlobal('fetch', vi.fn().mockResolvedValue({ ok: true }))
+    await store.logout()
+
+    expect(store.user).toBeNull()
   })
 })
