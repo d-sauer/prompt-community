@@ -1,33 +1,26 @@
 import { useMutation, useQueryClient } from '@tanstack/vue-query'
-import { createVersionComment } from '@/lib/github/mutations'
-import { useAuthStore } from '@/stores/useAuthStore'
+import { restoreVersion } from '@/lib/api/mutations'
 import type { VersionObject } from '@/types/index'
 
 interface RestoreVariables {
-  issueNumber: number
+  promptId: string
   targetVersion: VersionObject
-  newVersionNumber: number
 }
 
 /**
- * Non-destructive restore: posts a new version comment with the old content.
- * Does NOT delete or modify the original version comment.
+ * Non-destructive restore: creates a new version from the target version's content.
+ * API auto-increments version numbers — no frontend version number tracking needed.
  */
 export function useRestoreVersion() {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationFn: async ({ issueNumber, targetVersion, newVersionNumber }: RestoreVariables) => {
-      const authStore = useAuthStore()
-      const token = authStore.token
-      if (!token) throw new Error('Authentication required to restore a version')
-
-      const changelog = `Restored from Version ${targetVersion.version}`
-      return createVersionComment(token, issueNumber, newVersionNumber, changelog, targetVersion.content)
+    mutationFn: async ({ promptId, targetVersion }: RestoreVariables) => {
+      return restoreVersion(promptId, targetVersion.version)
     },
     onSuccess: (_data, variables) => {
-      void queryClient.invalidateQueries({ queryKey: ['prompt-versions', variables.issueNumber] })
-      void queryClient.invalidateQueries({ queryKey: ['prompt', variables.issueNumber] })
+      void queryClient.invalidateQueries({ queryKey: ['prompt-versions', variables.promptId] })
+      void queryClient.invalidateQueries({ queryKey: ['prompt', variables.promptId] })
     },
   })
 }
