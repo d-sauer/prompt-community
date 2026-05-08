@@ -4,16 +4,8 @@ import { VueQueryPlugin, QueryClient } from '@tanstack/vue-query'
 import { createTestingPinia } from '@pinia/testing'
 import { useAdminStats } from './useAdminStats'
 
-vi.mock('@/lib/github/octokit', () => ({
-  createGraphqlClient: vi.fn(() =>
-    vi.fn().mockResolvedValue({
-      repository: {
-        total: { totalCount: 42 },
-        flagged: { totalCount: 5 },
-        featured: { totalCount: 3 },
-      },
-    }),
-  ),
+vi.mock('@/lib/api/admin', () => ({
+  getAdminStats: vi.fn().mockResolvedValue({ total: 42, flagged: 3 }),
 }))
 
 function setupTest() {
@@ -26,7 +18,6 @@ function setupTest() {
   mount(
     {
       setup() {
-        // Phase 10: receiveToken removed; composable uses authStore.token (deprecated, Phase 15 cleanup)
         composable = useAdminStats()
         return {}
       },
@@ -50,19 +41,23 @@ describe('useAdminStats', () => {
     vi.clearAllMocks()
   })
 
-  it('returns total, flagged, featured counts from a single GraphQL query', async () => {
+  it('returns total and flagged counts from getAdminStats', async () => {
     const { composable } = setupTest()
 
     await vi.waitFor(() => {
       expect(composable.total.value).toBe(42)
-      expect(composable.flagged.value).toBe(5)
-      expect(composable.featured.value).toBe(3)
+      expect(composable.flagged.value).toBe(3)
     })
   })
 
   it('exposes isLoading while fetching', () => {
     const { composable } = setupTest()
-    // isLoading starts as a ref — it may be true initially or not depending on query state
     expect(typeof composable.isLoading.value).toBe('boolean')
+  })
+
+  it('has no "featured" field — removed in v2 (no featured status in D1 enum)', () => {
+    const { composable } = setupTest()
+    // @ts-expect-error — featured was removed in v2
+    expect(composable.featured).toBeUndefined()
   })
 })

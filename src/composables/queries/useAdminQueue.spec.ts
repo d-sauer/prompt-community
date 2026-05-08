@@ -4,26 +4,17 @@ import { VueQueryPlugin, QueryClient } from '@tanstack/vue-query'
 import { createTestingPinia } from '@pinia/testing'
 import { useAdminQueue } from './useAdminQueue'
 
-const mockFlaggedNode = {
-  id: 'I_kwDOAbc123',
-  number: 7,
-  title: 'Suspicious Prompt',
-  createdAt: '2026-01-15T10:00:00Z',
-  author: { login: 'spammer', avatarUrl: 'https://avatars.github.com/u/1' },
-  labels: { nodes: [{ name: 'flag:review', color: 'e11d48' }] },
-}
-
-vi.mock('@/lib/github/octokit', () => ({
-  createGraphqlClient: vi.fn(() =>
-    vi.fn().mockResolvedValue({
-      repository: {
-        issues: {
-          pageInfo: { hasNextPage: true, endCursor: 'cursor-abc' },
-          nodes: Array(20).fill(mockFlaggedNode),
-        },
-      },
+vi.mock('@/lib/api/admin', () => ({
+  getAdminQueue: vi.fn().mockResolvedValue({
+    data: Array(20).fill({
+      id: '01HPROMPT001FLAGGED0001',
+      title: 'Suspicious Prompt',
+      status: 'flagged',
+      author: { login: 'spammer', avatar_url: 'https://avatars.github.com/u/1' },
+      created_at: '2026-01-15T10:00:00Z',
     }),
-  ),
+    next_cursor: 'cursor-abc',
+  }),
 }))
 
 function setupTest() {
@@ -36,7 +27,6 @@ function setupTest() {
   mount(
     {
       setup() {
-        // Phase 10: receiveToken removed; composable uses authStore.token (deprecated, Phase 15 cleanup)
         composable = useAdminQueue()
         return {}
       },
@@ -60,7 +50,7 @@ describe('useAdminQueue', () => {
     vi.clearAllMocks()
   })
 
-  it('fetches issues with flag:review label, 20 per page', async () => {
+  it('fetches flagged prompts, 20 per page', async () => {
     const { composable } = setupTest()
 
     await vi.waitFor(() => {
@@ -80,7 +70,7 @@ describe('useAdminQueue', () => {
     expect(typeof composable.fetchNextPage).toBe('function')
   })
 
-  it('each item includes GraphQL node id for delete mutation', async () => {
+  it('each item includes ULID id string for mutations', async () => {
     const { composable } = setupTest()
 
     await vi.waitFor(() => {
@@ -88,9 +78,7 @@ describe('useAdminQueue', () => {
     })
 
     const item = composable.items.value[0]
-    expect(item.id).toBe('I_kwDOAbc123')
+    expect(item.id).toBe('01HPROMPT001FLAGGED0001')
     expect(typeof item.id).toBe('string')
-    // id must be a string (GraphQL base64 node ID), not a number
-    expect(item.id).not.toBe(item.number)
   })
 })

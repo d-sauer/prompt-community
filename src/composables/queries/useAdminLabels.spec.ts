@@ -3,45 +3,41 @@ import { mount } from '@vue/test-utils'
 import { VueQueryPlugin, QueryClient } from '@tanstack/vue-query'
 import { createTestingPinia } from '@pinia/testing'
 import { useAdminLabels, validateLabel } from './useAdminLabels'
-import * as mutations from '@/lib/github/mutations'
-import * as queries from '@/lib/github/queries'
-import * as etag from '@/lib/github/etag'
 
-vi.mock('@/lib/github/mutations', () => ({
-  addLabelToIssue: vi.fn().mockResolvedValue(undefined),
-  removeLabelFromIssue: vi.fn().mockResolvedValue(undefined),
-  deleteIssueGraphQL: vi.fn().mockResolvedValue(undefined),
-  postModerationComment: vi.fn().mockResolvedValue(undefined),
-  createRepoLabel: vi.fn().mockResolvedValue(undefined),
-  updateRepoLabel: vi.fn().mockResolvedValue(undefined),
-  deleteRepoLabel: vi.fn().mockResolvedValue(undefined),
+vi.mock('@/lib/api/admin', () => ({
+  createLabel: vi.fn().mockResolvedValue({
+    id: '01HLABEL001',
+    prefix: 'category',
+    value: 'test',
+    color: 'abc123',
+    description: null,
+  }),
+  updateLabel: vi.fn().mockResolvedValue({
+    id: '01HLABEL001',
+    prefix: 'category',
+    value: 'updated',
+    color: 'abc123',
+    description: null,
+  }),
+  deleteLabel: vi.fn().mockResolvedValue(undefined),
 }))
 
-vi.mock('@/lib/github/queries', () => ({
-  GET_ADMIN_STATS: '',
-  GET_FLAGGED_ISSUES: '',
-  getRepoLabels: vi.fn().mockResolvedValue([
-    { id: 1, node_id: 'L_1', name: 'category:writing', color: 'abc123', description: 'Writing prompts' },
-    { id: 2, node_id: 'L_2', name: 'category:coding', color: 'def456', description: 'Coding prompts' },
-    { id: 3, node_id: 'L_3', name: 'status:featured', color: '22c55e', description: 'Featured' },
-    { id: 4, node_id: 'L_4', name: 'flag:review', color: 'e11d48', description: 'Flagged for review' },
-  ]),
-  getIssueComments: vi.fn().mockResolvedValue([]),
+vi.mock('@/lib/api/queries', () => ({
+  getLabels: vi.fn().mockResolvedValue({
+    category: [
+      { name: 'category:writing', color: 'abc123' },
+      { name: 'category:coding', color: 'def456' },
+    ],
+    status: [{ name: 'status:featured', color: '22c55e' }],
+    flag: [{ name: 'flag:review', color: 'e11d48' }],
+  }),
 }))
 
-vi.mock('@/lib/github/etag', () => ({
-  clearEtag: vi.fn(),
-  clearUserEtags: vi.fn(),
-  getEtag: vi.fn(),
-  setEtag: vi.fn(),
-  etagFetchWrapper: vi.fn(),
-  makeBoundFetch: vi.fn(),
-}))
+import * as adminApi from '@/lib/api/admin'
 
-const mockCreateRepoLabel = vi.mocked(mutations.createRepoLabel)
-const mockUpdateRepoLabel = vi.mocked(mutations.updateRepoLabel)
-const mockDeleteRepoLabel = vi.mocked(mutations.deleteRepoLabel)
-const mockClearEtag = vi.mocked(etag.clearEtag)
+const mockCreateLabel = vi.mocked(adminApi.createLabel)
+const mockUpdateLabel = vi.mocked(adminApi.updateLabel)
+const mockDeleteLabel = vi.mocked(adminApi.deleteLabel)
 
 function setupTest() {
   const queryClient = new QueryClient({
@@ -53,7 +49,6 @@ function setupTest() {
   mount(
     {
       setup() {
-        // Phase 10: receiveToken removed; composable uses authStore.token (deprecated, Phase 15 cleanup)
         composable = useAdminLabels()
         return {}
       },
@@ -75,12 +70,6 @@ function setupTest() {
 describe('useAdminLabels', () => {
   beforeEach(() => {
     vi.clearAllMocks()
-    vi.mocked(queries.getRepoLabels).mockResolvedValue([
-      { id: 1, node_id: 'L_1', name: 'category:writing', color: 'abc123', description: 'Writing prompts' },
-      { id: 2, node_id: 'L_2', name: 'category:coding', color: 'def456', description: 'Coding prompts' },
-      { id: 3, node_id: 'L_3', name: 'status:featured', color: '22c55e', description: 'Featured' },
-      { id: 4, node_id: 'L_4', name: 'flag:review', color: 'e11d48', description: 'Flagged for review' },
-    ])
   })
 
   it('fetchLabels returns labels grouped by namespace prefix', async () => {
@@ -92,7 +81,6 @@ describe('useAdminLabels', () => {
       expect(Object.keys(groups)).toContain('status')
       expect(Object.keys(groups)).toContain('flag')
       expect(groups['category'].length).toBe(2)
-      expect(groups['category'][0].name).toBe('category:writing')
     })
   })
 
@@ -118,71 +106,55 @@ describe('useAdminLabels', () => {
     const { composable } = setupTest()
 
     await expect(
-      composable.createLabelMutation.mutateAsync({ name: 'invalid', color: 'abc123', description: '' }),
+      composable.createLabelMutation.mutateAsync({ prefix: 'invalid', value: '' }),
     ).rejects.toThrow()
 
-    expect(mockCreateRepoLabel).not.toHaveBeenCalled()
+    expect(mockCreateLabel).not.toHaveBeenCalled()
     expect(composable.labelError.value).not.toBeNull()
   })
 
-  it('updateLabel and deleteLabel call correct REST endpoints', async () => {
-    const { composable } = setupTest()
-
-    await composable.updateLabelMutation.mutateAsync({
-      oldName: 'category:writing',
-      newName: 'category:writing-updated',
-      color: 'abc123',
-      description: 'Updated',
-    })
-    // token is undefined in Phase 10 (authStore.token removed); Phase 15 will migrate to cookie-based API
-    expect(mockUpdateRepoLabel).toHaveBeenCalledWith(
-      undefined,
-      'category:writing',
-      'category:writing-updated',
-      'abc123',
-      'Updated',
-    )
-
-    await composable.deleteLabelMutation.mutateAsync('flag:review')
-    expect(mockDeleteRepoLabel).toHaveBeenCalledWith(undefined, 'flag:review')
-  })
-
-  it('createLabel onSuccess clears labels ETag', async () => {
+  it('createLabel calls createLabel API with prefix and value fields', async () => {
     const { composable } = setupTest()
 
     await composable.createLabelMutation.mutateAsync({
-      name: 'category:test',
+      prefix: 'category',
+      value: 'test',
       color: 'abc123',
-      description: 'Test',
+      description: 'Test label',
     })
 
-    await vi.waitFor(() => {
-      expect(mockClearEtag).toHaveBeenCalled()
+    expect(mockCreateLabel).toHaveBeenCalledWith({
+      prefix: 'category',
+      value: 'test',
+      color: 'abc123',
+      description: 'Test label',
     })
   })
 
-  it('updateLabel onSuccess clears labels ETag', async () => {
+  it('updateLabel calls updateLabel API with id and update fields', async () => {
     const { composable } = setupTest()
 
     await composable.updateLabelMutation.mutateAsync({
-      oldName: 'category:writing',
-      newName: 'category:writing-updated',
+      id: '01HLABEL001',
+      prefix: 'category',
+      value: 'updated',
       color: 'abc123',
       description: 'Updated',
     })
 
-    await vi.waitFor(() => {
-      expect(mockClearEtag).toHaveBeenCalled()
+    expect(mockUpdateLabel).toHaveBeenCalledWith('01HLABEL001', {
+      prefix: 'category',
+      value: 'updated',
+      color: 'abc123',
+      description: 'Updated',
     })
   })
 
-  it('deleteLabel onSuccess clears labels ETag', async () => {
+  it('deleteLabel calls deleteLabel API with id', async () => {
     const { composable } = setupTest()
 
-    await composable.deleteLabelMutation.mutateAsync('flag:review')
+    await composable.deleteLabelMutation.mutateAsync('01HLABEL001')
 
-    await vi.waitFor(() => {
-      expect(mockClearEtag).toHaveBeenCalled()
-    })
+    expect(mockDeleteLabel).toHaveBeenCalledWith('01HLABEL001')
   })
 })

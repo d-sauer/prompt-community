@@ -1,17 +1,10 @@
 import { ref, computed } from 'vue'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/vue-query'
-import { useAuthStore } from '@/stores/useAuthStore'
-import { getRepoLabels } from '@/lib/github/queries'
-import { createRepoLabel, updateRepoLabel, deleteRepoLabel } from '@/lib/github/mutations'
-import { clearEtag } from '@/lib/github/etag'
+import { createLabel, updateLabel, deleteLabel, type AdminLabel } from '@/lib/api/admin'
+import { getLabels } from '@/lib/api/queries'
 
-export interface RepoLabel {
-  id: number
-  node_id: string
-  name: string
-  color: string
-  description: string | null
-}
+// Re-export AdminLabel as RepoLabel for backward compatibility with consumers
+export type RepoLabel = AdminLabel
 
 const LABEL_REGEX = /^[a-z][a-z0-9-]*:[a-z0-9][a-z0-9-]*$/
 
@@ -24,26 +17,41 @@ export function validateLabel(name: string): string | null {
 
 export function useAdminLabels() {
   const queryClient = useQueryClient()
-  const authStore = useAuthStore()
   const labelError = ref<string | null>(null)
-
-  const labelsEtagKey = `${authStore.user?.login ?? ''}:/repos/${import.meta.env.VITE_GITHUB_OWNER}/${import.meta.env.VITE_GITHUB_REPO}/labels`
 
   const query = useQuery({
     queryKey: ['admin', 'labels'],
-    queryFn: () => getRepoLabels(authStore.token!, authStore.user?.login ?? ''),
+    queryFn: () => getLabels(),
     staleTime: 60_000,
   })
 
+  // getLabels() returns a grouped object: { categories, models, difficulties, tags, ... }
+  // Flatten all label arrays and group by prefix for the admin UI
   const groupedLabels = computed(() => {
-    const labels = query.data.value ?? []
-    return labels.reduce(
+    const grouped = query.data.value ?? {}
+    // Collect all labels from all groups and re-group by prefix
+    const allLabels: AdminLabel[] = []
+    for (const labels of Object.values(grouped)) {
+      if (Array.isArray(labels)) {
+        for (const label of labels) {
+          // getLabels returns { name, color } shape — wrap in AdminLabel-compatible shape
+          allLabels.push({
+            id: (label as { name: string; color: string }).name,
+            prefix: (label as { name: string }).name.split(':')[0] ?? '',
+            value: (label as { name: string }).name.split(':')[1] ?? '',
+            color: (label as { color: string }).color ?? null,
+            description: null,
+          })
+        }
+      }
+    }
+    // Group by prefix
+    return allLabels.reduce(
       (acc, label) => {
-        const [ns] = label.name.split(':')
-        ;(acc[ns] ??= []).push(label)
+        ;(acc[label.prefix] ??= []).push(label)
         return acc
       },
-      {} as Record<string, RepoLabel[]>,
+      {} as Record<string, AdminLabel[]>,
     )
   })
 
@@ -53,60 +61,65 @@ export function useAdminLabels() {
 
   const createLabelMutation = useMutation({
     mutationFn: async ({
-      name,
+      prefix,
+      value,
       color,
       description,
     }: {
-      name: string
-      color: string
-      description: string
+      prefix: string
+      value: string
+      color?: string
+      description?: string
     }) => {
-      const error = validateLabel(name)
+      const combinedName = `${prefix}:${value}`
+      const error = validateLabel(combinedName)
       if (error) {
         labelError.value = error
         throw new Error(error)
       }
       labelError.value = null
-      await createRepoLabel(authStore.token!, name, color, description)
+      return createLabel({ prefix, value, color, description })
     },
     onSuccess: () => {
-      clearEtag(authStore.user?.login ?? '', labelsEtagKey)
       invalidateLabels()
     },
   })
 
   const updateLabelMutation = useMutation({
     mutationFn: async ({
-      oldName,
-      newName,
+      id,
+      prefix,
+      value,
       color,
       description,
     }: {
-      oldName: string
-      newName: string
-      color: string
-      description: string
+      id: string
+      prefix?: string
+      value?: string
+      color?: string
+      description?: string
     }) => {
-      const error = validateLabel(newName)
-      if (error) {
-        labelError.value = error
-        throw new Error(error)
+      if (prefix !== undefined && value !== undefined) {
+        const combinedName = `${prefix}:${value}`
+        const error = validateLabel(combinedName)
+        if (error) {
+          labelError.value = error
+          throw new Error(error)
+        }
       }
       labelError.value = null
-      await updateRepoLabel(authStore.token!, oldName, newName, color, description)
+      return updateLabel(id, { prefix, value, color, description })
     },
     onSuccess: () => {
-      clearEtag(authStore.user?.login ?? '', labelsEtagKey)
       invalidateLabels()
     },
   })
 
   const deleteLabelMutation = useMutation({
-    mutationFn: async (name: string) => {
-      await deleteRepoLabel(authStore.token!, name)
+    mutationFn: async (id: string) => {
+      return deleteLabel(id)
     },
     onSuccess: () => {
-      clearEtag(authStore.user?.login ?? '', labelsEtagKey)
       invalidateLabels()
     },
   })

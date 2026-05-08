@@ -1,29 +1,9 @@
 import { useMutation, useQueryClient } from '@tanstack/vue-query'
-import { useAuthStore } from '@/stores/useAuthStore'
-import {
-  addLabelToIssue,
-  removeLabelFromIssue,
-  deleteIssueGraphQL,
-  postModerationComment,
-} from '@/lib/github/mutations'
-
-interface ApproveInput {
-  issueNumber: number
-  nodeId: string
-}
-
-interface HideInput {
-  issueNumber: number
-}
-
-interface FeatureInput {
-  issueNumber: number
-  currentLabels: { name: string }[]
-}
+import { approvePrompt, hidePrompt } from '@/lib/api/admin'
+import { deletePrompt } from '@/lib/api/mutations'
 
 export function useAdminActions() {
   const queryClient = useQueryClient()
-  const authStore = useAuthStore()
 
   function invalidateAdmin() {
     void queryClient.invalidateQueries({ queryKey: ['admin', 'queue'] })
@@ -32,66 +12,53 @@ export function useAdminActions() {
   }
 
   const approveMutation = useMutation({
-    mutationFn: async ({ issueNumber }: ApproveInput) => {
-      await removeLabelFromIssue(authStore.token!, issueNumber, 'flag:review')
-      await postModerationComment(authStore.token!, issueNumber, 'Approved', authStore.user!.login)
-    },
+    mutationFn: async ({ id, reason }: { id: string; reason?: string }) =>
+      approvePrompt(id, reason),
     onSuccess: invalidateAdmin,
   })
 
   const hideMutation = useMutation({
-    mutationFn: async ({ issueNumber }: HideInput) => {
-      await addLabelToIssue(authStore.token!, issueNumber, 'status:hidden')
-      await postModerationComment(authStore.token!, issueNumber, 'Hidden', authStore.user!.login)
-    },
+    mutationFn: async ({ id, reason }: { id: string; reason?: string }) =>
+      hidePrompt(id, reason),
     onSuccess: invalidateAdmin,
   })
 
   const deleteMutation = useMutation({
-    mutationFn: async (nodeId: string) => {
-      await deleteIssueGraphQL(authStore.token!, nodeId)
-    },
+    mutationFn: async (id: string) => deletePrompt(id),
     onSuccess: invalidateAdmin,
   })
 
+  // featureMutation: stubbed as no-op — no 'featured' status in v2 D1 enum (RESEARCH Pitfall 3)
+  // Kept exported so AdminQueueTab.vue does not crash when referencing featureMutation
   const featureMutation = useMutation({
-    mutationFn: async ({ issueNumber, currentLabels }: FeatureInput) => {
-      const isFeatured = currentLabels.some((l) => l.name === 'status:featured')
-      if (isFeatured) {
-        await removeLabelFromIssue(authStore.token!, issueNumber, 'status:featured')
-        await postModerationComment(authStore.token!, issueNumber, 'Unfeatured', authStore.user!.login)
-      } else {
-        await addLabelToIssue(authStore.token!, issueNumber, 'status:featured')
-        await postModerationComment(authStore.token!, issueNumber, 'Featured', authStore.user!.login)
-      }
+    mutationFn: async () => {
+      throw new Error('feature action not available in v2')
     },
     onSuccess: invalidateAdmin,
   })
 
   const bulkApproveMutation = useMutation({
-    mutationFn: async (items: ApproveInput[]) => {
+    mutationFn: async (items: { id: string; reason?: string }[]) => {
       for (const item of items) {
-        await removeLabelFromIssue(authStore.token!, item.issueNumber, 'flag:review')
-        await postModerationComment(authStore.token!, item.issueNumber, 'Approved', authStore.user!.login)
+        await approvePrompt(item.id, item.reason)
       }
     },
     onSuccess: invalidateAdmin,
   })
 
   const bulkHideMutation = useMutation({
-    mutationFn: async (issueNumbers: number[]) => {
-      for (const issueNumber of issueNumbers) {
-        await addLabelToIssue(authStore.token!, issueNumber, 'status:hidden')
-        await postModerationComment(authStore.token!, issueNumber, 'Hidden', authStore.user!.login)
+    mutationFn: async (ids: string[]) => {
+      for (const id of ids) {
+        await hidePrompt(id)
       }
     },
     onSuccess: invalidateAdmin,
   })
 
   const bulkDeleteMutation = useMutation({
-    mutationFn: async (nodeIds: string[]) => {
-      for (const nodeId of nodeIds) {
-        await deleteIssueGraphQL(authStore.token!, nodeId)
+    mutationFn: async (ids: string[]) => {
+      for (const id of ids) {
+        await deletePrompt(id)
       }
     },
     onSuccess: invalidateAdmin,

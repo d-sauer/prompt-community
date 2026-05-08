@@ -1,64 +1,26 @@
 import { computed } from 'vue'
 import { useInfiniteQuery } from '@tanstack/vue-query'
-import { useAuthStore } from '@/stores/useAuthStore'
-import { createGraphqlClient } from '@/lib/github/octokit'
-import { GET_FLAGGED_ISSUES } from '@/lib/github/queries'
+import { getAdminQueue, type FlaggedPrompt } from '@/lib/api/admin'
 
 export interface FlaggedIssue {
   id: string
-  number: number
   title: string
-  createdAt: string
-  author: { login: string; avatarUrl: string }
-  labels: { name: string; color: string }[]
-}
-
-interface FlaggedIssuesResponse {
-  repository: {
-    issues: {
-      pageInfo: { hasNextPage: boolean; endCursor: string | null }
-      nodes: Array<{
-        id: string
-        number: number
-        title: string
-        createdAt: string
-        author: { login: string; avatarUrl: string }
-        labels: { nodes: Array<{ name: string; color: string }> }
-      }>
-    }
-  }
+  status: 'flagged'
+  author: { login: string; avatar_url: string | null }
+  created_at: string
 }
 
 export function useAdminQueue() {
-  const authStore = useAuthStore()
-
-  const owner = import.meta.env.VITE_GITHUB_OWNER as string
-  const repo = import.meta.env.VITE_GITHUB_REPO as string
-
   const query = useInfiniteQuery({
     queryKey: ['admin', 'queue'],
     queryFn: async ({ pageParam }: { pageParam: string | undefined }) => {
-      const client = createGraphqlClient(authStore.token ?? undefined)
-      const data = await client<FlaggedIssuesResponse>(GET_FLAGGED_ISSUES, {
-        owner,
-        repo,
-        after: pageParam,
-      })
-      const issues = data.repository.issues
+      const response = await getAdminQueue({ cursor: pageParam })
       return {
-        items: issues.nodes.map((node) => ({
-          id: node.id,
-          number: node.number,
-          title: node.title,
-          createdAt: node.createdAt,
-          author: node.author,
-          labels: node.labels.nodes,
-        })) as FlaggedIssue[],
-        pageInfo: issues.pageInfo,
+        items: response.data as FlaggedIssue[],
+        next_cursor: response.next_cursor,
       }
     },
-    getNextPageParam: (lastPage) =>
-      lastPage.pageInfo.hasNextPage ? lastPage.pageInfo.endCursor ?? undefined : undefined,
+    getNextPageParam: (lastPage) => lastPage.next_cursor ?? undefined,
     initialPageParam: undefined as string | undefined,
     staleTime: 60_000,
   })

@@ -2,28 +2,23 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { mount } from '@vue/test-utils'
 import { VueQueryPlugin, QueryClient } from '@tanstack/vue-query'
 import { createTestingPinia } from '@pinia/testing'
-import { useAuthStore } from '@/stores/useAuthStore'
 import { useAdminActions } from './useAdminActions'
-import * as mutations from '@/lib/github/mutations'
 
-// Phase 10: useAdminActions uses authStore.token (deprecated GitHub API pattern).
-// token is now undefined (removed from store in Phase 10). Phase 15 will rewrite
-// these composables to use the cookie-based backend API.
-
-vi.mock('@/lib/github/mutations', () => ({
-  addLabelToIssue: vi.fn().mockResolvedValue(undefined),
-  removeLabelFromIssue: vi.fn().mockResolvedValue(undefined),
-  deleteIssueGraphQL: vi.fn().mockResolvedValue(undefined),
-  postModerationComment: vi.fn().mockResolvedValue(undefined),
-  createRepoLabel: vi.fn().mockResolvedValue(undefined),
-  updateRepoLabel: vi.fn().mockResolvedValue(undefined),
-  deleteRepoLabel: vi.fn().mockResolvedValue(undefined),
+vi.mock('@/lib/api/admin', () => ({
+  approvePrompt: vi.fn().mockResolvedValue({ success: true }),
+  hidePrompt: vi.fn().mockResolvedValue({ success: true }),
 }))
 
-const mockRemoveLabelFromIssue = vi.mocked(mutations.removeLabelFromIssue)
-const mockAddLabelToIssue = vi.mocked(mutations.addLabelToIssue)
-const mockDeleteIssueGraphQL = vi.mocked(mutations.deleteIssueGraphQL)
-const mockPostModerationComment = vi.mocked(mutations.postModerationComment)
+vi.mock('@/lib/api/mutations', () => ({
+  deletePrompt: vi.fn().mockResolvedValue({}),
+}))
+
+import * as adminApi from '@/lib/api/admin'
+import * as mutations from '@/lib/api/mutations'
+
+const mockApprovePrompt = vi.mocked(adminApi.approvePrompt)
+const mockHidePrompt = vi.mocked(adminApi.hidePrompt)
+const mockDeletePrompt = vi.mocked(mutations.deletePrompt)
 
 function setupTest() {
   const queryClient = new QueryClient({
@@ -35,9 +30,6 @@ function setupTest() {
   mount(
     {
       setup() {
-        const authStore = useAuthStore()
-        // Phase 10: set user via new ApiUser shape (token is removed; Phase 15 cleanup)
-        authStore.$patch({ user: { login: 'maintainer', name: null, avatar_url: '', role: 'maintainer' } })
         composable = useAdminActions()
         return {}
       },
@@ -61,79 +53,61 @@ describe('useAdminActions', () => {
     vi.clearAllMocks()
   })
 
-  it('approve: calls removeLabelFromIssue(flag:review) then postModerationComment(Approved)', async () => {
+  it('approve: calls approvePrompt with id and optional reason', async () => {
     const { composable } = setupTest()
 
-    await composable.approveMutation.mutateAsync({ issueNumber: 42, nodeId: 'I_kwDO123' })
+    await composable.approveMutation.mutateAsync({ id: '01HPROMPT001', reason: 'Looks good' })
 
-    // token is undefined in Phase 10 (authStore.token removed); Phase 15 will migrate to cookie-based API
-    expect(mockRemoveLabelFromIssue).toHaveBeenCalledWith(undefined, 42, 'flag:review')
-    expect(mockPostModerationComment).toHaveBeenCalledWith(undefined, 42, 'Approved', 'maintainer')
+    expect(mockApprovePrompt).toHaveBeenCalledWith('01HPROMPT001', 'Looks good')
   })
 
-  it('hide: calls addLabelToIssue(status:hidden) then postModerationComment(Hidden)', async () => {
+  it('hide: calls hidePrompt with id and optional reason', async () => {
     const { composable } = setupTest()
 
-    await composable.hideMutation.mutateAsync({ issueNumber: 42 })
+    await composable.hideMutation.mutateAsync({ id: '01HPROMPT001', reason: 'Spam' })
 
-    expect(mockAddLabelToIssue).toHaveBeenCalledWith(undefined, 42, 'status:hidden')
-    expect(mockPostModerationComment).toHaveBeenCalledWith(undefined, 42, 'Hidden', 'maintainer')
+    expect(mockHidePrompt).toHaveBeenCalledWith('01HPROMPT001', 'Spam')
   })
 
-  it('delete: calls deleteIssueGraphQL with nodeId (not issue number)', async () => {
+  it('delete: calls deletePrompt with id string', async () => {
     const { composable } = setupTest()
 
-    await composable.deleteMutation.mutateAsync('I_kwDOAbc123')
+    await composable.deleteMutation.mutateAsync('01HPROMPT001')
 
-    expect(mockDeleteIssueGraphQL).toHaveBeenCalledWith(undefined, 'I_kwDOAbc123')
-    // Must NOT be called with a number
-    expect(mockDeleteIssueGraphQL).not.toHaveBeenCalledWith(undefined, 42)
+    expect(mockDeletePrompt).toHaveBeenCalledWith('01HPROMPT001')
   })
 
-  it('feature: calls addLabelToIssue(status:featured); unfeature removes it', async () => {
+  it('feature: throws "feature action not available in v2" (stub)', async () => {
     const { composable } = setupTest()
 
-    // Feature an issue that doesn't have status:featured
-    await composable.featureMutation.mutateAsync({
-      issueNumber: 42,
-      currentLabels: [{ name: 'flag:review' }],
-    })
-    expect(mockAddLabelToIssue).toHaveBeenCalledWith(undefined, 42, 'status:featured')
-
-    vi.clearAllMocks()
-
-    // Unfeature an issue that already has status:featured
-    await composable.featureMutation.mutateAsync({
-      issueNumber: 42,
-      currentLabels: [{ name: 'status:featured' }],
-    })
-    expect(mockRemoveLabelFromIssue).toHaveBeenCalledWith(undefined, 42, 'status:featured')
+    await expect(composable.featureMutation.mutateAsync()).rejects.toThrow(
+      'feature action not available in v2',
+    )
   })
 
-  it('bulk approve: iterates over all selected issue numbers sequentially', async () => {
+  it('bulk approve: iterates over all selected ids sequentially', async () => {
     const { composable } = setupTest()
 
     await composable.bulkApproveMutation.mutateAsync([
-      { issueNumber: 1, nodeId: 'I_1' },
-      { issueNumber: 2, nodeId: 'I_2' },
-      { issueNumber: 3, nodeId: 'I_3' },
+      { id: '01HPROMPT001' },
+      { id: '01HPROMPT002' },
+      { id: '01HPROMPT003' },
     ])
 
-    expect(mockRemoveLabelFromIssue).toHaveBeenCalledTimes(3)
-    expect(mockPostModerationComment).toHaveBeenCalledTimes(3)
-    expect(mockRemoveLabelFromIssue).toHaveBeenNthCalledWith(1, undefined, 1, 'flag:review')
-    expect(mockRemoveLabelFromIssue).toHaveBeenNthCalledWith(2, undefined, 2, 'flag:review')
-    expect(mockRemoveLabelFromIssue).toHaveBeenNthCalledWith(3, undefined, 3, 'flag:review')
+    expect(mockApprovePrompt).toHaveBeenCalledTimes(3)
+    expect(mockApprovePrompt).toHaveBeenNthCalledWith(1, '01HPROMPT001', undefined)
+    expect(mockApprovePrompt).toHaveBeenNthCalledWith(2, '01HPROMPT002', undefined)
+    expect(mockApprovePrompt).toHaveBeenNthCalledWith(3, '01HPROMPT003', undefined)
   })
 
-  it('bulk delete: accepts array of nodeIds and deletes each', async () => {
+  it('bulk delete: accepts array of ids and deletes each', async () => {
     const { composable } = setupTest()
 
-    await composable.bulkDeleteMutation.mutateAsync(['I_kwDO1', 'I_kwDO2'])
+    await composable.bulkDeleteMutation.mutateAsync(['01HPROMPT001', '01HPROMPT002'])
 
-    expect(mockDeleteIssueGraphQL).toHaveBeenCalledTimes(2)
-    expect(mockDeleteIssueGraphQL).toHaveBeenNthCalledWith(1, undefined, 'I_kwDO1')
-    expect(mockDeleteIssueGraphQL).toHaveBeenNthCalledWith(2, undefined, 'I_kwDO2')
+    expect(mockDeletePrompt).toHaveBeenCalledTimes(2)
+    expect(mockDeletePrompt).toHaveBeenNthCalledWith(1, '01HPROMPT001')
+    expect(mockDeletePrompt).toHaveBeenNthCalledWith(2, '01HPROMPT002')
   })
 
   it('each action invalidates admin queue query cache on success', async () => {
@@ -141,7 +115,7 @@ describe('useAdminActions', () => {
 
     const invalidateSpy = vi.spyOn(queryClient, 'invalidateQueries')
 
-    await composable.approveMutation.mutateAsync({ issueNumber: 42, nodeId: 'I_kwDO123' })
+    await composable.approveMutation.mutateAsync({ id: '01HPROMPT001' })
 
     expect(invalidateSpy).toHaveBeenCalledWith({ queryKey: ['admin', 'queue'] })
     expect(invalidateSpy).toHaveBeenCalledWith({ queryKey: ['admin', 'stats'] })
