@@ -2,44 +2,43 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { ref } from 'vue'
 import { VueQueryPlugin, QueryClient } from '@tanstack/vue-query'
 import { mount } from '@vue/test-utils'
-import { createTestingPinia } from '@pinia/testing'
 import { useUserProfile } from './useUserProfile'
+import * as apiQueries from '@/lib/api/queries'
+import type { Prompt } from '@/types/index'
 
-// Mock createGraphqlClient before importing useUserProfile
-const mockGraphqlClient = vi.fn()
-
-vi.mock('@/lib/github/octokit', () => ({
-  createGraphqlClient: vi.fn(() => mockGraphqlClient),
+vi.mock('@/lib/api/queries', () => ({
+  getUserProfile: vi.fn(),
+  getUserPrompts: vi.fn(),
 }))
 
-const fixtureData = {
-  search: {
-    issueCount: 3,
-    nodes: [
-      {
-        number: 1,
-        title: 'Prompt 1',
-        createdAt: '2026-01-01T00:00:00Z',
-        reactionGroups: [
-          { content: 'THUMBS_UP', reactors: { totalCount: 10 } },
-          { content: 'HEART', reactors: { totalCount: 5 } },
-        ],
-        comments: { totalCount: 2 },
-        labels: { nodes: [] },
-      },
-      {
-        number: 2,
-        title: 'Prompt 2',
-        createdAt: '2026-01-02T00:00:00Z',
-        reactionGroups: [
-          { content: 'THUMBS_UP', reactors: { totalCount: 3 } },
-          { content: 'ROCKET', reactors: { totalCount: 7 } },
-        ],
-        comments: { totalCount: 0 },
-        labels: { nodes: [] },
-      },
-    ],
-  },
+const mockGetUserProfile = vi.mocked(apiQueries.getUserProfile)
+const mockGetUserPrompts = vi.mocked(apiQueries.getUserPrompts)
+
+function makePrompt(id: string, title: string, reactions: number[]): Prompt {
+  return {
+    id,
+    title,
+    body: '',
+    frontmatter: {
+      type: 'prompt',
+      category: '',
+      model: '',
+      difficulty: 'beginner',
+      tags: [],
+      version: 1,
+    },
+    author: { login: 'alice', avatarUrl: '' },
+    createdAt: '2026-01-01T00:00:00Z',
+    updatedAt: '2026-01-01T00:00:00Z',
+    labels: [],
+    reactionGroups: reactions.map((count, i) => ({
+      content: ['THUMBS_UP', 'HEART', 'ROCKET'][i] ?? 'THUMBS_UP',
+      reactors: { totalCount: count },
+      viewerHasReacted: false,
+    })),
+    commentCount: 0,
+    comments: [],
+  }
 }
 
 function setupTest(login: string) {
@@ -53,7 +52,6 @@ function setupTest(login: string) {
   mount(
     {
       setup() {
-        // Phase 10: receiveToken removed; composable uses authStore.token (deprecated, Phase 15 cleanup)
         composable = useUserProfile(loginRef)
         return {}
       },
@@ -61,13 +59,7 @@ function setupTest(login: string) {
     },
     {
       global: {
-        plugins: [
-          [VueQueryPlugin, { queryClient }],
-          createTestingPinia({
-            createSpy: vi.fn,
-            stubActions: false,
-          }),
-        ],
+        plugins: [[VueQueryPlugin, { queryClient }]],
       },
     },
   )
@@ -78,40 +70,56 @@ function setupTest(login: string) {
 describe('useUserProfile', () => {
   beforeEach(() => {
     vi.clearAllMocks()
-    mockGraphqlClient.mockResolvedValue(fixtureData)
+    mockGetUserProfile.mockResolvedValue({
+      login: 'alice',
+      name: 'Alice',
+      avatar_url: '',
+      role: 'user',
+    })
+    mockGetUserPrompts.mockResolvedValue({ data: [], next_cursor: null })
   })
 
   it('totalVotes aggregates reactors.totalCount across all reactionGroups on all submissions', async () => {
-    const { queryClient } = setupTest('alice')
-    // Wait for query to settle in QueryClient cache
+    const prompt1 = makePrompt('01PROMPT001', 'Prompt 1', [10, 5])
+    const prompt2 = makePrompt('01PROMPT002', 'Prompt 2', [3, 7])
+
+    mockGetUserPrompts.mockResolvedValue({
+      data: [prompt1, prompt2],
+      next_cursor: null,
+    })
+
+    const { composable } = setupTest('alice')
+
     await vi.waitFor(
       () => {
-        const data = queryClient.getQueryData<typeof fixtureData>(['user-profile', 'alice'])
-        if (!data) throw new Error('Query not resolved yet')
-        return data
+        if (!composable.data.value) throw new Error('Query not resolved yet')
       },
       { timeout: 3000 },
     )
-    const data = queryClient.getQueryData<typeof fixtureData>(['user-profile', 'alice'])!
-    const votes = data.search.nodes
-      .flatMap((p) => p.reactionGroups)
-      .reduce((sum, g) => sum + g.reactors.totalCount, 0)
+
     // 10 + 5 + 3 + 7 = 25
-    expect(votes).toBe(25)
+    expect(composable.totalVotes.value).toBe(25)
   })
 
-  it('totalSubmissions returns issueCount', async () => {
-    const { queryClient } = setupTest('bob')
-    // Wait for query to settle in QueryClient cache
+  it('totalSubmissions returns count of prompts returned', async () => {
+    const prompt1 = makePrompt('01PROMPT001', 'Prompt 1', [])
+    const prompt2 = makePrompt('01PROMPT002', 'Prompt 2', [])
+    const prompt3 = makePrompt('01PROMPT003', 'Prompt 3', [])
+
+    mockGetUserPrompts.mockResolvedValue({
+      data: [prompt1, prompt2, prompt3],
+      next_cursor: null,
+    })
+
+    const { composable } = setupTest('bob')
+
     await vi.waitFor(
       () => {
-        const data = queryClient.getQueryData<typeof fixtureData>(['user-profile', 'bob'])
-        if (!data) throw new Error('Query not resolved yet')
-        return data
+        if (!composable.data.value) throw new Error('Query not resolved yet')
       },
       { timeout: 3000 },
     )
-    const data = queryClient.getQueryData<typeof fixtureData>(['user-profile', 'bob'])!
-    expect(data.search.issueCount).toBe(3)
+
+    expect(composable.totalSubmissions.value).toBe(3)
   })
 })
