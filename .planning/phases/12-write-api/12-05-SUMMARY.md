@@ -104,6 +104,15 @@ None - no external service configuration required.
 - Phase 13 (frontend rewire) can now use POST /bookmarks + DELETE /bookmarks/:promptId for cross-device bookmark sync
 - Phase 13 can use POST /notifications/:id/read for notification badge management
 
+## Self-Check: PASSED
+
+- FOUND: src/workers/api/routes/bookmarks.ts
+- FOUND: src/workers/api/routes/notifications.ts (modified)
+- FOUND: src/workers/api/index.ts (modified)
+- FOUND: .planning/phases/12-write-api/12-05-SUMMARY.md
+- FOUND commit a9c1acb (feat bookmarks route)
+- FOUND commit c2eaf90 (feat notifications read)
+
 ---
 *Phase: 12-write-api*
 *Completed: 2026-05-08*
