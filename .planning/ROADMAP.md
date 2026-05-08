@@ -98,7 +98,13 @@ Plans:
   3. Reactions can be added (`POST`) and removed (`DELETE`) per prompt per user; duplicate reactions for the same emoji are rejected
   4. Bookmarks round-trip correctly: `POST /bookmarks` saves a server-side bookmark visible across devices; `DELETE /bookmarks/:promptId` removes it
   5. All write endpoints require a valid JWT; unauthenticated requests receive 401; malformed payloads receive 422 with a descriptive error
-**Plans**: TBD
+**Plans**: 5 plans
+Plans:
+- [ ] 12-01-PLAN.md — Wave 1: TDD RED spec scaffolds for all 11 write endpoints (API-11..21)
+- [ ] 12-02-PLAN.md — Wave 2: Prompt write handlers (POST /prompts, PATCH /:id, DELETE /:id) (API-11, API-12, API-13)
+- [ ] 12-03-PLAN.md — Wave 2: Version write handlers (POST /:id/versions, POST /:id/versions/:n/restore) (API-14, API-15)
+- [ ] 12-04-PLAN.md — Wave 2: Comment + Reaction write handlers (API-16, API-17, API-18, API-19)
+- [ ] 12-05-PLAN.md — Wave 2: Bookmarks route (new file + mount) + notification mark-read (API-20, API-21)
 
 ### Phase 13: Frontend Rewire
 **Goal**: The Vue 3 SPA fetches all data from `src/lib/api/*` instead of `src/lib/github/*`; the ETag layer is removed; the auth store reads identity from `/me`; and the Activity tab shows live data — with no changes to any UI component.
@@ -151,7 +157,7 @@ Plans:
 | 9. Backend Foundation | 4/4 | Complete   | 2026-05-05 | - |
 | 10. Auth Migration | 4/4 | Complete    | 2026-05-06 | - |
 | 11. Read API | 5/5 | Complete    | 2026-05-06 | - |
-| 12. Write API | v2.0 | 0/? | Not started | - |
+| 12. Write API | v2.0 | 0/5 | Not started | - |
 | 13. Frontend Rewire | v2.0 | 0/? | Not started | - |
 | 14. Admin & Moderation API | v2.0 | 0/? | Not started | - |
 | 15. Decommission & Docs | v2.0 | 0/? | Not started | - |
