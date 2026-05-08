@@ -722,4 +722,201 @@ app.post('/:id/versions/:n/restore', requireAuth(), async (c) => {
   )
 })
 
+// ---------------------------------------------------------------------------
+// POST /prompts/:id/comments — API-16: Create a comment with notification
+// ---------------------------------------------------------------------------
+app.post('/:id/comments', requireAuth(), async (c) => {
+  const db = drizzle(c.env.DB)
+  const user = c.get('user')!
+  const { id } = c.req.param()
+
+  // Verify prompt exists
+  const [prompt] = await db
+    .select({ id: schema.prompts.id, author_id: schema.prompts.author_id })
+    .from(schema.prompts)
+    .where(eq(schema.prompts.id, id))
+    .limit(1)
+  if (!prompt) {
+    return c.json({ error: 'not_found', code: 'not_found' }, 404)
+  }
+
+  // Parse and validate body
+  let reqBody: Record<string, unknown>
+  try {
+    reqBody = await c.req.json()
+  } catch {
+    return c.json({ error: 'validation_error', code: 'validation_error' }, 422)
+  }
+
+  const commentBody = reqBody.body
+  if (!commentBody || typeof commentBody !== 'string' || commentBody.trim().length === 0) {
+    return c.json({ error: 'validation_error', code: 'validation_error' }, 422)
+  }
+
+  // Insert comment
+  const commentId = ulid()
+  const [newComment] = await db
+    .insert(schema.comments)
+    .values({
+      id: commentId,
+      prompt_id: id,
+      author_id: user.id,
+      body: commentBody,
+    })
+    .returning()
+
+  // Insert notification for prompt author (skip if actor is the author)
+  if (user.id !== prompt.author_id) {
+    await db.insert(schema.notifications).values({
+      id: ulid(),
+      user_id: prompt.author_id,
+      type: 'comment_added',
+      prompt_id: id,
+      comment_id: newComment.id,
+    })
+  }
+
+  return c.json(
+    {
+      id: newComment.id,
+      body: newComment.body,
+      author: { login: user.login, avatar_url: user.avatar_url },
+      created_at: newComment.created_at,
+    },
+    201,
+  )
+})
+
+// ---------------------------------------------------------------------------
+// POST /prompts/:id/reactions — API-18: Add an emoji reaction with notification
+// ---------------------------------------------------------------------------
+app.post('/:id/reactions', requireAuth(), async (c) => {
+  const db = drizzle(c.env.DB)
+  const user = c.get('user')!
+  const { id } = c.req.param()
+
+  // Verify prompt exists
+  const [prompt] = await db
+    .select({ id: schema.prompts.id, author_id: schema.prompts.author_id })
+    .from(schema.prompts)
+    .where(eq(schema.prompts.id, id))
+    .limit(1)
+  if (!prompt) {
+    return c.json({ error: 'not_found', code: 'not_found' }, 404)
+  }
+
+  // Parse and validate body
+  let reqBody: Record<string, unknown>
+  try {
+    reqBody = await c.req.json()
+  } catch {
+    return c.json({ error: 'validation_error', code: 'validation_error' }, 422)
+  }
+
+  const VALID_EMOJIS = ['thumbs_up', 'heart', 'rocket'] as const
+  type ValidEmoji = (typeof VALID_EMOJIS)[number]
+  const emoji = reqBody.emoji
+  if (!emoji || typeof emoji !== 'string' || !(VALID_EMOJIS as readonly string[]).includes(emoji)) {
+    return c.json({ error: 'validation_error', code: 'validation_error' }, 422)
+  }
+
+  // Insert reaction — catch UNIQUE constraint violation for 409
+  // Drizzle wraps D1 errors in DrizzleQueryError; check both error and its cause
+  try {
+    await db.insert(schema.reactions).values({
+      prompt_id: id,
+      user_id: user.id,
+      emoji: emoji as ValidEmoji,
+    })
+  } catch (e: unknown) {
+    const errStr = String(e)
+    const causeStr = e instanceof Error && e.cause ? String(e.cause) : ''
+    if (
+      errStr.includes('UNIQUE') || errStr.includes('SQLITE_CONSTRAINT_PRIMARYKEY') ||
+      causeStr.includes('UNIQUE') || causeStr.includes('SQLITE_CONSTRAINT')
+    ) {
+      return c.json({ error: 'already_reacted', code: 'already_reacted' }, 409)
+    }
+    throw e
+  }
+
+  // Insert notification for prompt author (skip if actor is the author)
+  if (user.id !== prompt.author_id) {
+    await db.insert(schema.notifications).values({
+      id: ulid(),
+      user_id: prompt.author_id,
+      type: 'reaction_added',
+      prompt_id: id,
+      comment_id: null,
+    })
+  }
+
+  // Re-fetch all reactions and compute counts
+  const reactionRows = await db
+    .select()
+    .from(schema.reactions)
+    .where(eq(schema.reactions.prompt_id, id))
+  const reaction_counts = { thumbs_up: 0, heart: 0, rocket: 0 }
+  for (const r of reactionRows) {
+    if (r.emoji === 'thumbs_up') reaction_counts.thumbs_up++
+    else if (r.emoji === 'heart') reaction_counts.heart++
+    else if (r.emoji === 'rocket') reaction_counts.rocket++
+  }
+
+  return c.json(reaction_counts, 201)
+})
+
+// ---------------------------------------------------------------------------
+// DELETE /prompts/:id/reactions — API-19: Remove a specific emoji reaction
+// ---------------------------------------------------------------------------
+app.delete('/:id/reactions', requireAuth(), async (c) => {
+  const db = drizzle(c.env.DB)
+  const user = c.get('user')!
+  const { id } = c.req.param()
+
+  // Parse and validate body
+  let reqBody: Record<string, unknown>
+  try {
+    reqBody = await c.req.json()
+  } catch {
+    return c.json({ error: 'validation_error', code: 'validation_error' }, 422)
+  }
+
+  const VALID_EMOJIS = ['thumbs_up', 'heart', 'rocket'] as const
+  type ValidEmoji = (typeof VALID_EMOJIS)[number]
+  const emoji = reqBody.emoji
+  if (!emoji || typeof emoji !== 'string' || !(VALID_EMOJIS as readonly string[]).includes(emoji)) {
+    return c.json({ error: 'validation_error', code: 'validation_error' }, 422)
+  }
+
+  // Verify prompt exists
+  const [prompt] = await db
+    .select({ id: schema.prompts.id })
+    .from(schema.prompts)
+    .where(eq(schema.prompts.id, id))
+    .limit(1)
+  if (!prompt) {
+    return c.json({ error: 'not_found', code: 'not_found' }, 404)
+  }
+
+  // Delete the reaction
+  const result = await db
+    .delete(schema.reactions)
+    .where(
+      and(
+        eq(schema.reactions.prompt_id, id),
+        eq(schema.reactions.user_id, user.id),
+        eq(schema.reactions.emoji, emoji as ValidEmoji),
+      ),
+    )
+    .returning()
+
+  // If nothing was deleted, reaction didn't exist
+  if (result.length === 0) {
+    return c.json({ error: 'not_found', code: 'not_found' }, 404)
+  }
+
+  return new Response(null, { status: 204 })
+})
+
 export default app

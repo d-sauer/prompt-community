@@ -3,9 +3,11 @@
 -- Re-runnable safely (will not duplicate rows).
 
 -- Users (dev-user + dev-maintainer match Phase 10's dev-login fixture set)
+-- fake-user: non-seeded role used by write.spec.ts 403 and reaction tests
 INSERT OR IGNORE INTO users (id, github_id, github_login, name, role) VALUES
   ('01DEVUSER000000000000000001', 999001, 'dev-user',       'Dev User',       'user'),
-  ('01DEVMAINT00000000000000001', 999002, 'dev-maintainer', 'Dev Maintainer', 'maintainer');
+  ('01DEVMAINT00000000000000001', 999002, 'dev-maintainer', 'Dev Maintainer', 'maintainer'),
+  ('FAKE0000000000000000000001',  999003, 'fake-user',      'Fake User',      'user');
 
 -- Labels (admin-managed taxonomy — Phase 14 manages CRUD, seeded for the Browse screen)
 INSERT OR IGNORE INTO labels (id, prefix, value, color, description) VALUES
