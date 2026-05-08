@@ -85,11 +85,11 @@ Replace `src/lib/github/*` consumers with `src/lib/api/*`. UI components remain 
 - [x] **FRONT-04**: `src/lib/api/reactions.ts` replaces GitHub reaction paths
 - [x] **FRONT-05**: `src/lib/api/users.ts` replaces GitHub user lookup paths
 - [ ] **FRONT-06**: `src/lib/api/admin.ts` replaces GitHub admin/maintainer paths
-- [ ] **FRONT-07**: `src/composables/queries/*.ts` re-import from `@/lib/api/*` (TanStack Query cache keys preserved)
-- [ ] **FRONT-08**: `src/composables/mutations/*.ts` re-import from `@/lib/api/*`
+- [x] **FRONT-07**: `src/composables/queries/*.ts` re-import from `@/lib/api/*` (TanStack Query cache keys preserved)
+- [x] **FRONT-08**: `src/composables/mutations/*.ts` re-import from `@/lib/api/*`
 - [x] **FRONT-09**: `useAuthStore` updated for JWT/cookie session shape; `isMaintainer` comes from `/me`
-- [ ] **FRONT-10**: `src/lib/github/etag.ts` deleted; TanStack Query `staleTime` + standard HTTP cache headers replace it
-- [ ] **FRONT-11**: Activity tab placeholder replaced by data wired through `/users/:login/activity`
+- [x] **FRONT-10**: `src/lib/github/etag.ts` deleted; TanStack Query `staleTime` + standard HTTP cache headers replace it
+- [x] **FRONT-11**: Activity tab placeholder replaced by data wired through `/users/:login/activity`
 
 ### Search (SEARCH)
 
@@ -225,11 +225,11 @@ Which phases cover which requirements. Updated during roadmap creation.
 | FRONT-04 | Phase 13 | Complete |
 | FRONT-05 | Phase 13 | Complete |
 | FRONT-06 | Phase 13 | Pending |
-| FRONT-07 | Phase 13 | Pending |
-| FRONT-08 | Phase 13 | Pending |
+| FRONT-07 | Phase 13 | Complete |
+| FRONT-08 | Phase 13 | Complete |
 | FRONT-09 | Phase 13 | Complete |
-| FRONT-10 | Phase 13 | Pending |
-| FRONT-11 | Phase 13 | Pending |
+| FRONT-10 | Phase 13 | Complete |
+| FRONT-11 | Phase 13 | Complete |
 | SEARCH-03 | Phase 13 | Pending |
 | SEARCH-04 | Phase 13 | Pending |
 | API-22 | Phase 14 | Pending |

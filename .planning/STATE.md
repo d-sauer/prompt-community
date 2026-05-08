@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: Backend Migration
 status: planning
-stopped_at: Completed 13-frontend-rewire 13-01-PLAN.md
-last_updated: "2026-05-08T18:33:09.462Z"
+stopped_at: Completed 13-frontend-rewire 13-03-PLAN.md
+last_updated: "2026-05-08T18:37:55.088Z"
 last_activity: 2026-05-05 — Roadmap created; 7 phases defined, 81/81 v2.0 requirements mapped
 progress:
   total_phases: 7
   completed_phases: 4
   total_plans: 23
-  completed_plans: 20
+  completed_plans: 22
   percent: 0
 ---
 
@@ -70,6 +70,8 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 12-write-api P04 | 8min | 2 tasks | 3 files |
 | Phase 13-frontend-rewire P02 | 2min | 2 tasks | 3 files |
 | Phase 13-frontend-rewire P01 | 9min | 2 tasks | 8 files |
+| Phase 13-frontend-rewire P04 | 7min | 2 tasks | 9 files |
+| Phase 13-frontend-rewire P03 | 10min | 2 tasks | 9 files |
 
 ## Accumulated Context
 
@@ -135,6 +137,13 @@ Recent decisions affecting current work:
 - [Phase 13-frontend-rewire]: apiFetch is the single fetch primitive — no consuming function calls fetch directly; no token params on any function
 - [Phase 13-frontend-rewire]: flagPrompt implemented as no-op throwing Error('flag endpoint not yet available') — Phase 14 scope per CONTEXT.md locked decision
 - [Phase 13-frontend-rewire]: buildQuery helper strips null/undefined/empty FilterState values before URLSearchParams serialization
+- [Phase 13-frontend-rewire]: drainQueue() takes no arguments — cookie-based auth removes the token pass-through pattern
+- [Phase 13-frontend-rewire]: Legacy v1 flush guard checks 'issueNumber' in action at drain time — one-time safe migration for existing queues with integer IDs
+- [Phase 13-frontend-rewire]: App.vue drain-on-reconnect logic moved into useOfflineQueue watch(isOnline) watcher — collocated with queue management
+- [Phase 13-frontend-rewire]: buildLabels and buildFrontmatter removed from mutation composables — API accepts structured fields directly
+- [Phase 13-frontend-rewire]: parseVersionComment removed from usePromptVersions — GitHub comment parsing no longer needed; v2 API returns VersionObject[] directly
+- [Phase 13-frontend-rewire]: useUserProfile uses Promise.all for getUserProfile + getUserPrompts — parallel fetch, no waterfall
+- [Phase 13-frontend-rewire]: useUserActivity exports ActivityItem type re-exported from @/lib/api/queries — consumers import from composable
 
 ### Roadmap Evolution
 
@@ -150,6 +159,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-05-08T18:33:09.460Z
-Stopped at: Completed 13-frontend-rewire 13-01-PLAN.md
+Last session: 2026-05-08T18:37:55.085Z
+Stopped at: Completed 13-frontend-rewire 13-03-PLAN.md
 Resume file: None
