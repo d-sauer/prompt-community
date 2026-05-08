@@ -11,8 +11,8 @@ vi.mock('@vueuse/core', () => ({
   useOnline: vi.fn(() => ref(true)),
 }))
 
-// Mock @/lib/github/mutations
-vi.mock('@/lib/github/mutations', () => ({
+// Mock @/lib/api/mutations
+vi.mock('@/lib/api/mutations', () => ({
   postComment: vi.fn(),
   addReaction: vi.fn(),
   removeReaction: vi.fn(),
@@ -20,7 +20,7 @@ vi.mock('@/lib/github/mutations', () => ({
 
 import { toast } from 'vue-sonner'
 import { useOnline } from '@vueuse/core'
-import * as mutations from '@/lib/github/mutations'
+import * as mutations from '@/lib/api/mutations'
 import { useOfflineQueue } from './useOfflineQueue'
 import type { QueuedAction } from './useOfflineQueue'
 
@@ -64,7 +64,7 @@ describe('useOfflineQueue', () => {
       const { enqueue } = useOfflineQueue()
       const action: QueuedAction = {
         type: 'postComment',
-        issueNumber: 42,
+        promptId: '01PROMPT42',
         payload: { body: 'Hello' },
       }
       enqueue(action)
@@ -78,14 +78,14 @@ describe('useOfflineQueue', () => {
       ) as QueuedAction[]
       expect(stored).toHaveLength(1)
       expect(stored[0].type).toBe('postComment')
-      expect(stored[0].issueNumber).toBe(42)
+      expect(stored[0].promptId).toBe('01PROMPT42')
       expect(stored[0].payload.body).toBe('Hello')
     })
 
     it('appends multiple actions sequentially', () => {
       const { enqueue } = useOfflineQueue()
-      enqueue({ type: 'postComment', issueNumber: 1, payload: { body: 'A' } })
-      enqueue({ type: 'postComment', issueNumber: 2, payload: { body: 'B' } })
+      enqueue({ type: 'postComment', promptId: '01PROMPT01', payload: { body: 'A' } })
+      enqueue({ type: 'postComment', promptId: '01PROMPT02', payload: { body: 'B' } })
 
       const stored = JSON.parse(
         localStorageMock._store[QUEUE_KEY] ?? '[]',
@@ -98,7 +98,7 @@ describe('useOfflineQueue', () => {
 
       enqueue({
         type: 'postComment',
-        issueNumber: 99,
+        promptId: '01PROMPT99',
         payload: { body: 'test', token: 'secret-token-abc123' },
       })
 
@@ -121,74 +121,74 @@ describe('useOfflineQueue', () => {
     })
 
     it('returns stored actions', () => {
-      const action: QueuedAction = { type: 'postComment', issueNumber: 5, payload: { body: 'Hi' } }
+      const action: QueuedAction = { type: 'postComment', promptId: '01PROMPT05', payload: { body: 'Hi' } }
       localStorageMock._store[QUEUE_KEY] = JSON.stringify([action])
 
       const { getQueue } = useOfflineQueue()
       const result = getQueue()
       expect(result).toHaveLength(1)
-      expect(result[0].issueNumber).toBe(5)
+      expect(result[0].promptId).toBe('01PROMPT05')
     })
   })
 
   describe('drainQueue', () => {
     it('calls postComment for each queued postComment action', async () => {
       vi.mocked(mutations.postComment).mockResolvedValue({
-        id: 1,
+        id: '01CMNT001',
         body: 'done',
         createdAt: '2026-01-01T00:00:00Z',
       })
 
       const action: QueuedAction = {
         type: 'postComment',
-        issueNumber: 10,
+        promptId: '01PROMPT10',
         payload: { body: 'Test comment' },
       }
       localStorageMock._store[QUEUE_KEY] = JSON.stringify([action])
 
       const { drainQueue } = useOfflineQueue()
-      await drainQueue('my-token')
+      await drainQueue()
 
-      expect(mutations.postComment).toHaveBeenCalledWith('my-token', 10, 'Test comment')
+      expect(mutations.postComment).toHaveBeenCalledWith('01PROMPT10', 'Test comment')
     })
 
     it('clears localStorage after draining', async () => {
       vi.mocked(mutations.postComment).mockResolvedValue({
-        id: 1,
+        id: '01CMNT001',
         body: 'done',
         createdAt: '2026-01-01T00:00:00Z',
       })
 
       localStorageMock._store[QUEUE_KEY] = JSON.stringify([
-        { type: 'postComment', issueNumber: 1, payload: { body: 'Hi' } },
+        { type: 'postComment', promptId: '01PROMPT01', payload: { body: 'Hi' } },
       ])
 
       const { drainQueue } = useOfflineQueue()
-      await drainQueue('token')
+      await drainQueue()
 
       expect(localStorageMock.removeItem).toHaveBeenCalledWith(QUEUE_KEY)
     })
 
     it('shows synced toast after draining', async () => {
       vi.mocked(mutations.postComment).mockResolvedValue({
-        id: 1,
+        id: '01CMNT001',
         body: 'done',
         createdAt: '2026-01-01T00:00:00Z',
       })
 
       localStorageMock._store[QUEUE_KEY] = JSON.stringify([
-        { type: 'postComment', issueNumber: 1, payload: { body: 'Hi' } },
+        { type: 'postComment', promptId: '01PROMPT01', payload: { body: 'Hi' } },
       ])
 
       const { drainQueue } = useOfflineQueue()
-      await drainQueue('token')
+      await drainQueue()
 
       expect(toast).toHaveBeenCalledWith('Back online — synced 1 queued action(s)')
     })
 
     it('does nothing when queue is empty', async () => {
       const { drainQueue } = useOfflineQueue()
-      await drainQueue('token')
+      await drainQueue()
 
       expect(mutations.postComment).not.toHaveBeenCalled()
       expect(toast).not.toHaveBeenCalled()
@@ -197,18 +197,51 @@ describe('useOfflineQueue', () => {
     it('shows failure toast and continues on individual action error', async () => {
       vi.mocked(mutations.postComment)
         .mockRejectedValueOnce(new Error('API error'))
-        .mockResolvedValue({ id: 2, body: 'ok', createdAt: '2026-01-01T00:00:00Z' })
+        .mockResolvedValue({ id: '01CMNT002', body: 'ok', createdAt: '2026-01-01T00:00:00Z' })
 
       localStorageMock._store[QUEUE_KEY] = JSON.stringify([
-        { type: 'postComment', issueNumber: 1, payload: { body: 'fail' } },
-        { type: 'postComment', issueNumber: 2, payload: { body: 'success' } },
+        { type: 'postComment', promptId: '01PROMPT01', payload: { body: 'fail' } },
+        { type: 'postComment', promptId: '01PROMPT02', payload: { body: 'success' } },
       ])
 
       const { drainQueue } = useOfflineQueue()
-      await drainQueue('token')
+      await drainQueue()
 
       expect(toast).toHaveBeenCalledWith('Failed to sync 1 action — cleared')
       expect(toast).toHaveBeenCalledWith('Back online — synced 1 queued action(s)')
+    })
+
+    it('flushes legacy v1 items with issueNumber before processing', async () => {
+      // Mix of legacy (issueNumber) and new (promptId) items
+      const legacyItem = { type: 'postComment', issueNumber: 42, payload: { body: 'legacy' } }
+      const newItem: QueuedAction = { type: 'postComment', promptId: '01PROMPT01', payload: { body: 'new' } }
+
+      vi.mocked(mutations.postComment).mockResolvedValue({
+        id: '01CMNT001',
+        body: 'new',
+        createdAt: '2026-01-01T00:00:00Z',
+      })
+
+      localStorageMock._store[QUEUE_KEY] = JSON.stringify([legacyItem, newItem])
+
+      const { drainQueue } = useOfflineQueue()
+      await drainQueue()
+
+      // Only the new item should be processed — legacy item flushed
+      expect(mutations.postComment).toHaveBeenCalledTimes(1)
+      expect(mutations.postComment).toHaveBeenCalledWith('01PROMPT01', 'new')
+    })
+
+    it('does nothing when only legacy items exist', async () => {
+      const legacyItem = { type: 'postComment', issueNumber: 42, payload: { body: 'legacy' } }
+      localStorageMock._store[QUEUE_KEY] = JSON.stringify([legacyItem])
+
+      const { drainQueue } = useOfflineQueue()
+      await drainQueue()
+
+      // All legacy items flushed — nothing to process
+      expect(mutations.postComment).not.toHaveBeenCalled()
+      expect(toast).not.toHaveBeenCalled()
     })
   })
 

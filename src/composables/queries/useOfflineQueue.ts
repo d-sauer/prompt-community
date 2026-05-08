@@ -1,14 +1,14 @@
 import { watch } from 'vue'
 import { useOnline } from '@vueuse/core'
 import { toast } from 'vue-sonner'
-import { postComment } from '@/lib/github/mutations'
+import { postComment, addReaction, removeReaction } from '@/lib/api/mutations'
 import type { ReactionContent } from '@/types/index'
 
 const QUEUE_KEY = 'offline_action_queue'
 
 export interface QueuedAction {
   type: 'postComment' | 'toggleReaction'
-  issueNumber: number
+  promptId: string
   payload: Record<string, unknown> // no token field — never store tokens
 }
 
@@ -32,30 +32,26 @@ export function useOfflineQueue() {
     localStorage.setItem(QUEUE_KEY, JSON.stringify(queue))
   }
 
-  async function drainQueue(token: string): Promise<void> {
-    const queue = getQueue()
+  async function drainQueue(): Promise<void> {
+    // Flush stale v1 items — integer IDs are incompatible with ULID API
+    let queue = getQueue()
+    const legacyItems = queue.filter((a) => 'issueNumber' in a)
+    if (legacyItems.length > 0) {
+      queue = queue.filter((a) => !('issueNumber' in a))
+      localStorage.setItem(QUEUE_KEY, JSON.stringify(queue))
+    }
     if (queue.length === 0) return
-    localStorage.removeItem(QUEUE_KEY)
+
     let synced = 0
     for (const action of queue) {
       try {
         if (action.type === 'postComment') {
-          await postComment(token, action.issueNumber, action.payload.body as string)
+          await postComment(action.promptId, action.payload.body as string)
         } else if (action.type === 'toggleReaction') {
-          // toggleReaction drain: use addReaction or removeReaction based on payload.isRemoving
-          const { addReaction, removeReaction } = await import('@/lib/github/mutations')
           if (action.payload.isRemoving) {
-            await removeReaction(
-              token,
-              action.payload.nodeId as string,
-              action.payload.content as ReactionContent,
-            )
+            await removeReaction(action.promptId, action.payload.content as string)
           } else {
-            await addReaction(
-              token,
-              action.payload.nodeId as string,
-              action.payload.content as ReactionContent,
-            )
+            await addReaction(action.promptId, action.payload.content as string)
           }
         }
         synced++
@@ -63,6 +59,8 @@ export function useOfflineQueue() {
         toast(`Failed to sync 1 action — cleared`)
       }
     }
+    // Clear queue after processing
+    localStorage.removeItem(QUEUE_KEY)
     if (synced > 0) {
       toast(`Back online — synced ${synced} queued action(s)`)
     }
@@ -71,6 +69,8 @@ export function useOfflineQueue() {
   watch(isOnline, (online) => {
     if (!online) {
       toast("You're offline — showing cached content")
+    } else {
+      void drainQueue()
     }
   })
 
