@@ -4,12 +4,17 @@
 // API-02: GET /prompts/:id — full prompt detail
 // API-03: GET /prompts/:id/versions — version history
 // API-04: GET /prompts/:id/comments — comments with soft-delete masking
+// Phase 12 Plan 02: Write handlers added
+// API-11: POST /prompts — Create a draft prompt
+// API-12: PATCH /prompts/:id — Update prompt fields
+// API-13: DELETE /prompts/:id — Hard delete prompt + dependents
 import { Hono } from 'hono'
 import { trimTrailingSlash } from 'hono/trailing-slash'
 import { drizzle } from 'drizzle-orm/d1'
-import { eq, and, lt, gt, inArray, desc, asc } from 'drizzle-orm'
+import { eq, and, lt, gt, inArray, desc, asc, sql } from 'drizzle-orm'
 import * as schema from '../db/schema'
-import { optionalAuth } from '../middleware/auth'
+import { optionalAuth, requireAuth } from '../middleware/auth'
+import { ulid } from 'ulid'
 import type { Env } from '../index'
 
 const app = new Hono<Env>()
@@ -406,6 +411,315 @@ app.get('/:id/comments', async (c) => {
   })
 
   return c.json({ data, next_cursor: nextCursor })
+})
+
+// ---------------------------------------------------------------------------
+// POST /prompts — API-11: Create a draft prompt
+// ---------------------------------------------------------------------------
+app.post('/', requireAuth(), async (c) => {
+  const db = drizzle(c.env.DB)
+  const user = c.get('user')!
+
+  const body = await c.req.json().catch(() => null)
+  if (!body) {
+    return c.json({ error: 'validation_error', code: 'validation_error' }, 422)
+  }
+
+  // Validate required fields
+  const title = body.title
+  const promptBody = body.body
+
+  if (!title || typeof title !== 'string' || title.trim().length === 0 || title.length > 200) {
+    return c.json({ error: 'validation_error', code: 'validation_error' }, 422)
+  }
+  if (!promptBody || typeof promptBody !== 'string' || promptBody.trim().length === 0) {
+    return c.json({ error: 'validation_error', code: 'validation_error' }, 422)
+  }
+
+  // Validate tags
+  const tags: string[] = Array.isArray(body.tags) ? body.tags : []
+  if (tags.length > 5) {
+    return c.json({ error: 'validation_error', code: 'validation_error' }, 422)
+  }
+
+  const id = ulid()
+  const [prompt] = await db
+    .insert(schema.prompts)
+    .values({
+      id,
+      author_id: user.id,
+      title: title.trim(),
+      body: promptBody,
+      category: body.category ?? null,
+      model: body.model ?? null,
+      difficulty: body.difficulty ?? null,
+      status: 'draft', // always draft on creation, ignoring any status in body
+    })
+    .returning()
+
+  // Insert tags if provided
+  if (tags.length > 0) {
+    await db.insert(schema.prompt_tags).values(tags.map((tag) => ({ prompt_id: id, tag })))
+  }
+
+  return c.json(
+    {
+      id: prompt.id,
+      title: prompt.title,
+      body: prompt.body,
+      category: prompt.category,
+      model: prompt.model,
+      difficulty: prompt.difficulty,
+      status: prompt.status,
+      tags,
+      author: { login: user.login },
+      created_at: prompt.created_at,
+      updated_at: prompt.updated_at,
+    },
+    201,
+  )
+})
+
+// ---------------------------------------------------------------------------
+// PATCH /prompts/:id — API-12: Update prompt fields (author or maintainer only)
+// ---------------------------------------------------------------------------
+app.patch('/:id', requireAuth(), async (c) => {
+  const db = drizzle(c.env.DB)
+  const user = c.get('user')!
+  const { id } = c.req.param()
+
+  // Load the prompt
+  const [prompt] = await db.select().from(schema.prompts).where(eq(schema.prompts.id, id)).limit(1)
+  if (!prompt) {
+    return c.json({ error: 'not_found', code: 'not_found' }, 404)
+  }
+
+  // Auth check: must be author or maintainer
+  if (user.id !== prompt.author_id && user.role !== 'maintainer') {
+    return c.json({ error: 'forbidden', code: 'forbidden' }, 403)
+  }
+
+  const body = await c.req.json().catch(() => null)
+  if (!body) {
+    return c.json({ error: 'validation_error', code: 'validation_error' }, 422)
+  }
+
+  // Status transition check: only maintainer can set flagged or hidden
+  if (body.status !== undefined) {
+    if ((body.status === 'flagged' || body.status === 'hidden') && user.role !== 'maintainer') {
+      return c.json({ error: 'forbidden', code: 'forbidden' }, 403)
+    }
+  }
+
+  // Build update object from allowed writable fields
+  const updates: Record<string, unknown> = {}
+  if (body.title !== undefined) updates.title = body.title
+  if (body.body !== undefined) updates.body = body.body
+  if (body.category !== undefined) updates.category = body.category
+  if (body.model !== undefined) updates.model = body.model
+  if (body.difficulty !== undefined) updates.difficulty = body.difficulty
+  if (body.status !== undefined) updates.status = body.status
+
+  // Always update updated_at when any change is requested
+  updates.updated_at = sql`(strftime('%Y-%m-%dT%H:%M:%fZ', 'now'))`
+  await db
+    .update(schema.prompts)
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    .set(updates as any)
+    .where(eq(schema.prompts.id, id))
+
+  // Handle tag replacement
+  if (body.tags !== undefined) {
+    const newTags: string[] = Array.isArray(body.tags) ? body.tags : []
+    await db.delete(schema.prompt_tags).where(eq(schema.prompt_tags.prompt_id, id))
+    if (newTags.length > 0) {
+      await db.insert(schema.prompt_tags).values(newTags.map((tag) => ({ prompt_id: id, tag })))
+    }
+  }
+
+  // Re-fetch the updated prompt
+  const [updated] = await db.select().from(schema.prompts).where(eq(schema.prompts.id, id)).limit(1)
+  const tagRows = await db.select().from(schema.prompt_tags).where(eq(schema.prompt_tags.prompt_id, id))
+  const tags = tagRows.map((t) => t.tag)
+
+  return c.json({
+    id: updated.id,
+    title: updated.title,
+    body: updated.body,
+    category: updated.category,
+    model: updated.model,
+    difficulty: updated.difficulty,
+    status: updated.status,
+    tags,
+    author: { login: user.login },
+    created_at: updated.created_at,
+    updated_at: updated.updated_at,
+  })
+})
+
+// ---------------------------------------------------------------------------
+// DELETE /prompts/:id — API-13: Hard delete prompt and all dependents
+// ---------------------------------------------------------------------------
+app.delete('/:id', requireAuth(), async (c) => {
+  const db = drizzle(c.env.DB)
+  const user = c.get('user')!
+  const { id } = c.req.param()
+
+  // Load the prompt
+  const [prompt] = await db
+    .select({ id: schema.prompts.id, author_id: schema.prompts.author_id })
+    .from(schema.prompts)
+    .where(eq(schema.prompts.id, id))
+    .limit(1)
+  if (!prompt) {
+    return c.json({ error: 'not_found', code: 'not_found' }, 404)
+  }
+
+  // Auth check: must be author or maintainer
+  if (user.id !== prompt.author_id && user.role !== 'maintainer') {
+    return c.json({ error: 'forbidden', code: 'forbidden' }, 403)
+  }
+
+  // Delete in FK dependency order (moderation_log is intentionally kept)
+  await db.delete(schema.notifications).where(eq(schema.notifications.prompt_id, id))
+  await db.delete(schema.reactions).where(eq(schema.reactions.prompt_id, id))
+  await db.delete(schema.bookmarks).where(eq(schema.bookmarks.prompt_id, id))
+  await db.delete(schema.comments).where(eq(schema.comments.prompt_id, id))
+  await db.delete(schema.prompt_tags).where(eq(schema.prompt_tags.prompt_id, id))
+  await db.delete(schema.prompt_versions).where(eq(schema.prompt_versions.prompt_id, id))
+  await db.delete(schema.prompts).where(eq(schema.prompts.id, id))
+
+  return new Response(null, { status: 204 })
+})
+
+// ---------------------------------------------------------------------------
+// POST /prompts/:id/versions — API-14
+// Publish a new version record for this prompt
+// IMPORTANT: Must be registered BEFORE /:id/versions/:n/restore to avoid routing conflicts
+// ---------------------------------------------------------------------------
+app.post('/:id/versions', requireAuth(), async (c) => {
+  const db = drizzle(c.env.DB)
+  const user = c.get('user')!
+  const { id } = c.req.param()
+
+  // 1. Verify the prompt exists
+  const [prompt] = await db
+    .select({ id: schema.prompts.id })
+    .from(schema.prompts)
+    .where(eq(schema.prompts.id, id))
+    .limit(1)
+  if (!prompt) {
+    return c.json({ error: 'not_found', code: 'not_found' }, 404)
+  }
+
+  // 2. Parse and validate body
+  const body = await c.req.json().catch(() => null) as Record<string, unknown> | null
+  if (!body || typeof body.body !== 'string' || body.body.trim() === '') {
+    return c.json({ error: 'validation_error', code: 'validation_error' }, 422)
+  }
+
+  // 3. Compute next version number: MAX(version_number) + 1 (starts at 1 if no versions exist)
+  const maxVersionRow = await db
+    .select({ max: sql<number>`MAX(version_number)` })
+    .from(schema.prompt_versions)
+    .where(eq(schema.prompt_versions.prompt_id, id))
+  const nextVersionNumber = (maxVersionRow[0]?.max ?? 0) + 1
+
+  // 4. Insert new version
+  const newVersionId = ulid()
+  const changelog = typeof body.changelog === 'string' ? body.changelog : null
+  await db.insert(schema.prompt_versions).values({
+    id: newVersionId,
+    prompt_id: id,
+    version_number: nextVersionNumber,
+    body: body.body as string,
+    changelog,
+    author_id: user.id,
+  })
+
+  // 5. Return 201 with version object
+  return c.json(
+    {
+      id: newVersionId,
+      version_number: nextVersionNumber,
+      changelog,
+      author: { login: user.login },
+      created_at: new Date().toISOString(),
+    },
+    201,
+  )
+})
+
+// ---------------------------------------------------------------------------
+// POST /prompts/:id/versions/:n/restore — API-15
+// Non-destructive restore: create a new version from version N's body
+// ---------------------------------------------------------------------------
+app.post('/:id/versions/:n/restore', requireAuth(), async (c) => {
+  const db = drizzle(c.env.DB)
+  const user = c.get('user')!
+  const { id, n } = c.req.param()
+
+  // 1. Validate n is a valid integer
+  const versionNumber = parseInt(n, 10)
+  if (isNaN(versionNumber)) {
+    return c.json({ error: 'validation_error', code: 'validation_error' }, 422)
+  }
+
+  // 2. Look up the prompt — 404 if not found
+  const [prompt] = await db
+    .select({ id: schema.prompts.id })
+    .from(schema.prompts)
+    .where(eq(schema.prompts.id, id))
+    .limit(1)
+  if (!prompt) {
+    return c.json({ error: 'not_found', code: 'not_found' }, 404)
+  }
+
+  // 3. Look up the source version by version_number — 404 if not found
+  const [sourceVersion] = await db
+    .select()
+    .from(schema.prompt_versions)
+    .where(
+      and(
+        eq(schema.prompt_versions.prompt_id, id),
+        eq(schema.prompt_versions.version_number, versionNumber),
+      ),
+    )
+    .limit(1)
+  if (!sourceVersion) {
+    return c.json({ error: 'not_found', code: 'not_found' }, 404)
+  }
+
+  // 4. Compute next version number: MAX(version_number) + 1
+  const maxVersionRow = await db
+    .select({ max: sql<number>`MAX(version_number)` })
+    .from(schema.prompt_versions)
+    .where(eq(schema.prompt_versions.prompt_id, id))
+  const nextVersionNumber = (maxVersionRow[0]?.max ?? 0) + 1
+
+  // 5. Insert new version with source body and auto-generated changelog
+  const newVersionId = ulid()
+  const changelog = `Restored from version ${versionNumber}`
+  await db.insert(schema.prompt_versions).values({
+    id: newVersionId,
+    prompt_id: id,
+    version_number: nextVersionNumber,
+    body: sourceVersion.body,
+    changelog,
+    author_id: user.id,
+  })
+
+  // 6. Return 201 with new version object
+  return c.json(
+    {
+      id: newVersionId,
+      version_number: nextVersionNumber,
+      changelog,
+      author: { login: user.login },
+      created_at: new Date().toISOString(),
+    },
+    201,
+  )
 })
 
 export default app
