@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: Backend Migration
 status: planning
-stopped_at: Completed 12-write-api-01-PLAN.md
-last_updated: "2026-05-08T16:12:16.532Z"
+stopped_at: Completed 12-write-api-02-PLAN.md
+last_updated: "2026-05-08T16:17:13.714Z"
 last_activity: 2026-05-05 — Roadmap created; 7 phases defined, 81/81 v2.0 requirements mapped
 progress:
   total_phases: 7
   completed_phases: 3
   total_plans: 18
-  completed_plans: 14
+  completed_plans: 16
   percent: 0
 ---
 
@@ -64,6 +64,8 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 11-read-api P04 | 8min | 2 tasks | 4 files |
 | Phase 11-read-api P05 | 3min | 3 tasks | 5 files |
 | Phase 12-write-api P01 | 2min | 2 tasks | 1 files |
+| Phase 12-write-api P03 | 2min | 2 tasks | 1 files |
+| Phase 12-write-api P02 | 3min | 2 tasks | 1 files |
 
 ## Accumulated Context
 
@@ -114,6 +116,11 @@ Recent decisions affecting current work:
 - [Phase 11-read-api]: SEARCH-01 updated: FTS5 indexes title+body only — tags fetched from prompt_tags via JS aggregation post-FTS5 (no FTS5 column needed)
 - [Phase 12-write-api]: fakeUserToken minted with non-seeded FAKE_USER_ID for non-author/non-maintainer 403 tests in write.spec.ts
 - [Phase 12-write-api]: Three-token JWT pattern established: author (jwtToken), maintainer (maintainerToken), non-author (fakeUserToken) — covers all auth tiers in write endpoint tests
+- [Phase 12-write-api]: Route order enforced: POST /:id/versions registered before /:id/versions/:n/restore in Hono to prevent routing conflicts
+- [Phase 12-write-api]: MAX(version_number)+1 via sql<number> aggregate for type-safe version auto-increment in Drizzle
+- [Phase 12-write-api]: DELETE /prompts cascade preserves moderation_log — audit trail survives prompt deletion
+- [Phase 12-write-api]: POST /prompts always creates with status=draft, ignoring body status — prevents direct published/flagged creation
+- [Phase 12-write-api]: PATCH /prompts re-fetches prompt from DB after update for consistent response — avoids in-memory merge
 
 ### Roadmap Evolution
 
@@ -129,6 +136,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-05-08T16:12:16.530Z
-Stopped at: Completed 12-write-api-01-PLAN.md
+Last session: 2026-05-08T16:17:13.712Z
+Stopped at: Completed 12-write-api-02-PLAN.md
 Resume file: None
