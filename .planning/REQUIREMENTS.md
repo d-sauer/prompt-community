@@ -53,17 +53,17 @@ REST endpoints for all read and write operations, plus admin and moderation surf
 
 #### Write endpoints
 
-- [ ] **API-11**: `POST /prompts` creates a prompt (authenticated)
-- [ ] **API-12**: `PATCH /prompts/:id` updates a prompt (author only)
-- [ ] **API-13**: `DELETE /prompts/:id` deletes a prompt (author or maintainer)
-- [ ] **API-14**: `POST /prompts/:id/versions` publishes a new version (replaces version-as-comment)
-- [ ] **API-15**: `POST /prompts/:id/versions/:n/restore` restores a prior version non-destructively
-- [ ] **API-16**: `POST /prompts/:id/comments` creates a comment (authenticated)
-- [ ] **API-17**: `DELETE /comments/:id` deletes a comment (author or maintainer)
-- [ ] **API-18**: `POST /prompts/:id/reactions` adds an emoji reaction (`thumbs_up` | `heart` | `rocket`)
-- [ ] **API-19**: `DELETE /prompts/:id/reactions` removes the caller's reaction
-- [ ] **API-20**: `POST /bookmarks` and `DELETE /bookmarks/:promptId` manage server-side bookmarks (cross-device sync)
-- [ ] **API-21**: `POST /notifications/:id/read` marks a notification read
+- [x] **API-11**: `POST /prompts` creates a prompt (authenticated)
+- [x] **API-12**: `PATCH /prompts/:id` updates a prompt (author only)
+- [x] **API-13**: `DELETE /prompts/:id` deletes a prompt (author or maintainer)
+- [x] **API-14**: `POST /prompts/:id/versions` publishes a new version (replaces version-as-comment)
+- [x] **API-15**: `POST /prompts/:id/versions/:n/restore` restores a prior version non-destructively
+- [x] **API-16**: `POST /prompts/:id/comments` creates a comment (authenticated)
+- [x] **API-17**: `DELETE /comments/:id` deletes a comment (author or maintainer)
+- [x] **API-18**: `POST /prompts/:id/reactions` adds an emoji reaction (`thumbs_up` | `heart` | `rocket`)
+- [x] **API-19**: `DELETE /prompts/:id/reactions` removes the caller's reaction
+- [x] **API-20**: `POST /bookmarks` and `DELETE /bookmarks/:promptId` manage server-side bookmarks (cross-device sync)
+- [x] **API-21**: `POST /notifications/:id/read` marks a notification read
 
 #### Admin & moderation endpoints
 
@@ -208,17 +208,17 @@ Which phases cover which requirements. Updated during roadmap creation.
 | API-10 | Phase 11 | Complete |
 | SEARCH-01 | Phase 11 | Complete |
 | SEARCH-02 | Phase 11 | Complete |
-| API-11 | Phase 12 | Pending |
-| API-12 | Phase 12 | Pending |
-| API-13 | Phase 12 | Pending |
-| API-14 | Phase 12 | Pending |
-| API-15 | Phase 12 | Pending |
-| API-16 | Phase 12 | Pending |
-| API-17 | Phase 12 | Pending |
-| API-18 | Phase 12 | Pending |
-| API-19 | Phase 12 | Pending |
-| API-20 | Phase 12 | Pending |
-| API-21 | Phase 12 | Pending |
+| API-11 | Phase 12 | Complete |
+| API-12 | Phase 12 | Complete |
+| API-13 | Phase 12 | Complete |
+| API-14 | Phase 12 | Complete |
+| API-15 | Phase 12 | Complete |
+| API-16 | Phase 12 | Complete |
+| API-17 | Phase 12 | Complete |
+| API-18 | Phase 12 | Complete |
+| API-19 | Phase 12 | Complete |
+| API-20 | Phase 12 | Complete |
+| API-21 | Phase 12 | Complete |
 | FRONT-01 | Phase 13 | Pending |
 | FRONT-02 | Phase 13 | Pending |
 | FRONT-03 | Phase 13 | Pending |
