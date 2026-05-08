@@ -163,6 +163,16 @@ auth.post('/dev-login', async (c) => {
   return c.json({ ok: true, role })
 })
 
+auth.post('/logout', (c) => {
+  deleteCookie(c, 'pc_session', {
+    httpOnly: true,
+    secure: true,
+    sameSite: 'Lax',
+    path: '/',
+  })
+  return c.json({ ok: true })
+})
+
 // Catch-all: return 400 for unrecognised /auth/* paths (avoids top-level 404 which would
 // cause the boot test to think the route is unregistered)
 auth.all('*', (c) => c.json({ error: 'not_found' }, 400))
