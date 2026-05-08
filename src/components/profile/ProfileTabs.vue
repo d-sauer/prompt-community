@@ -2,10 +2,12 @@
 import { computed, toRef } from 'vue'
 import { useRouter } from 'vue-router'
 import { useQueryClient } from '@tanstack/vue-query'
+import { formatDistanceToNow } from 'date-fns'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Button } from '@/components/ui/button'
 import { Bookmark } from 'lucide-vue-next'
 import { useUserProfile } from '@/composables/queries/useUserProfile'
+import { useUserActivity, type ActivityItem } from '@/composables/queries/useUserActivity'
 import { useBookmarksStore } from '@/stores/useBookmarksStore'
 import type { Prompt } from '@/types/index'
 
@@ -18,6 +20,7 @@ const router = useRouter()
 const queryClient = useQueryClient()
 const loginRef = toRef(props, 'login')
 const { submissions } = useUserProfile(loginRef)
+const { activityItems, hasNextPage, isFetchingNextPage, fetchNextPage } = useUserActivity(loginRef)
 const bookmarksStore = useBookmarksStore()
 
 // Resolve bookmarked IDs to prompt data from cache
@@ -28,8 +31,12 @@ const bookmarkedPrompts = computed(() =>
   }),
 )
 
-function removeBookmark(id: number) {
+function removeBookmark(id: string) {
   bookmarksStore.toggle(id)
+}
+
+function relativeDate(isoDate: string): string {
+  return formatDistanceToNow(new Date(isoDate), { addSuffix: true })
 }
 </script>
 
@@ -51,14 +58,14 @@ function removeBookmark(id: number) {
       <ul v-else class="space-y-2">
         <li
           v-for="submission in submissions"
-          :key="submission.number"
+          :key="submission.id"
           class="flex items-center gap-2"
         >
           <Button
             variant="ghost"
             size="sm"
             class="text-xs text-white/80 hover:text-white justify-start px-0"
-            @click="router.push({ name: 'prompt-detail', params: { id: submission.number } })"
+            @click="router.push({ name: 'prompt-detail', params: { id: submission.id } })"
           >
             {{ submission.title }}
           </Button>
@@ -99,7 +106,36 @@ function removeBookmark(id: number) {
 
     <!-- Activity tab (own profile only) -->
     <TabsContent v-if="isOwnProfile" value="activity" class="mt-4">
-      <p class="text-sm text-white/40 py-4">Activity coming soon.</p>
+      <div v-if="activityItems.length === 0 && !isFetchingNextPage" class="text-sm text-white/40 py-4">
+        No activity yet.
+      </div>
+      <ul v-else class="space-y-2">
+        <li
+          v-for="item in activityItems"
+          :key="item.prompt.id"
+          class="flex items-center gap-2"
+        >
+          <Button
+            variant="ghost"
+            size="sm"
+            class="text-xs text-white/80 hover:text-white justify-start px-0"
+            @click="router.push({ name: 'prompt-detail', params: { id: item.prompt.id } })"
+          >
+            Published {{ item.prompt.title }} — {{ relativeDate(item.prompt.created_at) }}
+          </Button>
+        </li>
+      </ul>
+      <div v-if="hasNextPage" class="mt-4">
+        <Button
+          variant="ghost"
+          size="sm"
+          class="text-xs text-white/60"
+          :disabled="isFetchingNextPage"
+          @click="fetchNextPage()"
+        >
+          {{ isFetchingNextPage ? 'Loading...' : 'Load more' }}
+        </Button>
+      </div>
     </TabsContent>
   </Tabs>
 </template>

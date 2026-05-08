@@ -9,7 +9,7 @@ const props = defineProps<{
 }>()
 
 const authStore = useAuthStore()
-const { toggle, toggleReaction } = useReactions(toRef(props.prompt, 'id'), toRef(props.prompt, 'nodeId'))
+const { toggle, toggleReaction } = useReactions(toRef(props.prompt, 'id'))
 
 const showSignInCta = ref(false)
 
