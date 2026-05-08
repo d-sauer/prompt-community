@@ -33,9 +33,17 @@ export const useAuthStore = defineStore('auth', () => {
     }, 200)
   }
 
-  function logout() {
+  async function logout(): Promise<void> {
+    try {
+      const apiUrl = import.meta.env.VITE_API_URL as string
+      await fetch(`${apiUrl}/auth/logout`, {
+        method: 'POST',
+        credentials: 'include',
+      })
+    } catch {
+      // ignore network errors — cookie expires naturally after 7 days
+    }
     user.value = null
-    // POST /auth/logout deferred to Phase 13 — cookie expires naturally (7-day hard expiry)
   }
 
   async function fetchMe(): Promise<void> {
