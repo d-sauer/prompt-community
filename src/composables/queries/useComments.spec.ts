@@ -4,25 +4,33 @@ import { VueQueryPlugin, QueryClient } from '@tanstack/vue-query'
 import { mount } from '@vue/test-utils'
 import { createTestingPinia } from '@pinia/testing'
 import { useComments } from './useComments'
-import * as mutations from '@/lib/github/mutations'
+import * as mutations from '@/lib/api/mutations'
 import type { Prompt } from '@/types/index'
 
-vi.mock('@/lib/github/mutations', () => ({
+vi.mock('@/lib/api/mutations', () => ({
   postComment: vi.fn(),
-  flagPrompt: vi.fn(),
   addReaction: vi.fn(),
   removeReaction: vi.fn(),
-  createIssue: vi.fn(),
-  updateIssue: vi.fn(),
-  createVersionComment: vi.fn(),
+  flagPrompt: vi.fn(),
+}))
+
+// Mock vue-sonner used by the composable
+vi.mock('vue-sonner', () => ({ toast: vi.fn() }))
+// Mock useOfflineQueue
+vi.mock('@/composables/queries/useOfflineQueue', () => ({
+  useOfflineQueue: vi.fn(() => ({
+    isOnline: ref(true),
+    enqueue: vi.fn(),
+    getQueue: vi.fn(() => []),
+    drainQueue: vi.fn(),
+  })),
 }))
 
 const mockPostComment = vi.mocked(mutations.postComment)
 
 function makePrompt(): Prompt {
   return {
-    id: 42,
-    nodeId: 'MDU6SXNzdWU0Mg==',
+    id: '01PROMPT001',
     title: 'Test Prompt',
     body: 'body',
     frontmatter: {
@@ -41,7 +49,7 @@ function makePrompt(): Prompt {
     commentCount: 1,
     comments: [
       {
-        id: 'comment-1',
+        id: '01CMNT001',
         body: 'Great prompt!',
         createdAt: '2026-01-02T00:00:00Z',
         author: { login: 'bob', avatarUrl: '' },
@@ -54,17 +62,16 @@ function setupTest() {
   const queryClient = new QueryClient({
     defaultOptions: { queries: { retry: false }, mutations: { retry: false } },
   })
-  const issueId = ref(42)
+  const promptId = ref('01PROMPT001')
   const prompt = makePrompt()
-  queryClient.setQueryData(['prompt', 42], prompt)
+  queryClient.setQueryData(['prompt', '01PROMPT001'], prompt)
 
   let composable: ReturnType<typeof useComments> | undefined
 
   mount(
     {
       setup() {
-        // Phase 10: receiveToken removed; composable uses authStore.token (deprecated, Phase 15 cleanup)
-        composable = useComments(issueId)
+        composable = useComments(promptId)
         return {}
       },
       template: '<div />',
@@ -82,7 +89,7 @@ function setupTest() {
     },
   )
 
-  return { queryClient, composable: composable!, issueId }
+  return { queryClient, composable: composable!, promptId }
 }
 
 describe('useComments', () => {
@@ -90,9 +97,9 @@ describe('useComments', () => {
     vi.clearAllMocks()
   })
 
-  it('postComment calls REST endpoint with correct issueNumber and body', async () => {
+  it('postComment calls API endpoint with correct promptId and body', async () => {
     mockPostComment.mockResolvedValue({
-      id: 999,
+      id: '01CMNT002',
       body: 'Hello from test',
       createdAt: '2026-01-02T12:00:00Z',
     })
@@ -100,13 +107,12 @@ describe('useComments', () => {
     const { composable } = setupTest()
     await composable.postCommentMutation.mutateAsync('Hello from test')
 
-    // token is undefined in Phase 10 (authStore.token removed); Phase 15 will migrate to cookie-based API
-    expect(mockPostComment).toHaveBeenCalledWith(undefined, 42, 'Hello from test')
+    expect(mockPostComment).toHaveBeenCalledWith('01PROMPT001', 'Hello from test')
   })
 
   it('invalidates query cache on successful postComment', async () => {
     mockPostComment.mockResolvedValue({
-      id: 999,
+      id: '01CMNT002',
       body: 'Hello from test',
       createdAt: '2026-01-02T12:00:00Z',
     })
@@ -117,7 +123,7 @@ describe('useComments', () => {
     await composable.postCommentMutation.mutateAsync('Hello from test')
 
     expect(invalidateSpy).toHaveBeenCalledWith(
-      expect.objectContaining({ queryKey: ['prompt', 42] }),
+      expect.objectContaining({ queryKey: ['prompt', '01PROMPT001'] }),
     )
   })
 

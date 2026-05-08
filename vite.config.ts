@@ -27,10 +27,13 @@ export default defineConfig({
         navigateFallback: 'index.html',
         runtimeCaching: [
           {
-            urlPattern: /^https:\/\/api\.github\.com\/.*/i,
+            urlPattern: ({ url }: { url: URL }) =>
+              ['/prompts', '/users', '/search', '/labels', '/notifications', '/me'].some(
+                (path) => url.pathname.startsWith(path),
+              ),
             handler: 'NetworkFirst',
             options: {
-              cacheName: 'github-api-cache',
+              cacheName: 'api-prompts-cache',
               networkTimeoutSeconds: 5,
               expiration: { maxEntries: 100, maxAgeSeconds: 86400 },
               cacheableResponse: { statuses: [0, 200] },

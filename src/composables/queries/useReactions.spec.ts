@@ -4,15 +4,25 @@ import { VueQueryPlugin, QueryClient } from '@tanstack/vue-query'
 import { mount } from '@vue/test-utils'
 import { createTestingPinia } from '@pinia/testing'
 import { useReactions } from './useReactions'
-import * as mutations from '@/lib/github/mutations'
+import * as mutations from '@/lib/api/mutations'
 import type { Prompt, ReactionGroup } from '@/types/index'
 
-vi.mock('@/lib/github/mutations', () => ({
+vi.mock('@/lib/api/mutations', () => ({
   addReaction: vi.fn(),
   removeReaction: vi.fn(),
-  createIssue: vi.fn(),
-  updateIssue: vi.fn(),
-  createVersionComment: vi.fn(),
+  postComment: vi.fn(),
+}))
+
+// Also mock vue-sonner used by the composable
+vi.mock('vue-sonner', () => ({ toast: vi.fn() }))
+// Also mock useOfflineQueue used by the composable
+vi.mock('@/composables/queries/useOfflineQueue', () => ({
+  useOfflineQueue: vi.fn(() => ({
+    isOnline: ref(true),
+    enqueue: vi.fn(),
+    getQueue: vi.fn(() => []),
+    drainQueue: vi.fn(),
+  })),
 }))
 
 const mockAddReaction = vi.mocked(mutations.addReaction)
@@ -28,8 +38,7 @@ function makeReactionGroups(viewerHasReacted: boolean, totalCount = 5): Reaction
 
 function makePrompt(viewerHasReacted: boolean): Prompt {
   return {
-    id: 42,
-    nodeId: 'MDU6SXNzdWU0Mg==',
+    id: '01PROMPT001',
     title: 'Test Prompt',
     body: 'body',
     frontmatter: {
@@ -53,18 +62,16 @@ function setupTestWithPrompt(viewerHasReacted: boolean) {
   const queryClient = new QueryClient({
     defaultOptions: { queries: { retry: false }, mutations: { retry: false } },
   })
-  const issueId = ref(42)
-  const nodeId = ref('MDU6SXNzdWU0Mg==')
+  const promptId = ref('01PROMPT001')
   const prompt = makePrompt(viewerHasReacted)
-  queryClient.setQueryData(['prompt', 42], prompt)
+  queryClient.setQueryData(['prompt', '01PROMPT001'], prompt)
 
   let composable: ReturnType<typeof useReactions> | undefined
 
   mount(
     {
       setup() {
-        // Phase 10: receiveToken removed; composable uses authStore.token (deprecated, Phase 15 cleanup)
-        composable = useReactions(issueId, nodeId)
+        composable = useReactions(promptId)
         return {}
       },
       template: '<div />',
@@ -82,7 +89,7 @@ function setupTestWithPrompt(viewerHasReacted: boolean) {
     },
   )
 
-  return { queryClient, composable: composable!, issueId, nodeId }
+  return { queryClient, composable: composable!, promptId }
 }
 
 describe('useReactions', () => {
@@ -95,11 +102,9 @@ describe('useReactions', () => {
     mockAddReaction.mockResolvedValue(updatedGroups)
 
     const { composable } = setupTestWithPrompt(false)
-    // Use toggle() which reads current state before onMutate
     await composable.toggle('THUMBS_UP')
 
-    // token is undefined in Phase 10 (authStore.token removed); Phase 15 will migrate to cookie-based API
-    expect(mockAddReaction).toHaveBeenCalledWith(undefined, 'MDU6SXNzdWU0Mg==', 'THUMBS_UP')
+    expect(mockAddReaction).toHaveBeenCalledWith('01PROMPT001', 'thumbs_up')
     expect(mockRemoveReaction).not.toHaveBeenCalled()
   })
 
@@ -110,8 +115,7 @@ describe('useReactions', () => {
     const { composable } = setupTestWithPrompt(true)
     await composable.toggle('THUMBS_UP')
 
-    // token is undefined in Phase 10 (authStore.token removed); Phase 15 will migrate to cookie-based API
-    expect(mockRemoveReaction).toHaveBeenCalledWith(undefined, 'MDU6SXNzdWU0Mg==', 'THUMBS_UP')
+    expect(mockRemoveReaction).toHaveBeenCalledWith('01PROMPT001', 'thumbs_up')
     expect(mockAddReaction).not.toHaveBeenCalled()
   })
 
@@ -123,7 +127,7 @@ describe('useReactions', () => {
 
     // After onMutate runs, the optimistic update should be applied
     await vi.waitFor(() => {
-      const cached = queryClient.getQueryData<Prompt>(['prompt', 42])
+      const cached = queryClient.getQueryData<Prompt>(['prompt', '01PROMPT001'])
       const group = cached?.reactionGroups.find((g) => g.content === 'THUMBS_UP')
       return group?.reactors.totalCount === 6
     })
@@ -139,7 +143,7 @@ describe('useReactions', () => {
 
     // After onMutate runs, the optimistic update should decrement
     await vi.waitFor(() => {
-      const cached = queryClient.getQueryData<Prompt>(['prompt', 42])
+      const cached = queryClient.getQueryData<Prompt>(['prompt', '01PROMPT001'])
       const group = cached?.reactionGroups.find((g) => g.content === 'THUMBS_UP')
       return group?.reactors.totalCount === 4
     })
@@ -151,7 +155,7 @@ describe('useReactions', () => {
     mockAddReaction.mockRejectedValue(new Error('API error'))
 
     const { queryClient, composable } = setupTestWithPrompt(false)
-    const originalCount = (queryClient.getQueryData<Prompt>(['prompt', 42]) as Prompt)
+    const originalCount = (queryClient.getQueryData<Prompt>(['prompt', '01PROMPT001']) as Prompt)
       .reactionGroups.find((g) => g.content === 'THUMBS_UP')!.reactors.totalCount
 
     try {
@@ -161,7 +165,7 @@ describe('useReactions', () => {
     }
 
     await vi.waitFor(() => {
-      const cached = queryClient.getQueryData<Prompt>(['prompt', 42])
+      const cached = queryClient.getQueryData<Prompt>(['prompt', '01PROMPT001'])
       const group = cached?.reactionGroups.find((g) => g.content === 'THUMBS_UP')
       return group?.reactors.totalCount === originalCount
     })
