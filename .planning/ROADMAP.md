@@ -109,7 +109,7 @@ Plans:
 ### Phase 13: Frontend Rewire
 **Goal**: The Vue 3 SPA fetches all data from `src/lib/api/*` instead of `src/lib/github/*`; the ETag layer is removed; the auth store reads identity from `/me`; and the Activity tab shows live data — with no changes to any UI component.
 **Depends on**: Phase 12
-**Requirements**: FRONT-01, FRONT-02, FRONT-03, FRONT-04, FRONT-05, FRONT-06, FRONT-07, FRONT-08, FRONT-09, FRONT-10, FRONT-11, SEARCH-03, SEARCH-04
+**Requirements**: FRONT-01, FRONT-02, FRONT-03, FRONT-04, FRONT-05, FRONT-07, FRONT-08, FRONT-09, FRONT-10, FRONT-11, SEARCH-03, SEARCH-04
 **Success Criteria** (what must be TRUE):
   1. Every composable in `src/composables/queries/*.ts` and `src/composables/mutations/*.ts` imports from `@/lib/api/*`; no import references `@/lib/github/*`
   2. Logging in sets `useAuthStore` identity from `/me`; `isMaintainer` is derived from the `role` field returned by the API, not from a GitHub collaborators check
@@ -118,22 +118,23 @@ Plans:
   5. The MiniSearch client-side index is rebuilt from API responses and the service worker continues caching prompt list responses, so offline PWA browsing works without any network calls
 **Plans**: 5 plans
 Plans:
-- [ ] 13-01-PLAN.md — Wave 1: Type contracts (Prompt.id: string, drop nodeId) + src/lib/api/http.ts + queries.ts + mutations.ts (FRONT-01, FRONT-02, FRONT-03, FRONT-04, FRONT-05, FRONT-06)
+- [ ] 13-01-PLAN.md — Wave 1: Type contracts (Prompt.id: string, drop nodeId) + src/lib/api/http.ts + queries.ts + mutations.ts (FRONT-01, FRONT-02, FRONT-03, FRONT-04, FRONT-05)
 - [ ] 13-02-PLAN.md — Wave 1: POST /auth/logout backend endpoint + useAuthStore.logout() wiring (FRONT-09)
 - [ ] 13-03-PLAN.md — Wave 2: Migrate query composables (usePromptsQuery, usePromptDetail, usePromptVersions, useUserProfile) + new useUserActivity (FRONT-07, FRONT-11)
-- [ ] 13-04-PLAN.md — Wave 2: Migrate mutation composables (useComments, useReactions, useOfflineQueue, useCreatePrompt, useUpdatePrompt, useFlagPrompt, useRestoreVersion) (FRONT-08, FRONT-10)
+- [ ] 13-04-PLAN.md — Wave 2: Migrate mutation composables (useComments, useReactions, useOfflineQueue, useCreatePrompt, useUpdatePrompt, useFlagPrompt, useRestoreVersion) (FRONT-08, FRONT-10 partial)
 - [ ] 13-05-PLAN.md — Wave 3: Wire Activity tab in ProfileTabs.vue + fix ReactionBar.vue + Workbox SW cache update + spec cleanup + tsc/vitest gate (SEARCH-03, SEARCH-04)
 
 ### Phase 14: Admin & Moderation API
 **Goal**: Maintainers can manage the moderation queue, view the moderation log, and perform label CRUD through Hono endpoints backed by D1; the frontend admin panel is rewired to these endpoints with role guards enforced server-side.
 **Depends on**: Phase 13
-**Requirements**: API-22, API-23, API-24, API-25, API-26, API-27, API-28
+**Requirements**: API-22, API-23, API-24, API-25, API-26, API-27, API-28, FRONT-06
 **Success Criteria** (what must be TRUE):
   1. A maintainer can fetch flagged prompts via `GET /admin/queue` and approve or hide them via `POST /admin/prompts/:id/approve` and `POST /admin/prompts/:id/hide`; actions are recorded in `moderation_log`
   2. `GET /admin/log` returns the full moderation history accessible only to maintainers; a non-maintainer JWT receives 403
   3. Label CRUD (`POST /labels`, `PATCH /labels/:id`, `DELETE /labels/:id`) allows maintainers to manage categories, models, and tags stored in D1
   4. All API error responses across the entire API surface use the consistent JSON error shape defined in API-27
   5. Every admin and write route rejects requests with missing or insufficient JWT (401/403) with no maintainer-check round-trip to GitHub
+  6. FRONT-06: `src/lib/api/admin.ts` is created and the admin composables (`useAdminActions`, `useAdminQueue`) are rewired to use it (deferred from Phase 13 per CONTEXT.md locked decision)
 **Plans**: TBD
 
 ### Phase 15: Decommission & Docs

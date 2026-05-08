@@ -3,7 +3,7 @@ phase: 13
 slug: frontend-rewire
 status: draft
 nyquist_compliant: false
-wave_0_complete: false
+wave_0_complete: true
 created: 2026-05-08
 ---
 
@@ -38,28 +38,42 @@ created: 2026-05-08
 
 | Task ID | Plan | Wave | Requirement | Test Type | Automated Command | File Exists | Status |
 |---------|------|------|-------------|-----------|-------------------|-------------|--------|
-| 13-01-01 | 01 | 0 | FRONT-01 | unit | `npx vitest run src/lib/api/http.spec.ts` | ❌ W0 | ⬜ pending |
-| 13-01-02 | 01 | 0 | FRONT-02 | unit | `npx vitest run src/lib/api/queries.spec.ts` | ❌ W0 | ⬜ pending |
-| 13-01-03 | 01 | 0 | FRONT-02 | unit | `npx vitest run src/lib/api/mutations.spec.ts` | ❌ W0 | ⬜ pending |
-| 13-01-04 | 01 | 0 | FRONT-11 | unit | `npx vitest run src/composables/queries/useUserActivity.spec.ts` | ❌ W0 | ⬜ pending |
-| 13-02-01 | 02 | 1 | FRONT-07 | unit | `npx vitest run src/composables/queries/usePromptsQuery.spec.ts` | ❌ W0 | ⬜ pending |
-| 13-02-02 | 02 | 1 | FRONT-08 | unit | `npx vitest run src/composables/queries/useReactions.spec.ts` | ✅ | ⬜ pending |
-| 13-02-03 | 02 | 1 | FRONT-09 | unit | `npx vitest run src/stores/useAuthStore.spec.ts` | ✅ | ⬜ pending |
-| 13-02-04 | 02 | 1 | FRONT-10 | lint/tsc | `npx tsc --noEmit` | N/A | ⬜ pending |
-| 13-02-05 | 02 | 1 | FRONT-11 | unit | `npx vitest run src/composables/queries/useUserActivity.spec.ts` | ❌ W0 | ⬜ pending |
-| 13-03-01 | 03 | 2 | SEARCH-03 | unit | `npx vitest run src/lib/search.spec.ts` | ✅ | ⬜ pending |
-| 13-03-02 | 03 | 2 | SEARCH-04 | manual | `npx vite build && inspect dev-dist/sw.js` | manual | ⬜ pending |
+| 13-01-01 | 01 | 1 | FRONT-01 | unit | `npx vitest run src/lib/api/http.spec.ts` | ❌ created by task | ⬜ pending |
+| 13-01-02 | 01 | 1 | FRONT-02, FRONT-03, FRONT-04, FRONT-05 | unit | `npx vitest run src/lib/api/queries.spec.ts src/lib/api/mutations.spec.ts` | ❌ created by task | ⬜ pending |
+| 13-02-01 | 02 | 1 | FRONT-09 | unit | `npx vitest run src/stores/useAuthStore.spec.ts` | ✅ | ⬜ pending |
+| 13-02-02 | 02 | 1 | FRONT-09 | grep | `grep -n "post('/logout'" src/workers/api/routes/auth.ts` | N/A | ⬜ pending |
+| 13-03-01 | 03 | 2 | FRONT-07 | unit | `npx vitest run src/composables/queries/usePromptsQuery.spec.ts` | ❌ created by task | ⬜ pending |
+| 13-03-02 | 03 | 2 | FRONT-11 | unit | `npx vitest run src/composables/queries/useUserActivity.spec.ts` | ❌ created by task | ⬜ pending |
+| 13-04-01 | 04 | 2 | FRONT-08 | grep | `grep -rn "@/lib/github" src/composables/queries/useComments.ts src/composables/queries/useReactions.ts src/composables/queries/useOfflineQueue.ts \| wc -l` (expect 0) | N/A | ⬜ pending |
+| 13-04-02 | 04 | 2 | FRONT-10 (partial) | grep | `grep -rn "@/lib/github" src/composables/queries/useCreatePrompt.ts src/composables/queries/useUpdatePrompt.ts src/composables/queries/useFlagPrompt.ts src/composables/queries/useRestoreVersion.ts \| wc -l` (expect 0) | N/A | ⬜ pending |
+| 13-05-01 | 05 | 3 | SEARCH-03 | unit | `npx vitest run` | N/A (full suite) | ⬜ pending |
+| 13-05-02 | 05 | 3 | SEARCH-04 | manual | `npx vite build && inspect dev-dist/sw.js` | manual | ⬜ pending |
 
 *Status: ⬜ pending · ✅ green · ❌ red · ⚠️ flaky*
 
 ---
 
-## Wave 0 Requirements
+## Wave Structure
 
-- [ ] `src/lib/api/http.spec.ts` — covers FRONT-01 (apiFetch error handling, credentials injection)
-- [ ] `src/lib/api/queries.spec.ts` — covers FRONT-02, FRONT-05 (function existence + endpoint shape)
-- [ ] `src/lib/api/mutations.spec.ts` — covers FRONT-02, FRONT-03, FRONT-04 (function existence + endpoint shape)
-- [ ] `src/composables/queries/useUserActivity.spec.ts` — covers FRONT-11 (useInfiniteQuery, event mapping)
+| Wave | Plans | Creates spec files? |
+|------|-------|---------------------|
+| 1 | 13-01, 13-02 | Yes — http.spec.ts, queries.spec.ts, mutations.spec.ts (Plan 01 Task 2) |
+| 2 | 13-03, 13-04 | Yes — usePromptsQuery.spec.ts, useUserActivity.spec.ts (Plan 03) |
+| 3 | 13-05 | No — updates existing specs |
+
+Wave 1 (Plans 01 and 02) serves as the combined foundation layer. Spec files required by downstream composables are created in Plan 01 Task 2 and Plan 03 Task 1. There is no separate Wave 0 — `wave_0_complete: true` because Plan 01 subsumes the Wave 0 responsibilities.
+
+---
+
+## Spec Files Created by Phase 13
+
+| Spec File | Created In | Requirement Covered |
+|-----------|-----------|---------------------|
+| src/lib/api/http.spec.ts | Plan 01 Task 2 | FRONT-01 |
+| src/lib/api/queries.spec.ts | Plan 01 Task 2 | FRONT-02, FRONT-05 |
+| src/lib/api/mutations.spec.ts | Plan 01 Task 2 | FRONT-03, FRONT-04 |
+| src/composables/queries/usePromptsQuery.spec.ts | Plan 03 Task 1 | FRONT-07 |
+| src/composables/queries/useUserActivity.spec.ts | Plan 03 Task 2 | FRONT-11 |
 
 ---
 
@@ -71,11 +85,20 @@ created: 2026-05-08
 
 ---
 
+## Partial Requirement Notes
+
+| Requirement | Partial Delivery | Full Delivery |
+|-------------|-----------------|---------------|
+| FRONT-10 | Phase 13 (Plan 04): ETag logic removed from all active composable code paths; etag.ts not imported by any Phase 13 composable | Phase 15 (DECOM-04): src/lib/github/etag.ts file deletion |
+| FRONT-06 | Not in Phase 13 scope | Phase 14: admin composable rewire (src/lib/api/admin.ts creation + admin composable migration) |
+
+---
+
 ## Validation Sign-Off
 
-- [ ] All tasks have `<automated>` verify or Wave 0 dependencies
+- [ ] All tasks have `<automated>` verify or created-by-task spec files listed above
 - [ ] Sampling continuity: no 3 consecutive tasks without automated verify
-- [ ] Wave 0 covers all MISSING references
+- [ ] All MISSING spec references are created by Plan 01 Task 2 or Plan 03 Task 1
 - [ ] No watch-mode flags
 - [ ] Feedback latency < 30s
 - [ ] `nyquist_compliant: true` set in frontmatter
