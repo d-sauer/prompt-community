@@ -84,7 +84,7 @@ Replace `src/lib/github/*` consumers with `src/lib/api/*`. UI components remain 
 - [x] **FRONT-03**: `src/lib/api/comments.ts` replaces GitHub comment paths
 - [x] **FRONT-04**: `src/lib/api/reactions.ts` replaces GitHub reaction paths
 - [x] **FRONT-05**: `src/lib/api/users.ts` replaces GitHub user lookup paths
-- [ ] **FRONT-06**: `src/lib/api/admin.ts` replaces GitHub admin/maintainer paths
+- [x] **FRONT-06**: `src/lib/api/admin.ts` replaces GitHub admin/maintainer paths
 - [x] **FRONT-07**: `src/composables/queries/*.ts` re-import from `@/lib/api/*` (TanStack Query cache keys preserved)
 - [x] **FRONT-08**: `src/composables/mutations/*.ts` re-import from `@/lib/api/*`
 - [x] **FRONT-09**: `useAuthStore` updated for JWT/cookie session shape; `isMaintainer` comes from `/me`
@@ -224,7 +224,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | FRONT-03 | Phase 13 | Complete |
 | FRONT-04 | Phase 13 | Complete |
 | FRONT-05 | Phase 13 | Complete |
-| FRONT-06 | Phase 13 | Pending |
+| FRONT-06 | Phase 13 | Complete |
 | FRONT-07 | Phase 13 | Complete |
 | FRONT-08 | Phase 13 | Complete |
 | FRONT-09 | Phase 13 | Complete |

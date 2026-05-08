@@ -32,7 +32,7 @@ Full archive: `.planning/milestones/v1.0-ROADMAP.md`
 - [x] **Phase 11: Read API** — All GET endpoints (prompts, comments, versions, users, search via D1 FTS5) (completed 2026-05-06)
 - [x] **Phase 12: Write API** — Prompts/comments/reactions/versions/bookmarks/notifications POST/PATCH/DELETE (completed 2026-05-08)
 - [x] **Phase 13: Frontend Rewire** — Swap `src/lib/github/*` → `src/lib/api/*`, store updates, drop ETag layer (completed 2026-05-08)
-- [ ] **Phase 14: Admin & Moderation API** — `/admin/queue`, `/admin/log`, label CRUD, role guards, admin panel rewire
+- [x] **Phase 14: Admin & Moderation API** — `/admin/queue`, `/admin/log`, label CRUD, role guards, admin panel rewire (completed 2026-05-08)
 - [ ] **Phase 15: Decommission & Docs** — Delete v1 GH-Issues code, archive data repo, rewrite product docs
 
 ## Phase Details
@@ -135,7 +135,7 @@ Plans:
   4. All API error responses across the entire API surface use the consistent JSON error shape defined in API-27
   5. Every admin and write route rejects requests with missing or insufficient JWT (401/403) with no maintainer-check round-trip to GitHub
   6. FRONT-06: `src/lib/api/admin.ts` is created and the admin composables (`useAdminActions`, `useAdminQueue`) are rewired to use it (deferred from Phase 13 per CONTEXT.md locked decision)
-**Plans:** 2/3 plans executed
+**Plans:** 3/3 plans complete
 Plans:
 - [ ] 14-01-PLAN.md — Wave 0: admin.spec.ts RED test contracts for API-22..28 (API-22, API-23, API-24, API-25, API-26, API-27, API-28)
 - [ ] 14-02-PLAN.md — Wave 1: admin.ts handlers + labels.ts write handlers + requireMaintainer API-27 fix (API-22, API-23, API-24, API-25, API-26, API-27, API-28)
@@ -170,5 +170,5 @@ Plans:
 | 11. Read API | 5/5 | Complete    | 2026-05-06 | - |
 | 12. Write API | 5/5 | Complete    | 2026-05-08 | - |
 | 13. Frontend Rewire | 5/5 | Complete    | 2026-05-08 | - |
-| 14. Admin & Moderation API | 2/3 | In Progress|  | - |
+| 14. Admin & Moderation API | 3/3 | Complete   | 2026-05-08 | - |
 | 15. Decommission & Docs | v2.0 | 0/? | Not started | - |
