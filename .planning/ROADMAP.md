@@ -157,7 +157,7 @@ Plans:
 | 9. Backend Foundation | 4/4 | Complete   | 2026-05-05 | - |
 | 10. Auth Migration | 4/4 | Complete    | 2026-05-06 | - |
 | 11. Read API | 5/5 | Complete    | 2026-05-06 | - |
-| 12. Write API | 3/5 | In Progress|  | - |
+| 12. Write API | 4/5 | In Progress|  | - |
 | 13. Frontend Rewire | v2.0 | 0/? | Not started | - |
 | 14. Admin & Moderation API | v2.0 | 0/? | Not started | - |
 | 15. Decommission & Docs | v2.0 | 0/? | Not started | - |

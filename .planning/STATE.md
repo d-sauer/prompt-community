@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: Backend Migration
 status: planning
-stopped_at: Completed 12-write-api-02-PLAN.md
-last_updated: "2026-05-08T16:17:13.714Z"
+stopped_at: Completed 12-write-api-05-PLAN.md
+last_updated: "2026-05-08T16:18:13.696Z"
 last_activity: 2026-05-05 — Roadmap created; 7 phases defined, 81/81 v2.0 requirements mapped
 progress:
   total_phases: 7
   completed_phases: 3
   total_plans: 18
-  completed_plans: 16
+  completed_plans: 17
   percent: 0
 ---
 
@@ -66,6 +66,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 12-write-api P01 | 2min | 2 tasks | 1 files |
 | Phase 12-write-api P03 | 2min | 2 tasks | 1 files |
 | Phase 12-write-api P02 | 3min | 2 tasks | 1 files |
+| Phase 12-write-api P05 | 4min | 2 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -121,6 +122,8 @@ Recent decisions affecting current work:
 - [Phase 12-write-api]: DELETE /prompts cascade preserves moderation_log — audit trail survives prompt deletion
 - [Phase 12-write-api]: POST /prompts always creates with status=draft, ignoring body status — prevents direct published/flagged creation
 - [Phase 12-write-api]: PATCH /prompts re-fetches prompt from DB after update for consistent response — avoids in-memory merge
+- [Phase 12-write-api]: POST /bookmarks uses onConflictDoNothing() for idempotent insert — returns 201 whether new or pre-existing bookmark
+- [Phase 12-write-api]: POST /notifications/:id/read uses combined WHERE id AND user_id — 404 for both unknown and other-user's notifications (no existence leakage)
 
 ### Roadmap Evolution
 
@@ -136,6 +139,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-05-08T16:17:13.712Z
-Stopped at: Completed 12-write-api-02-PLAN.md
+Last session: 2026-05-08T16:18:13.694Z
+Stopped at: Completed 12-write-api-05-PLAN.md
 Resume file: None
