@@ -47,8 +47,7 @@ export interface CommentNode {
 }
 
 export interface Prompt {
-  id: number           // GitHub issue number
-  nodeId: string       // GitHub GraphQL node ID (for mutations)
+  id: string           // ULID from v2 API
   title: string
   body: string         // raw markdown content (after frontmatter stripped)
   frontmatter: PromptFrontmatter
@@ -59,6 +58,7 @@ export interface Prompt {
   reactionGroups: ReactionGroup[]
   commentCount: number
   comments: CommentNode[]
+  status?: 'draft' | 'published' | 'flagged' | 'hidden'
 }
 
 export interface VersionObject {
