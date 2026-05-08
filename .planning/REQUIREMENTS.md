@@ -67,13 +67,13 @@ REST endpoints for all read and write operations, plus admin and moderation surf
 
 #### Admin & moderation endpoints
 
-- [ ] **API-22**: `GET /admin/queue` returns flagged prompts (maintainer only)
-- [ ] **API-23**: `GET /admin/log` returns the moderation log (maintainer only)
-- [ ] **API-24**: `POST /admin/prompts/:id/approve` approves a flagged prompt (maintainer only)
-- [ ] **API-25**: `POST /admin/prompts/:id/hide` hides a prompt (maintainer only)
-- [ ] **API-26**: `POST /labels`, `PATCH /labels/:id`, `DELETE /labels/:id` manage labels (maintainer only)
-- [ ] **API-27**: API errors return a consistent JSON shape with appropriate HTTP status codes
-- [ ] **API-28**: All admin and write routes are guarded by JWT middleware + role middleware where appropriate
+- [x] **API-22**: `GET /admin/queue` returns flagged prompts (maintainer only)
+- [x] **API-23**: `GET /admin/log` returns the moderation log (maintainer only)
+- [x] **API-24**: `POST /admin/prompts/:id/approve` approves a flagged prompt (maintainer only)
+- [x] **API-25**: `POST /admin/prompts/:id/hide` hides a prompt (maintainer only)
+- [x] **API-26**: `POST /labels`, `PATCH /labels/:id`, `DELETE /labels/:id` manage labels (maintainer only)
+- [x] **API-27**: API errors return a consistent JSON shape with appropriate HTTP status codes
+- [x] **API-28**: All admin and write routes are guarded by JWT middleware + role middleware where appropriate
 
 ### Frontend Rewire (FRONT)
 
@@ -232,13 +232,13 @@ Which phases cover which requirements. Updated during roadmap creation.
 | FRONT-11 | Phase 13 | Complete |
 | SEARCH-03 | Phase 13 | Complete |
 | SEARCH-04 | Phase 13 | Complete |
-| API-22 | Phase 14 | Pending |
-| API-23 | Phase 14 | Pending |
-| API-24 | Phase 14 | Pending |
-| API-25 | Phase 14 | Pending |
-| API-26 | Phase 14 | Pending |
-| API-27 | Phase 14 | Pending |
-| API-28 | Phase 14 | Pending |
+| API-22 | Phase 14 | Complete |
+| API-23 | Phase 14 | Complete |
+| API-24 | Phase 14 | Complete |
+| API-25 | Phase 14 | Complete |
+| API-26 | Phase 14 | Complete |
+| API-27 | Phase 14 | Complete |
+| API-28 | Phase 14 | Complete |
 | DECOM-01 | Phase 15 | Pending |
 | DECOM-02 | Phase 15 | Pending |
 | DECOM-03 | Phase 15 | Pending |

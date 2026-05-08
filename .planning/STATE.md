@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: Backend Migration
 status: planning
-stopped_at: Completed 13-frontend-rewire 13-05-PLAN.md
-last_updated: "2026-05-08T20:10:33.972Z"
+stopped_at: Completed 14-admin-moderation-api 14-01-PLAN.md
+last_updated: "2026-05-08T21:28:07.950Z"
 last_activity: 2026-05-05 — Roadmap created; 7 phases defined, 81/81 v2.0 requirements mapped
 progress:
   total_phases: 7
   completed_phases: 5
-  total_plans: 23
-  completed_plans: 23
+  total_plans: 26
+  completed_plans: 24
   percent: 0
 ---
 
@@ -73,6 +73,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 13-frontend-rewire P04 | 7min | 2 tasks | 9 files |
 | Phase 13-frontend-rewire P03 | 10min | 2 tasks | 9 files |
 | Phase 13-frontend-rewire P05 | 7min | 2 tasks | 7 files |
+| Phase 14-admin-moderation-api P01 | 2min | 1 tasks | 1 files |
 
 ## Accumulated Context
 
@@ -147,6 +148,8 @@ Recent decisions affecting current work:
 - [Phase 13-frontend-rewire]: useUserActivity exports ActivityItem type re-exported from @/lib/api/queries — consumers import from composable
 - [Phase 13-frontend-rewire]: Load-more button for Activity tab instead of auto-scroll — avoids layout shift, consistent with Submitted tab style
 - [Phase 13-frontend-rewire]: useOfflineQueue mocked at module level in mutation composable specs — prevents VITE_API_URL access during test init
+- [Phase 14-admin-moderation-api]: Per-test unique prompt IDs for approve/hide tests to avoid test-order coupling
+- [Phase 14-admin-moderation-api]: GET /admin/stats tests included despite no API-22-28 ID — required by FRONT-06/useAdminStats
 
 ### Roadmap Evolution
 
@@ -162,6 +165,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-05-08T18:42:35.167Z
-Stopped at: Completed 13-frontend-rewire 13-05-PLAN.md
+Last session: 2026-05-08T21:28:07.948Z
+Stopped at: Completed 14-admin-moderation-api 14-01-PLAN.md
 Resume file: None
