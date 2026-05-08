@@ -165,6 +165,6 @@ Plans:
 | 10. Auth Migration | 4/4 | Complete    | 2026-05-06 | - |
 | 11. Read API | 5/5 | Complete    | 2026-05-06 | - |
 | 12. Write API | 5/5 | Complete    | 2026-05-08 | - |
-| 13. Frontend Rewire | 1/5 | In Progress|  | - |
+| 13. Frontend Rewire | 2/5 | In Progress|  | - |
 | 14. Admin & Moderation API | v2.0 | 0/? | Not started | - |
 | 15. Decommission & Docs | v2.0 | 0/? | Not started | - |

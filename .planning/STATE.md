@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: Backend Migration
 status: planning
-stopped_at: Completed 13-02-PLAN.md
-last_updated: "2026-05-08T18:31:25.840Z"
+stopped_at: Completed 13-frontend-rewire 13-01-PLAN.md
+last_updated: "2026-05-08T18:33:09.462Z"
 last_activity: 2026-05-05 — Roadmap created; 7 phases defined, 81/81 v2.0 requirements mapped
 progress:
   total_phases: 7
   completed_phases: 4
   total_plans: 23
-  completed_plans: 19
+  completed_plans: 20
   percent: 0
 ---
 
@@ -69,6 +69,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 12-write-api P05 | 4min | 2 tasks | 3 files |
 | Phase 12-write-api P04 | 8min | 2 tasks | 3 files |
 | Phase 13-frontend-rewire P02 | 2min | 2 tasks | 3 files |
+| Phase 13-frontend-rewire P01 | 9min | 2 tasks | 8 files |
 
 ## Accumulated Context
 
@@ -131,6 +132,9 @@ Recent decisions affecting current work:
 - [Phase 12-write-api]: DELETE /prompts/:id/reactions reads emoji from request body (not path param) — Hono supports c.req.json() for DELETE requests
 - [Phase 13-frontend-rewire]: logout() clears user.value after try/catch block — guaranteed clear regardless of network outcome
 - [Phase 13-frontend-rewire]: Existing logout test updated to await store.logout() — required because logout() became async and user.value cleared after awaited fetch
+- [Phase 13-frontend-rewire]: apiFetch is the single fetch primitive — no consuming function calls fetch directly; no token params on any function
+- [Phase 13-frontend-rewire]: flagPrompt implemented as no-op throwing Error('flag endpoint not yet available') — Phase 14 scope per CONTEXT.md locked decision
+- [Phase 13-frontend-rewire]: buildQuery helper strips null/undefined/empty FilterState values before URLSearchParams serialization
 
 ### Roadmap Evolution
 
@@ -146,6 +150,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-05-08T18:31:25.838Z
-Stopped at: Completed 13-02-PLAN.md
+Last session: 2026-05-08T18:33:09.460Z
+Stopped at: Completed 13-frontend-rewire 13-01-PLAN.md
 Resume file: None

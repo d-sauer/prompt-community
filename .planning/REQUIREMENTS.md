@@ -79,11 +79,11 @@ REST endpoints for all read and write operations, plus admin and moderation surf
 
 Replace `src/lib/github/*` consumers with `src/lib/api/*`. UI components remain untouched.
 
-- [ ] **FRONT-01**: `src/lib/api/client.ts` provides a fetch wrapper that injects credentials and handles auth/error responses
-- [ ] **FRONT-02**: `src/lib/api/prompts.ts` replaces `src/lib/github/queries.ts` and `mutations.ts` for prompt operations
-- [ ] **FRONT-03**: `src/lib/api/comments.ts` replaces GitHub comment paths
-- [ ] **FRONT-04**: `src/lib/api/reactions.ts` replaces GitHub reaction paths
-- [ ] **FRONT-05**: `src/lib/api/users.ts` replaces GitHub user lookup paths
+- [x] **FRONT-01**: `src/lib/api/client.ts` provides a fetch wrapper that injects credentials and handles auth/error responses
+- [x] **FRONT-02**: `src/lib/api/prompts.ts` replaces `src/lib/github/queries.ts` and `mutations.ts` for prompt operations
+- [x] **FRONT-03**: `src/lib/api/comments.ts` replaces GitHub comment paths
+- [x] **FRONT-04**: `src/lib/api/reactions.ts` replaces GitHub reaction paths
+- [x] **FRONT-05**: `src/lib/api/users.ts` replaces GitHub user lookup paths
 - [ ] **FRONT-06**: `src/lib/api/admin.ts` replaces GitHub admin/maintainer paths
 - [ ] **FRONT-07**: `src/composables/queries/*.ts` re-import from `@/lib/api/*` (TanStack Query cache keys preserved)
 - [ ] **FRONT-08**: `src/composables/mutations/*.ts` re-import from `@/lib/api/*`
@@ -219,11 +219,11 @@ Which phases cover which requirements. Updated during roadmap creation.
 | API-19 | Phase 12 | Complete |
 | API-20 | Phase 12 | Complete |
 | API-21 | Phase 12 | Complete |
-| FRONT-01 | Phase 13 | Pending |
-| FRONT-02 | Phase 13 | Pending |
-| FRONT-03 | Phase 13 | Pending |
-| FRONT-04 | Phase 13 | Pending |
-| FRONT-05 | Phase 13 | Pending |
+| FRONT-01 | Phase 13 | Complete |
+| FRONT-02 | Phase 13 | Complete |
+| FRONT-03 | Phase 13 | Complete |
+| FRONT-04 | Phase 13 | Complete |
+| FRONT-05 | Phase 13 | Complete |
 | FRONT-06 | Phase 13 | Pending |
 | FRONT-07 | Phase 13 | Pending |
 | FRONT-08 | Phase 13 | Pending |
