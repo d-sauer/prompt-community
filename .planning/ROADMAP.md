@@ -31,7 +31,7 @@ Full archive: `.planning/milestones/v1.0-ROADMAP.md`
 - [x] **Phase 10: Auth Migration** — OAuth → JWT (HttpOnly cookie), `/me`, dev-login endpoint, role-based middleware (completed 2026-05-06)
 - [x] **Phase 11: Read API** — All GET endpoints (prompts, comments, versions, users, search via D1 FTS5) (completed 2026-05-06)
 - [x] **Phase 12: Write API** — Prompts/comments/reactions/versions/bookmarks/notifications POST/PATCH/DELETE (completed 2026-05-08)
-- [ ] **Phase 13: Frontend Rewire** — Swap `src/lib/github/*` → `src/lib/api/*`, store updates, drop ETag layer
+- [x] **Phase 13: Frontend Rewire** — Swap `src/lib/github/*` → `src/lib/api/*`, store updates, drop ETag layer (completed 2026-05-08)
 - [ ] **Phase 14: Admin & Moderation API** — `/admin/queue`, `/admin/log`, label CRUD, role guards, admin panel rewire
 - [ ] **Phase 15: Decommission & Docs** — Delete v1 GH-Issues code, archive data repo, rewrite product docs
 
@@ -165,6 +165,6 @@ Plans:
 | 10. Auth Migration | 4/4 | Complete    | 2026-05-06 | - |
 | 11. Read API | 5/5 | Complete    | 2026-05-06 | - |
 | 12. Write API | 5/5 | Complete    | 2026-05-08 | - |
-| 13. Frontend Rewire | 4/5 | In Progress|  | - |
+| 13. Frontend Rewire | 5/5 | Complete   | 2026-05-08 | - |
 | 14. Admin & Moderation API | v2.0 | 0/? | Not started | - |
 | 15. Decommission & Docs | v2.0 | 0/? | Not started | - |

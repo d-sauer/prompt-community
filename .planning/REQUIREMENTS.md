@@ -97,8 +97,8 @@ D1 FTS5 server-side search alongside MiniSearch for offline PWA browsing.
 
 - [x] **SEARCH-01**: D1 FTS5 virtual table indexes prompt `title` and `body` (tags are fetched from `prompt_tags` via JS aggregation after FTS5 match — no FTS5 column needed)
 - [x] **SEARCH-02**: `GET /search` uses FTS5 `MATCH` for ranked results
-- [ ] **SEARCH-03**: MiniSearch client-side index retained for offline PWA browsing (built from API responses)
-- [ ] **SEARCH-04**: Service worker continues caching prompt list responses for offline read
+- [x] **SEARCH-03**: MiniSearch client-side index retained for offline PWA browsing (built from API responses)
+- [x] **SEARCH-04**: Service worker continues caching prompt list responses for offline read
 
 ### Local Development (DEV)
 
@@ -230,8 +230,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 | FRONT-09 | Phase 13 | Complete |
 | FRONT-10 | Phase 13 | Complete |
 | FRONT-11 | Phase 13 | Complete |
-| SEARCH-03 | Phase 13 | Pending |
-| SEARCH-04 | Phase 13 | Pending |
+| SEARCH-03 | Phase 13 | Complete |
+| SEARCH-04 | Phase 13 | Complete |
 | API-22 | Phase 14 | Pending |
 | API-23 | Phase 14 | Pending |
 | API-24 | Phase 14 | Pending |

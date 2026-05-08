@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: Backend Migration
 status: planning
-stopped_at: Completed 13-frontend-rewire 13-03-PLAN.md
-last_updated: "2026-05-08T18:37:55.088Z"
+stopped_at: Completed 13-frontend-rewire 13-05-PLAN.md
+last_updated: "2026-05-08T18:42:35.169Z"
 last_activity: 2026-05-05 — Roadmap created; 7 phases defined, 81/81 v2.0 requirements mapped
 progress:
   total_phases: 7
-  completed_phases: 4
+  completed_phases: 5
   total_plans: 23
-  completed_plans: 22
+  completed_plans: 23
   percent: 0
 ---
 
@@ -72,6 +72,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 13-frontend-rewire P01 | 9min | 2 tasks | 8 files |
 | Phase 13-frontend-rewire P04 | 7min | 2 tasks | 9 files |
 | Phase 13-frontend-rewire P03 | 10min | 2 tasks | 9 files |
+| Phase 13-frontend-rewire P05 | 7min | 2 tasks | 7 files |
 
 ## Accumulated Context
 
@@ -144,6 +145,8 @@ Recent decisions affecting current work:
 - [Phase 13-frontend-rewire]: parseVersionComment removed from usePromptVersions — GitHub comment parsing no longer needed; v2 API returns VersionObject[] directly
 - [Phase 13-frontend-rewire]: useUserProfile uses Promise.all for getUserProfile + getUserPrompts — parallel fetch, no waterfall
 - [Phase 13-frontend-rewire]: useUserActivity exports ActivityItem type re-exported from @/lib/api/queries — consumers import from composable
+- [Phase 13-frontend-rewire]: Load-more button for Activity tab instead of auto-scroll — avoids layout shift, consistent with Submitted tab style
+- [Phase 13-frontend-rewire]: useOfflineQueue mocked at module level in mutation composable specs — prevents VITE_API_URL access during test init
 
 ### Roadmap Evolution
 
@@ -159,6 +162,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-05-08T18:37:55.085Z
-Stopped at: Completed 13-frontend-rewire 13-03-PLAN.md
+Last session: 2026-05-08T18:42:35.167Z
+Stopped at: Completed 13-frontend-rewire 13-05-PLAN.md
 Resume file: None
