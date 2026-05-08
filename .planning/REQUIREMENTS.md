@@ -87,7 +87,7 @@ Replace `src/lib/github/*` consumers with `src/lib/api/*`. UI components remain 
 - [ ] **FRONT-06**: `src/lib/api/admin.ts` replaces GitHub admin/maintainer paths
 - [ ] **FRONT-07**: `src/composables/queries/*.ts` re-import from `@/lib/api/*` (TanStack Query cache keys preserved)
 - [ ] **FRONT-08**: `src/composables/mutations/*.ts` re-import from `@/lib/api/*`
-- [ ] **FRONT-09**: `useAuthStore` updated for JWT/cookie session shape; `isMaintainer` comes from `/me`
+- [x] **FRONT-09**: `useAuthStore` updated for JWT/cookie session shape; `isMaintainer` comes from `/me`
 - [ ] **FRONT-10**: `src/lib/github/etag.ts` deleted; TanStack Query `staleTime` + standard HTTP cache headers replace it
 - [ ] **FRONT-11**: Activity tab placeholder replaced by data wired through `/users/:login/activity`
 
@@ -227,7 +227,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | FRONT-06 | Phase 13 | Pending |
 | FRONT-07 | Phase 13 | Pending |
 | FRONT-08 | Phase 13 | Pending |
-| FRONT-09 | Phase 13 | Pending |
+| FRONT-09 | Phase 13 | Complete |
 | FRONT-10 | Phase 13 | Pending |
 | FRONT-11 | Phase 13 | Pending |
 | SEARCH-03 | Phase 13 | Pending |

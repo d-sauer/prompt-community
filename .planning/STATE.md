@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: Backend Migration
 status: planning
-stopped_at: Phase 13 context gathered
-last_updated: "2026-05-08T17:32:28.861Z"
+stopped_at: Completed 13-02-PLAN.md
+last_updated: "2026-05-08T18:31:25.840Z"
 last_activity: 2026-05-05 — Roadmap created; 7 phases defined, 81/81 v2.0 requirements mapped
 progress:
   total_phases: 7
   completed_phases: 4
-  total_plans: 18
-  completed_plans: 18
+  total_plans: 23
+  completed_plans: 19
   percent: 0
 ---
 
@@ -68,6 +68,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 12-write-api P02 | 3min | 2 tasks | 1 files |
 | Phase 12-write-api P05 | 4min | 2 tasks | 3 files |
 | Phase 12-write-api P04 | 8min | 2 tasks | 3 files |
+| Phase 13-frontend-rewire P02 | 2min | 2 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -128,6 +129,8 @@ Recent decisions affecting current work:
 - [Phase 12-write-api]: DrizzleQueryError wraps D1 errors — check both String(e) and String(e.cause) for UNIQUE/SQLITE_CONSTRAINT to detect 409 duplicate reactions
 - [Phase 12-write-api]: fakeUserToken user seeded in seed.sql — FK constraint on reactions.user_id requires real DB row for reaction add+delete test round-trip
 - [Phase 12-write-api]: DELETE /prompts/:id/reactions reads emoji from request body (not path param) — Hono supports c.req.json() for DELETE requests
+- [Phase 13-frontend-rewire]: logout() clears user.value after try/catch block — guaranteed clear regardless of network outcome
+- [Phase 13-frontend-rewire]: Existing logout test updated to await store.logout() — required because logout() became async and user.value cleared after awaited fetch
 
 ### Roadmap Evolution
 
@@ -143,6 +146,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-05-08T17:32:28.859Z
-Stopped at: Phase 13 context gathered
-Resume file: .planning/phases/13-frontend-rewire/13-CONTEXT.md
+Last session: 2026-05-08T18:31:25.838Z
+Stopped at: Completed 13-02-PLAN.md
+Resume file: None
