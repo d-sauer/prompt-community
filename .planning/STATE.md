@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: Backend Migration
 status: planning
-stopped_at: Completed 14-admin-moderation-api 14-01-PLAN.md
-last_updated: "2026-05-08T21:28:07.950Z"
+stopped_at: Completed 14-admin-moderation-api 14-02-PLAN.md
+last_updated: "2026-05-08T21:33:06.849Z"
 last_activity: 2026-05-05 — Roadmap created; 7 phases defined, 81/81 v2.0 requirements mapped
 progress:
   total_phases: 7
   completed_phases: 5
   total_plans: 26
-  completed_plans: 24
+  completed_plans: 25
   percent: 0
 ---
 
@@ -74,6 +74,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 13-frontend-rewire P03 | 10min | 2 tasks | 9 files |
 | Phase 13-frontend-rewire P05 | 7min | 2 tasks | 7 files |
 | Phase 14-admin-moderation-api P01 | 2min | 1 tasks | 1 files |
+| Phase 14-admin-moderation-api P02 | 5min | 2 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -150,6 +151,8 @@ Recent decisions affecting current work:
 - [Phase 13-frontend-rewire]: useOfflineQueue mocked at module level in mutation composable specs — prevents VITE_API_URL access during test init
 - [Phase 14-admin-moderation-api]: Per-test unique prompt IDs for approve/hide tests to avoid test-order coupling
 - [Phase 14-admin-moderation-api]: GET /admin/stats tests included despite no API-22-28 ID — required by FRONT-06/useAdminStats
+- [Phase 14-admin-moderation-api]: Raw D1 prepare() used for GET /admin/log LEFT JOINs — three-table join with Drizzle is verbose; raw SQL matches FTS5 precedent
+- [Phase 14-admin-moderation-api]: Admin root GET / handler returns 401/403 not 404 — boot test probes /admin/ and requires non-404 to confirm route registration
 
 ### Roadmap Evolution
 
@@ -165,6 +168,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-05-08T21:28:07.948Z
-Stopped at: Completed 14-admin-moderation-api 14-01-PLAN.md
+Last session: 2026-05-08T21:33:06.847Z
+Stopped at: Completed 14-admin-moderation-api 14-02-PLAN.md
 Resume file: None
