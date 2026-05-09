@@ -135,7 +135,7 @@ Plans:
   4. All API error responses across the entire API surface use the consistent JSON error shape defined in API-27
   5. Every admin and write route rejects requests with missing or insufficient JWT (401/403) with no maintainer-check round-trip to GitHub
   6. FRONT-06: `src/lib/api/admin.ts` is created and the admin composables (`useAdminActions`, `useAdminQueue`) are rewired to use it (deferred from Phase 13 per CONTEXT.md locked decision)
-**Plans:** 4 plans
+**Plans:** 4/4 plans complete
 Plans:
 - [ ] 14-01-PLAN.md — Wave 0: admin.spec.ts RED test contracts for API-22..28 (API-22, API-23, API-24, API-25, API-26, API-27, API-28)
 - [ ] 14-02-PLAN.md — Wave 1: admin.ts handlers + labels.ts write handlers + requireMaintainer API-27 fix (API-22, API-23, API-24, API-25, API-26, API-27, API-28)
@@ -171,5 +171,5 @@ Plans:
 | 11. Read API | 5/5 | Complete    | 2026-05-06 | - |
 | 12. Write API | 5/5 | Complete    | 2026-05-08 | - |
 | 13. Frontend Rewire | 5/5 | Complete    | 2026-05-08 | - |
-| 14. Admin & Moderation API | 3/4 | In progress   | 2026-05-08 | - |
+| 14. Admin & Moderation API | 4/4 | Complete   | 2026-05-09 | - |
 | 15. Decommission & Docs | v2.0 | 0/? | Not started | - |

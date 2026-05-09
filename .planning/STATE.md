@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: Backend Migration
 status: planning
-stopped_at: Completed 14-admin-moderation-api 14-03-PLAN.md
-last_updated: "2026-05-08T21:38:54.514Z"
+stopped_at: Completed 14-admin-moderation-api 14-04-PLAN.md
+last_updated: "2026-05-09T05:37:40.556Z"
 last_activity: 2026-05-05 — Roadmap created; 7 phases defined, 81/81 v2.0 requirements mapped
 progress:
   total_phases: 7
   completed_phases: 6
-  total_plans: 26
-  completed_plans: 26
+  total_plans: 27
+  completed_plans: 27
   percent: 0
 ---
 
@@ -76,6 +76,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 14-admin-moderation-api P01 | 2min | 1 tasks | 1 files |
 | Phase 14-admin-moderation-api P02 | 5min | 2 tasks | 3 files |
 | Phase 14-admin-moderation-api P03 | 3min | 2 tasks | 11 files |
+| Phase 14-admin-moderation-api P04 | 5min | 2 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -156,6 +157,7 @@ Recent decisions affecting current work:
 - [Phase 14-admin-moderation-api]: Admin root GET / handler returns 401/403 not 404 — boot test probes /admin/ and requires non-404 to confirm route registration
 - [Phase 14-admin-moderation-api]: featureMutation stubbed as error-throw not removed — AdminQueueTab.vue references it; no v2 featured status in D1 enum
 - [Phase 14-admin-moderation-api]: vi.mock factory literals only — no outer-scope const references inside vi.mock to avoid Vitest hoisting ReferenceError
+- [Phase 14-admin-moderation-api]: LabelGroup items now match backend GET /labels shape exactly — no mapping layer needed in groupedLabels computed
 
 ### Roadmap Evolution
 
@@ -171,6 +173,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-05-08T21:38:54.512Z
-Stopped at: Completed 14-admin-moderation-api 14-03-PLAN.md
+Last session: 2026-05-09T05:37:40.553Z
+Stopped at: Completed 14-admin-moderation-api 14-04-PLAN.md
 Resume file: None
