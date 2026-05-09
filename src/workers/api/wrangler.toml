@@ -13,3 +13,23 @@ binding = "DB"
 database_name = "prompt-community-db"
 database_id = "local"
 migrations_dir = "db/migrations"
+
+# ─── Production environment ───────────────────────────────────────────────────
+# Deploy with: npx wrangler deploy --config src/workers/api/wrangler.toml --env production
+# Before deploying:
+#   1. Run: npx wrangler d1 create prompt-community-db --config src/workers/api/wrangler.toml
+#      Copy the database_id UUID from output and replace PLACEHOLDER_RUN_WRANGLER_D1_CREATE below.
+#   2. Set secrets: wrangler secret put JWT_SECRET / GITHUB_CLIENT_ID / GITHUB_CLIENT_SECRET --env production
+#   3. Update APP_ORIGIN to your Cloudflare Pages URL.
+
+[env.production]
+
+[env.production.vars]
+ENV = "production"
+APP_ORIGIN = "https://YOUR_PAGES_DOMAIN.pages.dev"
+
+[[env.production.d1_databases]]
+binding = "DB"
+database_name = "prompt-community-db"
+database_id = "PLACEHOLDER_RUN_WRANGLER_D1_CREATE"
+migrations_dir = "db/migrations"
