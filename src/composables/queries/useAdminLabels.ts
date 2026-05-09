@@ -25,27 +25,17 @@ export function useAdminLabels() {
     staleTime: 60_000,
   })
 
-  // getLabels() returns a grouped object: { categories, models, difficulties, tags, ... }
-  // Flatten all label arrays and group by prefix for the admin UI
   const groupedLabels = computed(() => {
     const grouped = query.data.value ?? {}
-    // Collect all labels from all groups and re-group by prefix
+    // Collect all labels from all backend groups and re-group by prefix
     const allLabels: AdminLabel[] = []
     for (const labels of Object.values(grouped)) {
       if (Array.isArray(labels)) {
         for (const label of labels) {
-          // getLabels returns { name, color } shape — wrap in AdminLabel-compatible shape
-          allLabels.push({
-            id: (label as { name: string; color: string }).name,
-            prefix: (label as { name: string }).name.split(':')[0] ?? '',
-            value: (label as { name: string }).name.split(':')[1] ?? '',
-            color: (label as { color: string }).color ?? null,
-            description: null,
-          })
+          allLabels.push(label)
         }
       }
     }
-    // Group by prefix
     return allLabels.reduce(
       (acc, label) => {
         ;(acc[label.prefix] ??= []).push(label)

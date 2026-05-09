@@ -30,7 +30,7 @@ export interface UserProfile {
 }
 
 export interface LabelGroup {
-  [type: string]: Array<{ name: string; color: string }>
+  [type: string]: Array<{ id: string; prefix: string; value: string; color: string | null; description: string | null }>
 }
 
 function buildQuery(params: Record<string, string | number | boolean | null | undefined>): string {
