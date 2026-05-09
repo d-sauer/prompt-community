@@ -1,3 +1,9 @@
+> **HISTORICAL DOCUMENT — SUPERSEDED**
+> This research describes the v1 GitHub-Issues-as-database architecture,
+> which was replaced by the v2 Cloudflare Workers + D1 + Hono backend
+> (completed 2026-05-09). See `design/change-request-v2.md` for the v2 PRD
+> and `design/planning-artifacts/architecture.md` for the current architecture.
+
 # Building a Community Platform on Vue.js and GitHub Issues
 ## Updated Technology Research — All Dependencies Verified Active (March 2026)
 

@@ -15,13 +15,49 @@ author: Davor
 
 # Product Brief: prompt-community
 
+> **Updated 2026-05-09:** Architecture reflects v2.0 Backend Migration.
+> Original v1 GitHub-Issues architecture is documented below for historical reference.
+
 <!-- Content will be appended sequentially through collaborative workflow steps -->
 
 ## Executive Summary
 
 prompt-community is an internal company platform for discovering, sharing, and collaborating on AI prompts, skill files, and reusable instruction sets. Built as a portal app accessible to all company employees (no login required to browse), it solves a specific organizational problem: engineers are learning and using AI in isolation, reinventing the wheel and missing out on each other's best practices.
 
-The platform uses GitHub Issues as its data store (accessed via API) and GitHub OAuth for contributors who want to submit or interact — making it zero-infrastructure while leveraging familiar tooling. The goal is to grow AI literacy across the engineering org, starting with 150 active users.
+**v2.0 (current):** The platform runs on a first-party Cloudflare Workers + D1 + Hono backend. GitHub OAuth authenticates users; the server issues a JWT stored in an HttpOnly cookie. All prompt data lives in a Cloudflare D1 (SQLite) database managed via Drizzle ORM. A Hono REST API worker serves all read and write operations. D1 FTS5 full-text search replaces the GitHub Search API. MiniSearch is retained for offline PWA browsing.
+
+**v1.0 (historical):** The platform used GitHub Issues as its data store (accessed via API) and GitHub OAuth for contributors who want to submit or interact — making it zero-infrastructure while leveraging familiar tooling. The goal was to grow AI literacy across the engineering org, starting with 150 active users.
+
+---
+
+## v2.0 Backend Migration (2026-05)
+
+The v1.0 GitHub-Issues-as-database architecture was replaced in v2.0 with a first-party Cloudflare backend. This section documents the migration for historical context.
+
+### What Changed
+
+| Area | v1 (GitHub-Issues) | v2 (Cloudflare Workers + D1) |
+|---|---|---|
+| Data store | GitHub Issues + Labels (YAML frontmatter schema) | Cloudflare D1 (SQLite) with Drizzle ORM — 10 tables |
+| API layer | Octokit GraphQL reads + REST writes | Hono REST API worker on Cloudflare Workers |
+| Auth token | GitHub OAuth access token in Pinia memory | HS256 JWT in HttpOnly + Secure + SameSite=Lax cookie |
+| Maintainer check | GitHub collaborators API on login | `users.role` field in D1 (`user` \| `maintainer`) |
+| Search | GitHub Search API (30 req/min cap) → replaced by MiniSearch | D1 FTS5 virtual table (title + body); MiniSearch retained for offline PWA |
+| Caching | ETag conditional requests + TanStack Query staleTime | TanStack Query staleTime + standard HTTP Cache-Control headers |
+| Deployment | SPA + OAuth proxy worker + prompt-community-data repo (3 pieces) | Cloudflare Pages (SPA) + Cloudflare Workers (Hono API) + D1 (2 pieces) |
+| Dependencies | `@octokit/core`, `@octokit/graphql` in SPA | No GitHub API client in SPA |
+| Data repo | `prompt-community-data` (separate repo, GitHub Issues) | Eliminated — single-repo architecture |
+
+### Why the Migration Was Done
+
+The v1 GitHub-Issues architecture worked well at launch but had structural limits that became blockers:
+
+- **5,000 req/hour rate limit** — even with ETag caching, high read volume at 50–400 users risked exhausting the ceiling
+- **No real schema** — YAML frontmatter in issue bodies is opaque; no foreign-key constraints, no typed queries
+- **Two-repo split** — separating app code from data repo added deployment and permission complexity
+- **Opaque maintainer check** — GitHub collaborators API call on every login created coupling and a round-trip dependency
+
+The v2 backend stays within Cloudflare free tier limits while removing all of these constraints.
 
 ---
 
