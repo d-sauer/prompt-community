@@ -155,8 +155,13 @@ Plans:
   6. The Navbar login button displays "Sign in" (no GitHub branding); in dev mode, clicking it opens a modal to select or add a dev user instead of launching the GitHub OAuth popup
 **Plans:** 3/4 plans executed
 Plans:
+**Wave 1**
 - [ ] 15-01-PLAN.md — Wave 1: Delete src/lib/github/, root wrangler.toml, oauth.ts; clean package.json + .env.example; build + test gate (DECOM-01, DECOM-02, DECOM-03, DECOM-04, DECOM-05, DECOM-07, DECOM-08)
+
+**Wave 2** *(blocked on Wave 1 completion)*
 - [ ] 15-02-PLAN.md — Wave 2: Production deployment (D1 provision + migrate, secrets, wrangler deploy, smoke test) + archive data repo (DEPLOY-01, DEPLOY-02, DEPLOY-03, DEPLOY-04, DECOM-06)
+
+**Wave 3** *(blocked on Wave 2 completion)*
 - [ ] 15-03-PLAN.md — Wave 3: Update planning artifacts (product-brief, prd, architecture, epics) + mark research doc historical (DECOM-09, DECOM-10, DECOM-11, DECOM-12, DECOM-13)
 - [ ] 15-04-PLAN.md — Wave 3: Dev login UX — remove GitHub branding from Navbar login button + DevLoginModal component + extend /auth/dev-login to accept arbitrary login/name (DECOM-14, DECOM-15)
 
