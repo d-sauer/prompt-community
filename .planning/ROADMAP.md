@@ -135,11 +135,12 @@ Plans:
   4. All API error responses across the entire API surface use the consistent JSON error shape defined in API-27
   5. Every admin and write route rejects requests with missing or insufficient JWT (401/403) with no maintainer-check round-trip to GitHub
   6. FRONT-06: `src/lib/api/admin.ts` is created and the admin composables (`useAdminActions`, `useAdminQueue`) are rewired to use it (deferred from Phase 13 per CONTEXT.md locked decision)
-**Plans:** 3/3 plans complete
+**Plans:** 4 plans
 Plans:
 - [ ] 14-01-PLAN.md — Wave 0: admin.spec.ts RED test contracts for API-22..28 (API-22, API-23, API-24, API-25, API-26, API-27, API-28)
 - [ ] 14-02-PLAN.md — Wave 1: admin.ts handlers + labels.ts write handlers + requireMaintainer API-27 fix (API-22, API-23, API-24, API-25, API-26, API-27, API-28)
 - [ ] 14-03-PLAN.md — Wave 2: src/lib/api/admin.ts + rewire 5 admin composables + update specs (FRONT-06)
+- [ ] 14-04-PLAN.md — Wave 4: Gap closure — fix LabelGroup type + groupedLabels computed + spec mock to match real backend shape (FRONT-06)
 
 ### Phase 15: Decommission & Docs
 **Goal**: All v1 GitHub-Issues code paths are deleted from the codebase, the `prompt-community-data` repository is archived, and planning artifacts and product docs are updated to accurately reflect the v2 architecture.
@@ -170,5 +171,5 @@ Plans:
 | 11. Read API | 5/5 | Complete    | 2026-05-06 | - |
 | 12. Write API | 5/5 | Complete    | 2026-05-08 | - |
 | 13. Frontend Rewire | 5/5 | Complete    | 2026-05-08 | - |
-| 14. Admin & Moderation API | 3/3 | Complete   | 2026-05-08 | - |
+| 14. Admin & Moderation API | 3/4 | In progress   | 2026-05-08 | - |
 | 15. Decommission & Docs | v2.0 | 0/? | Not started | - |
