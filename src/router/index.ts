@@ -1,11 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { useAuthStore } from '@/stores/useAuthStore'
 
-// NOTE: verifyMaintainerStatus re-export removed in Phase 10 (cookie-based auth).
-// The router now uses authStore.isMaintainer (derived from user.role in JWT cookie).
-// Any callers that imported verifyMaintainerStatus from here should import directly
-// from @/lib/github/auth, or update to Phase 13 approach (to be cleaned up in Phase 15).
-
 export const router = createRouter({
   history: createWebHistory(),
   routes: [
