@@ -25,11 +25,11 @@ vi.mock('@/lib/api/admin', () => ({
 vi.mock('@/lib/api/queries', () => ({
   getLabels: vi.fn().mockResolvedValue({
     category: [
-      { name: 'category:writing', color: 'abc123' },
-      { name: 'category:coding', color: 'def456' },
+      { id: '01HLABEL001', prefix: 'category', value: 'writing', color: '#abc123', description: null },
+      { id: '01HLABEL002', prefix: 'category', value: 'coding', color: '#def456', description: null },
     ],
-    status: [{ name: 'status:featured', color: '22c55e' }],
-    flag: [{ name: 'flag:review', color: 'e11d48' }],
+    status: [{ id: '01HLABEL003', prefix: 'status', value: 'featured', color: '#22c55e', description: null }],
+    flag: [{ id: '01HLABEL004', prefix: 'flag', value: 'review', color: '#e11d48', description: null }],
   }),
 }))
 
@@ -81,6 +81,11 @@ describe('useAdminLabels', () => {
       expect(Object.keys(groups)).toContain('status')
       expect(Object.keys(groups)).toContain('flag')
       expect(groups['category'].length).toBe(2)
+      // Assert real backend fields are preserved (not derived from name.split)
+      expect(groups['category'][0].id).toBe('01HLABEL001')
+      expect(groups['category'][0].prefix).toBe('category')
+      expect(groups['category'][0].value).toBe('writing')
+      expect(groups['category'][0].color).toBe('#abc123')
     })
   })
 
