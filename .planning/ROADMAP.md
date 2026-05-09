@@ -33,7 +33,7 @@ Full archive: `.planning/milestones/v1.0-ROADMAP.md`
 - [x] **Phase 12: Write API** — Prompts/comments/reactions/versions/bookmarks/notifications POST/PATCH/DELETE (completed 2026-05-08)
 - [x] **Phase 13: Frontend Rewire** — Swap `src/lib/github/*` → `src/lib/api/*`, store updates, drop ETag layer (completed 2026-05-08)
 - [x] **Phase 14: Admin & Moderation API** — `/admin/queue`, `/admin/log`, label CRUD, role guards, admin panel rewire (completed 2026-05-08)
-- [ ] **Phase 15: Decommission & Docs** — Delete v1 GH-Issues code, archive data repo, rewrite product docs
+- [x] **Phase 15: Decommission & Docs** — Delete v1 GH-Issues code, archive data repo, rewrite product docs (completed 2026-05-09)
 
 ## Phase Details
 
@@ -153,17 +153,17 @@ Plans:
   4. Planning docs (`product-brief`, `prd.md`, `architecture.md`, `epics.md`) reflect the v2 architecture; the v1 research doc is marked historical with a superseded banner
   5. A developer with no prior context can set up the full local dev environment by following the updated `CONTRIBUTING.md` alone
   6. The Navbar login button displays "Sign in" (no GitHub branding); in dev mode, clicking it opens a modal to select or add a dev user instead of launching the GitHub OAuth popup
-**Plans:** 3/4 plans executed
+**Plans:** 4/4 plans complete
 Plans:
 **Wave 1**
-- [ ] 15-01-PLAN.md — Wave 1: Delete src/lib/github/, root wrangler.toml, oauth.ts; clean package.json + .env.example; build + test gate (DECOM-01, DECOM-02, DECOM-03, DECOM-04, DECOM-05, DECOM-07, DECOM-08)
+- [x] 15-01-PLAN.md — Wave 1: Delete src/lib/github/, root wrangler.toml, oauth.ts; clean package.json + .env.example; build + test gate (DECOM-01, DECOM-02, DECOM-03, DECOM-04, DECOM-05, DECOM-07, DECOM-08)
 
 **Wave 2** *(blocked on Wave 1 completion)*
-- [ ] 15-02-PLAN.md — Wave 2: Production deployment (D1 provision + migrate, secrets, wrangler deploy, smoke test) + archive data repo (DEPLOY-01, DEPLOY-02, DEPLOY-03, DEPLOY-04, DECOM-06)
+- [x] 15-02-PLAN.md — Wave 2: Production deployment (D1 provision + migrate, secrets, wrangler deploy, smoke test) + archive data repo (DEPLOY-01, DEPLOY-02, DEPLOY-03, DEPLOY-04, DECOM-06)
 
 **Wave 3** *(blocked on Wave 2 completion)*
-- [ ] 15-03-PLAN.md — Wave 3: Update planning artifacts (product-brief, prd, architecture, epics) + mark research doc historical (DECOM-09, DECOM-10, DECOM-11, DECOM-12, DECOM-13)
-- [ ] 15-04-PLAN.md — Wave 3: Dev login UX — remove GitHub branding from Navbar login button + DevLoginModal component + extend /auth/dev-login to accept arbitrary login/name (DECOM-14, DECOM-15)
+- [x] 15-03-PLAN.md — Wave 3: Update planning artifacts (product-brief, prd, architecture, epics) + mark research doc historical (DECOM-09, DECOM-10, DECOM-11, DECOM-12, DECOM-13)
+- [x] 15-04-PLAN.md — Wave 3: Dev login UX — remove GitHub branding from Navbar login button + DevLoginModal component + extend /auth/dev-login to accept arbitrary login/name (DECOM-14, DECOM-15)
 
 ## Progress
 
@@ -183,4 +183,4 @@ Plans:
 | 12. Write API | 5/5 | Complete    | 2026-05-08 | - |
 | 13. Frontend Rewire | 5/5 | Complete    | 2026-05-08 | - |
 | 14. Admin & Moderation API | 4/4 | Complete    | 2026-05-09 | - |
-| 15. Decommission & Docs | 2/4 | In Progress|  | - |
+| 15. Decommission & Docs | 2/4 | 4/4 | Complete   | 2026-05-09 |
