@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: Backend Migration
 status: planning
-stopped_at: Completed 14-admin-moderation-api 14-04-PLAN.md
-last_updated: "2026-05-09T05:42:44.206Z"
+stopped_at: Completed 15-decommission-docs 15-01-PLAN.md
+last_updated: "2026-05-09T14:43:40.322Z"
 last_activity: 2026-05-05 — Roadmap created; 7 phases defined, 81/81 v2.0 requirements mapped
 progress:
   total_phases: 7
   completed_phases: 6
-  total_plans: 27
-  completed_plans: 27
+  total_plans: 30
+  completed_plans: 28
   percent: 0
 ---
 
@@ -77,6 +77,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 14-admin-moderation-api P02 | 5min | 2 tasks | 3 files |
 | Phase 14-admin-moderation-api P03 | 3min | 2 tasks | 11 files |
 | Phase 14-admin-moderation-api P04 | 5min | 2 tasks | 3 files |
+| Phase 15-decommission-docs P01 | 2min | 2 tasks | 15 files |
 
 ## Accumulated Context
 
@@ -158,6 +159,7 @@ Recent decisions affecting current work:
 - [Phase 14-admin-moderation-api]: featureMutation stubbed as error-throw not removed — AdminQueueTab.vue references it; no v2 featured status in D1 enum
 - [Phase 14-admin-moderation-api]: vi.mock factory literals only — no outer-scope const references inside vi.mock to avoid Vitest hoisting ReferenceError
 - [Phase 14-admin-moderation-api]: LabelGroup items now match backend GET /labels shape exactly — no mapping layer needed in groupedLabels computed
+- [Phase 15-decommission-docs]: Pre-existing vue-tsc build failures in admin components not caused by github lib deletions — verified via git stash; deferred to future cleanup plan
 
 ### Roadmap Evolution
 
@@ -173,6 +175,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-05-09T05:37:40.553Z
-Stopped at: Completed 14-admin-moderation-api 14-04-PLAN.md
+Last session: 2026-05-09T14:43:40.319Z
+Stopped at: Completed 15-decommission-docs 15-01-PLAN.md
 Resume file: None

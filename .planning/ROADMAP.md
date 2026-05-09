@@ -152,7 +152,7 @@ Plans:
   3. The API worker is deployed to Cloudflare via `wrangler deploy`, production D1 is provisioned and migrated, and production secrets are configured — the app serves real traffic from the new backend
   4. Planning docs (`product-brief`, `prd.md`, `architecture.md`, `epics.md`) reflect the v2 architecture; the v1 research doc is marked historical with a superseded banner
   5. A developer with no prior context can set up the full local dev environment by following the updated `CONTRIBUTING.md` alone
-**Plans:** 3 plans
+**Plans:** 1/3 plans executed
 Plans:
 - [ ] 15-01-PLAN.md — Wave 1: Delete src/lib/github/, root wrangler.toml, oauth.ts; clean package.json + .env.example; build + test gate (DECOM-01, DECOM-02, DECOM-03, DECOM-04, DECOM-05, DECOM-07, DECOM-08)
 - [ ] 15-02-PLAN.md — Wave 2: Production deployment (D1 provision + migrate, secrets, wrangler deploy, smoke test) + archive data repo (DEPLOY-01, DEPLOY-02, DEPLOY-03, DEPLOY-04, DECOM-06)
@@ -176,4 +176,4 @@ Plans:
 | 12. Write API | 5/5 | Complete    | 2026-05-08 | - |
 | 13. Frontend Rewire | 5/5 | Complete    | 2026-05-08 | - |
 | 14. Admin & Moderation API | 4/4 | Complete    | 2026-05-09 | - |
-| 15. Decommission & Docs | v2.0 | 0/3 | Not started | - |
+| 15. Decommission & Docs | 1/3 | In Progress|  | - |

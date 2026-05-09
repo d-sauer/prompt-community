@@ -123,14 +123,14 @@ Production deployment of the API worker and D1.
 
 Remove v1 GitHub-Issues code paths, archive the data repo, update planning docs.
 
-- [ ] **DECOM-01**: `src/lib/github/octokit.ts` deleted
-- [ ] **DECOM-02**: `src/lib/github/queries.ts` deleted
-- [ ] **DECOM-03**: `src/lib/github/mutations.ts` deleted
-- [ ] **DECOM-04**: `src/lib/github/etag.ts` deleted
-- [ ] **DECOM-05**: `src/lib/github/auth.ts` deleted (server-side maintainer check replaces it)
+- [x] **DECOM-01**: `src/lib/github/octokit.ts` deleted
+- [x] **DECOM-02**: `src/lib/github/queries.ts` deleted
+- [x] **DECOM-03**: `src/lib/github/mutations.ts` deleted
+- [x] **DECOM-04**: `src/lib/github/etag.ts` deleted
+- [x] **DECOM-05**: `src/lib/github/auth.ts` deleted (server-side maintainer check replaces it)
 - [ ] **DECOM-06**: `prompt-community-data` repository archived (no longer used as a data store)
-- [ ] **DECOM-07**: `wrangler.toml` cleaned of two-repo configuration
-- [ ] **DECOM-08**: `.env.example` drops `VITE_GITHUB_OWNER` and `VITE_GITHUB_DATA_REPO`
+- [x] **DECOM-07**: `wrangler.toml` cleaned of two-repo configuration
+- [x] **DECOM-08**: `.env.example` drops `VITE_GITHUB_OWNER` and `VITE_GITHUB_DATA_REPO`
 - [ ] **DECOM-09**: `design/planning-artifacts/product-brief-prompt-community-2026-03-14.md` updated to reflect v2 architecture
 - [ ] **DECOM-10**: `design/planning-artifacts/prd.md` updated for v2 (NFR rewrites, FR reword for non-GH terms)
 - [ ] **DECOM-11**: `design/planning-artifacts/architecture.md` rewritten for v2 (Data, Auth, API, Caching sections)
@@ -239,14 +239,14 @@ Which phases cover which requirements. Updated during roadmap creation.
 | API-26 | Phase 14 | Complete |
 | API-27 | Phase 14 | Complete |
 | API-28 | Phase 14 | Complete |
-| DECOM-01 | Phase 15 | Pending |
-| DECOM-02 | Phase 15 | Pending |
-| DECOM-03 | Phase 15 | Pending |
-| DECOM-04 | Phase 15 | Pending |
-| DECOM-05 | Phase 15 | Pending |
+| DECOM-01 | Phase 15 | Complete |
+| DECOM-02 | Phase 15 | Complete |
+| DECOM-03 | Phase 15 | Complete |
+| DECOM-04 | Phase 15 | Complete |
+| DECOM-05 | Phase 15 | Complete |
 | DECOM-06 | Phase 15 | Pending |
-| DECOM-07 | Phase 15 | Pending |
-| DECOM-08 | Phase 15 | Pending |
+| DECOM-07 | Phase 15 | Complete |
+| DECOM-08 | Phase 15 | Complete |
 | DECOM-09 | Phase 15 | Pending |
 | DECOM-10 | Phase 15 | Pending |
 | DECOM-11 | Phase 15 | Pending |
