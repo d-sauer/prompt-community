@@ -20,6 +20,9 @@ workflowType: 'prd'
 
 # Product Requirements Document - prompt-community
 
+> **Updated 2026-05-09:** v2.0 Backend Migration complete. GitHub API dependencies removed.
+> See `design/change-request-v2.md` for the migration PRD.
+
 **Author:** Davor
 **Date:** 2026-03-14
 
@@ -80,8 +83,8 @@ The platform solves a specific organisational failure mode: AI adoption that hap
 ### Technical Success
 
 - First Contentful Paint < 1.5s; initial prompt list load < 2s; instant on return (stale-while-revalidate)
-- GitHub API rate limits never visible to users (ETag caching + MiniSearch client-side index eliminates most API calls)
-- Zero infrastructure cost at target scale (all Cloudflare free tiers)
+- No third-party API rate limits exposed to users (first-party Cloudflare Workers + D1 backend; no GitHub API calls for data reads)
+- Zero infrastructure cost at target scale (all Cloudflare free tiers — Pages, Workers, D1, R2)
 - Anonymous access works without any login prompt or redirect
 - OAuth popup flow completes in < 5s under normal conditions
 
@@ -208,11 +211,11 @@ The platform solves a specific organisational failure mode: AI adoption that hap
 
 ## Innovation & Novel Patterns
 
-### GitHub Issues as Community Data Store
+### [HISTORICAL — v1 only] GitHub Issues as Community Data Store
 
-The core architectural innovation is the deliberate elimination of a traditional backend. Every AI prompt, skill file, and grouped skill set is stored as a GitHub Issue with YAML frontmatter in the issue body. Community interactions map directly to GitHub primitives:
+The v1 architectural approach was the deliberate elimination of a traditional backend. Every AI prompt, skill file, and grouped skill set was stored as a GitHub Issue with YAML frontmatter in the issue body. Community interactions mapped directly to GitHub primitives:
 
-| Platform concept | GitHub primitive |
+| Platform concept | GitHub primitive (v1) |
 |---|---|
 | Prompt / skill file | Issue (title + body with YAML frontmatter) |
 | Category / tag | Label (namespaced: `category:coding`, `model:claude`) |
@@ -221,24 +224,32 @@ The core architectural innovation is the deliberate elimination of a traditional
 | Version history | Structured version comments (`## Version N — YYYY-MM-DD`) |
 | Prompt status | Issue state + labels (`state:featured`, `state:hidden`) |
 
-The GitHub API *is* the backend. Cloudflare is the infrastructure layer. The Vue SPA is the only custom software to build and maintain.
+This approach was validated by open-source precedent (utterances ~9.5k stars, giscus ~9k stars) and worked well at launch scale. It was replaced in v2.0 due to rate limit ceilings, schema opacity, and two-repo complexity.
 
-### Validation
+### v2.0 First-Party Backend Architecture
 
-This approach is validated by open-source precedent (utterances ~9.5k stars, giscus ~9k stars) and confirmed technically:
+The v2 architecture replaces GitHub-as-DB with a purpose-built Cloudflare stack. Community interactions map to D1 tables:
 
-- **Rate limits**: 5,000 GraphQL points/hour per authenticated user + ETag conditional requests (304 responses are free) + MiniSearch client-side index (eliminates GitHub Search API dependency) keeps the platform within limits at 50–400 users
-- **Cost**: entire stack runs on Cloudflare and GitHub free tiers at target scale
-- **Data integrity**: GitHub provides audit trail, version history, and access control natively — no custom implementation needed
+| Platform concept | v2 implementation |
+|---|---|
+| Prompt / skill file | `prompts` table in D1 (SQLite via Drizzle ORM) |
+| Category / tag | `labels` table + `prompt_tags` join table |
+| Upvote / reaction | `reactions` table (user_id, prompt_id, emoji) |
+| Discussion | `comments` table |
+| Version history | `prompt_versions` table (version_number, body, changelog) |
+| Prompt status | `prompts.status` enum (`draft` \| `published` \| `hidden` \| `flagged`) |
+| Auth session | HS256 JWT in HttpOnly cookie; `users.role` field for maintainer check |
 
-### Risk Mitigation
+The Hono REST API worker is the backend. Cloudflare D1 is the data store. The Vue SPA connects only to the first-party API.
+
+### v2 Risk Mitigation
 
 | Risk | Mitigation |
 |---|---|
-| GitHub API rate limits hit under load | ETag caching + MiniSearch index reduces API calls to near zero for reads |
-| GitHub outage | Cached data in TanStack Query serves stale content; acceptable for internal tool |
-| Data migration if GitHub Issues prove insufficient | Two-repo architecture isolates data repo — migration path exists without changing app code |
-| GitHub OAuth scope too broad (`public_repo`) | Accepted trade-off for trusted internal users; can migrate to GitHub App with tighter scopes later |
+| Cloudflare Workers/D1 unavailability | TanStack Query stale cache serves cached prompts; acceptable for internal tool |
+| JWT expiry / auth issues | 7-day JWT with clear 401 handling; re-login via OAuth popup |
+| D1 SQLite limitations | Well within D1 free tier at 50–400 users; FTS5 virtual table for search |
+| GitHub OAuth dependency | Only for identity (login); all data is in D1, no GitHub data calls |
 
 ---
 
@@ -246,22 +257,34 @@ This approach is validated by open-source precedent (utterances ~9.5k stars, gis
 
 ### Architecture Overview
 
-prompt-community is a **Vue 3 SPA** deployed to Cloudflare Pages, operating as a PWA with offline browsing of cached prompts. No server-side rendering — the entire backend is the GitHub API accessed client-side via Octokit.
+prompt-community is a **Vue 3 SPA** deployed to Cloudflare Pages, operating as a PWA with offline browsing of cached prompts. No server-side rendering.
 
-**Two-Repo Architecture:**
-- `app repo`: Vue SPA, CI/CD, Cloudflare deployment configuration
-- `data repo`: GitHub Issues (prompts), Labels (categories), Issue Forms (submission templates). Separate permission models — contributors submit issues to the data repo; only maintainers modify the app repo.
+**v2.0 Backend (current):**
+
+**Single-Repo Architecture:**
+- `app repo` (this repo): Vue SPA, Hono API worker, CI/CD, Cloudflare deployment configuration. All application code and data worker in one repo.
+- `prompt-community-data` repo: **archived** — no longer in use.
 
 **Cloudflare Stack:**
 - **Pages**: Static SPA hosting, unlimited bandwidth (free tier)
-- **Workers**: OAuth proxy (GitHub token exchange), image upload proxy (~40 lines each)
+- **Workers (Hono API)**: First-party REST API for all prompt, auth, search, and admin operations. JWT-authenticated. No GitHub API calls from SPA.
+- **D1 (SQLite)**: Primary data store. Managed via Drizzle ORM. 10 tables: `users`, `prompts`, `prompt_tags`, `prompt_versions`, `comments`, `reactions`, `bookmarks`, `moderation_log`, `labels`, `notifications`. FTS5 virtual table for server-side full-text search.
 - **R2**: Image storage (10 GB free, zero egress fees)
 
-**GitHub API Strategy:**
-- GraphQL for reads (single query replaces 3–5 REST calls)
-- REST for writes (simpler mutation handling)
-- ETag conditional requests: 304 Not Modified responses consume zero rate limit points — critical for the read-heavy browse pattern
-- MiniSearch client-side index: eliminates dependency on GitHub Search API (30 req/min limit) for all user-facing search
+**API Strategy (v2):**
+- REST API on Hono worker for all data operations (GET/POST/PATCH/DELETE per resource)
+- GitHub OAuth → Hono worker exchanges code → signs HS256 JWT → sets HttpOnly cookie
+- TanStack Query staleTime + standard HTTP Cache-Control headers for client-side caching
+- MiniSearch client-side index: retained for offline PWA browsing; D1 FTS5 handles server-side search
+
+**[HISTORICAL — v1 only] Two-Repo Architecture:**
+- `app repo`: Vue SPA, CI/CD, Cloudflare deployment configuration
+- `data repo`: GitHub Issues (prompts), Labels (categories). Separate permission models.
+
+**[HISTORICAL — v1 only] GitHub API Strategy:**
+- GraphQL for reads (Octokit); REST for writes
+- ETag conditional requests: 304 Not Modified responses consumed zero rate limit points
+- MiniSearch client-side index: eliminated dependency on GitHub Search API
 
 ### Browser Support
 
@@ -334,7 +357,7 @@ Target: **WCAG 2.1 AA** (see NFR-A1–A5 for measurable criteria).
 | FR14 | Authenticated user can add usage instructions to any submission |
 | FR15 | Authenticated user can upload images to a submission via drag-and-drop or file picker |
 | FR16 | Authenticated user can preview rendered markdown in a live split-pane while composing |
-| FR17 | Authenticated user can publish a submission (creates a GitHub Issue with YAML frontmatter in the data repo) |
+| FR17 | Authenticated user can publish a submission (POST /prompts to Cloudflare D1 via Hono REST API) |
 | FR18 | Authenticated user can edit their own existing submission |
 | FR19 | Authenticated user can fork an existing prompt as the starting point for a new submission |
 | FR20 | The editor auto-saves draft content to localStorage every 30 seconds |
@@ -417,22 +440,22 @@ Target: **WCAG 2.1 AA** (see NFR-A1–A5 for measurable criteria).
 
 | ID | Requirement |
 |---|---|
-| NFR-S1 | GitHub OAuth access tokens are held in Pinia memory state only — never written to localStorage or cookies; cleared on tab close |
-| NFR-S2 | GitHub App client secret is never exposed to the browser — token exchange occurs exclusively inside the Cloudflare Worker |
+| NFR-S1 | GitHub OAuth access tokens are never exposed to the browser. The Hono worker exchanges the OAuth code for a GitHub token server-side, then issues an HS256 JWT stored in an HttpOnly + Secure + SameSite=Lax cookie. No token is written to localStorage |
+| NFR-S2 | GitHub OAuth client secret and JWT signing secret are never exposed to the browser — token exchange and signing occur exclusively inside the Cloudflare Worker (Hono API) |
 | NFR-S3 | All communication with GitHub and Cloudflare services occurs over HTTPS |
-| NFR-S4 | Admin panel access control is enforced by verifying maintainer role via GitHub API on every panel load — client-side role check alone is not sufficient |
-| NFR-S5 | No user PII is stored beyond GitHub public profile data (username, avatar, public bio) already available on GitHub |
+| NFR-S4 | Admin panel access control is enforced by checking the `role` field in the D1 `users` table via the JWT-authenticated `/me` endpoint — client-side role check alone is not sufficient |
+| NFR-S5 | No user PII is stored beyond GitHub public profile data (login, avatar_url, name, bio) written to the D1 `users` table on first OAuth login |
 | NFR-S6 | Image uploads are proxied via Cloudflare Worker — R2 bucket is not publicly accessible directly |
 
 ### Scalability
 
 | ID | Requirement |
 |---|---|
-| NFR-SC1 | Platform must operate within GitHub API limits: 5,000 GraphQL points/hour per authenticated user; anonymous requests use a shared app installation token |
-| NFR-SC2 | ETag conditional requests must be used for all cacheable GitHub API reads — 304 Not Modified responses consume zero rate limit points |
-| NFR-SC3 | Client-side MiniSearch index eliminates all dependency on GitHub Search API (30 req/min cap) for user-facing search |
+| NFR-SC1 | Platform operates against a first-party backend (Cloudflare Workers + D1); no GitHub API rate limits apply to data reads or writes |
+| NFR-SC2 | [HISTORICAL — v1 only] ETag conditional requests were used for GitHub API reads. In v2, TanStack Query staleTime + standard HTTP Cache-Control headers replace this layer |
+| NFR-SC3 | Client-side MiniSearch index retained for offline PWA browsing; D1 FTS5 virtual table handles server-side full-text search for fresh queries |
 | NFR-SC4 | Platform must remain fully functional for 50–400 concurrent users without architectural changes |
-| NFR-SC5 | All Cloudflare Pages, Workers, and R2 usage must remain within free tier limits at target scale of 50–400 users |
+| NFR-SC5 | All Cloudflare Pages, Workers, D1, and R2 usage must remain within free tier limits at target scale of 50–400 users |
 
 ### Accessibility
 
@@ -448,16 +471,16 @@ Target: **WCAG 2.1 AA** (see NFR-A1–A5 for measurable criteria).
 
 | ID | Requirement |
 |---|---|
-| NFR-I1 | All GitHub GraphQL read queries must include `If-None-Match` ETag headers and handle 304 responses without re-rendering |
-| NFR-I2 | GitHub REST write operations must handle 401 (expired token), 403 (rate limited), and 422 (validation error) with user-facing error messages and no silent failure |
+| NFR-I1 | [HISTORICAL — v1 only] GitHub GraphQL read queries used `If-None-Match` ETag headers. In v2, all data reads go to the first-party Hono API; TanStack Query staleTime + standard HTTP Cache-Control headers replace the ETag layer |
+| NFR-I2 | First-party API write operations (POST/PATCH/DELETE on Hono routes) must handle 401 (no or expired JWT), 403 (insufficient role), and 422 (validation error) with user-facing error messages and no silent failure |
 | NFR-I3 | Cloudflare R2 image uploads are limited to 10MB per file; supported formats are PNG, JPG, GIF, and WebP |
-| NFR-I4 | MiniSearch index is built on first load and invalidated when the authenticated user publishes or edits a prompt |
+| NFR-I4 | MiniSearch index is built on first load from the `/prompts` API endpoint and invalidated when the authenticated user publishes or edits a prompt |
 
 ### Reliability
 
 | ID | Requirement |
 |---|---|
-| NFR-R1 | During GitHub API outages, TanStack Query stale cache serves read content for up to 24 hours without user disruption |
-| NFR-R2 | Write operations that fail during a GitHub outage surface a clear error state with a retry CTA — no silent failure or data loss |
+| NFR-R1 | During Cloudflare Workers or D1 unavailability, TanStack Query stale cache serves read content for up to 24 hours without user disruption |
+| NFR-R2 | Write operations that fail (network error, 5xx from Hono API) surface a clear error state with a retry CTA — no silent failure or data loss |
 | NFR-R3 | PWA offline mode allows browsing of previously cached prompts; write actions (submit, vote, comment) are queued for background sync on reconnection |
 | NFR-R4 | Editor auto-save to localStorage ensures draft content survives browser crashes or accidental navigation |
