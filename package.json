@@ -10,7 +10,7 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
-    "deploy:worker": "wrangler deploy",
+    "deploy:worker": "wrangler deploy --config src/workers/api/wrangler.toml",
     "test:workers": "vitest run --config vitest.workers.config.ts",
     "dev:api": "wrangler dev --config src/workers/api/wrangler.toml",
     "db:push": "drizzle-kit push --config drizzle.config.local.ts",
@@ -21,8 +21,6 @@
     "seed": "wrangler d1 execute prompt-community-db --local --file=scripts/seed.sql --config src/workers/api/wrangler.toml"
   },
   "dependencies": {
-    "@octokit/core": "^7.0.6",
-    "@octokit/graphql": "^9.0.3",
     "@shikijs/markdown-it": "^4.0.2",
     "@tailwindcss/vite": "^4.2.1",
     "@tanstack/vue-query": "^5.92.9",
