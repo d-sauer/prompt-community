@@ -239,6 +239,21 @@ FR54: Epic 2 — Offline write actions queued for sync on connectivity restore
 
 ## Epic List
 
+### Epic 0: Backend Foundation
+**Goal:** Replace the GitHub-Issues-as-database architecture with a first-party
+Cloudflare Workers + D1 + Hono REST API backend, migrate the frontend to the
+new API, and decommission all GitHub-Issues data paths.
+**Phases:** 9 (Backend Foundation), 10 (Auth Migration), 11 (Read API),
+            12 (Write API), 13 (Frontend Rewire), 14 (Admin & Moderation API),
+            15 (Decommission & Docs)
+**Status:** Complete (v2.0 — shipped 2026-05-09)
+**Key Outcomes:**
+- Hono API worker on Cloudflare Workers with D1 (SQLite) persistence
+- GitHub OAuth → HS256 JWT in HttpOnly cookie; users.role replaces GitHub collaborators API
+- D1 FTS5 full-text search replaces GitHub Search API
+- All frontend composables repointed to first-party REST API; MiniSearch retained for offline PWA
+- prompt-community-data repository archived; single-repo deployment
+
 ### Epic 1: Foundation & Infrastructure
 Engineers have a working project scaffold, Cloudflare edge functions, and a baseline testing harness — the technical precondition for all user-facing epics.
 **ARCH items covered:** ARCH-STARTER, ARCH-TS, ARCH-WORKER (OAuth proxy + image upload), ARCH-TWOREPO, ARCH-DEPLOY, ARCH-TEST, ARCH-PWA

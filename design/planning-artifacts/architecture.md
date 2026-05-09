@@ -21,6 +21,9 @@ inputDocuments:
   - design/research/wireframe/S06-user-profile-requirements.md
 ---
 
+> **Updated 2026-05-09:** v2.0 architecture. GitHub-Issues-as-database replaced
+> by Cloudflare Workers + D1 + Hono. v1 sections are marked [HISTORICAL] below.
+
 # Architecture Decision Document
 
 _This document builds collaboratively through step-by-step discovery. Sections are appended as we work through each architectural decision together._
@@ -54,29 +57,34 @@ Maintainability (Vitest unit + integration coverage, TypeScript strict mode).
 
 ### Technical Constraints & Dependencies
 
-- **GitHub Issues as sole data store**: All reads via GraphQL (batched, efficient),
-  all writes via REST. YAML frontmatter in issue bodies is the schema layer.
-- **ETag-based caching is mandatory**: 304 responses don't count against rate limits.
-  Without ETags, 400 users polling would exhaust the 5,000 req/hour ceiling.
-- **No GitHub Search API for user-facing search**: 30 req/min cap makes it unusable
-  for real-time filtering. MiniSearch client-side index is the required alternative.
-- **Version history lives in issue comments**: `## Version N — YYYY-MM-DD` pattern.
+- **[HISTORICAL — v1 only] GitHub Issues as sole data store**: All reads via GraphQL (batched, efficient),
+  all writes via REST. YAML frontmatter in issue bodies is the schema layer. Replaced in v2.0 by D1.
+- **[HISTORICAL — v1 only] ETag-based caching**: 304 responses didn't count against rate limits.
+  Without ETags, 400 users polling would exhaust the 5,000 req/hour ceiling. Replaced in v2.0 by
+  TanStack Query staleTime + standard Cache-Control.
+- **v2.0: Cloudflare D1 as primary data store**: All reads and writes via Hono REST API worker.
+  No GitHub API calls for data operations.
+- **v2.0: JWT HttpOnly cookie auth**: No GitHub token in browser. HS256 JWT signed by Hono worker,
+  stored in HttpOnly cookie. 7-day expiry.
+- **v2.0: D1 FTS5 for server-side search**: FTS5 virtual table indexes title + body. Raw D1 `MATCH`
+  queries via Hono `/search` endpoint.
+- **MiniSearch retained for offline PWA**: Client-side index built from `/prompts` API, persisted via
+  `idb-keyval`. Background sync on reconnect.
+- **Version history in prompt_versions table**: `version_number` + `body` + `changelog` per row.
   Diff computed client-side (jsdiff). No external versioning system.
-- **Zero server-side infrastructure**: Cloudflare Workers free tier covers OAuth proxy
-  (~40 lines) and image upload proxy to R2. No persistent compute.
-- **GitHub OAuth App (not GitHub App)**: Simpler setup, tokens don't expire.
-  Trade-off: `public_repo` scope broader than ideal. Upgrade path to GitHub App
-  documented but deferred.
+- **GitHub OAuth App (not GitHub App)**: Simpler setup. Code exchanged server-side in Hono worker.
+  `users.role` field replaces GitHub collaborators API for maintainer check.
 
 ### Cross-Cutting Concerns Identified
 
 1. **Auth state propagation**: Three tiers (anonymous / authenticated / maintainer)
    affect rendering decisions on every screen. `useAuthStore` is the single source
-   of truth; maintainer status resolved against GitHub collaborators API on login.
+   of truth; maintainer status derived from `users.role` in D1 (resolved via `GET /me`
+   JWT endpoint). No GitHub collaborators API call.
 
-2. **Rate limit / caching strategy**: ETag conditional requests + TanStack Query
-   staleTime configuration + MiniSearch IndexedDB cache form a layered defense.
-   Every query hook must be designed with this in mind.
+2. **Caching strategy**: TanStack Query staleTime configuration + MiniSearch IndexedDB
+   cache form a two-layer defense. No ETag layer in v2.0 — Hono API uses standard
+   Cache-Control headers. Every query hook must be designed with staleTime in mind.
 
 3. **Optimistic mutations with rollback**: Required across reactions (S02), comments
    (S02), moderation actions (S05), fork (S02), restore version (S04). TanStack
@@ -90,14 +98,15 @@ Maintainability (Vitest unit + integration coverage, TypeScript strict mode).
    desktop (1024px+). Mobile sidebar uses Sheet overlay (S01). Master-detail
    stacks vertically (S02). Editor switches to tab layout (S03).
 
-6. **LocalStorage as client persistence layer**: auth token, draft content
-   (`draft:new`, `draft:${id}`), split pane position, saved/bookmarked prompts.
-   All managed via `@vueuse/core` `useLocalStorage()`.
+6. **LocalStorage as client persistence layer**: draft content
+   (`draft:new`, `draft:${id}`), split pane position, saved/bookmarked prompts,
+   theme preference. Note: auth token is NOT stored in localStorage in v2.0 — it
+   lives in the HttpOnly cookie. All managed via `@vueuse/core` `useLocalStorage()`.
 
-7. **MiniSearch index lifecycle**: Built on first app load from all open issues
-   (paginated, per_page=100). Updated when new prompts are submitted. Cached in
-   IndexedDB via `idb-keyval`. Background sync fetches only changed issues using
-   `since` parameter + ETags.
+7. **MiniSearch index lifecycle**: Built on first app load from `GET /prompts` API
+   (paginated). Updated when new prompts are submitted. Cached in IndexedDB via
+   `idb-keyval`. Background sync fetches updated prompts on reconnect. Used for
+   offline PWA browsing; D1 FTS5 handles live search queries.
 
 8. **Toast notification system**: All mutation outcomes (success, error, rollback)
    surface via a unified toast system. Required across all 6 screens.
@@ -215,18 +224,26 @@ the second.
 ### Decision Priority Analysis
 
 **Critical Decisions (Block Implementation):**
-- GitHub Issues as data store with GraphQL/REST split
-- GitHub OAuth App popup flow via Cloudflare Worker
-- ETag-based caching + TanStack Vue Query as caching layer
-- MiniSearch client-side search index (replaces GitHub Search API)
-- Two-repo architecture (app repo + data repo)
+- Cloudflare D1 (SQLite) + Drizzle ORM as first-party data store
+- Hono REST API worker on Cloudflare Workers for all data operations
+- GitHub OAuth App → Hono JWT (HS256 HttpOnly cookie) — no token in browser
+- TanStack Vue Query staleTime + Cache-Control headers as caching layer
+- D1 FTS5 for server-side search + MiniSearch retained for offline PWA
+- Single-repo architecture (SPA + API worker in one repo)
 
 **Important Decisions (Shape Architecture):**
-- YAML frontmatter as schema layer inside issue bodies
-- Version history via structured issue comments
+- `users.role` field for maintainer check (replaces GitHub collaborators API)
+- `prompt_versions` table for non-destructive version history
 - Pinia 5-store topology (Auth, Prompts, UI, Search, Draft)
 - Optimistic mutations with TanStack Query onMutate/onError
 - Cloudflare R2 image storage via Worker proxy
+
+**[HISTORICAL — v1 only] Critical Decisions (replaced in v2.0):**
+- GitHub Issues as data store with GraphQL/REST split → replaced by D1 + Hono
+- ETag-based caching → replaced by TanStack Query staleTime + Cache-Control
+- Two-repo architecture → replaced by single-repo
+- YAML frontmatter schema layer → replaced by D1 typed columns
+- Version history via structured issue comments → replaced by `prompt_versions` table
 
 **Deferred Decisions (Post-MVP):**
 - CI/CD pipeline (manual wrangler deploy until launch is stable)
@@ -238,96 +255,105 @@ the second.
 
 ### Data Architecture
 
-**Data Store: GitHub Issues via GitHub API**
-- Decision: GitHub Issues is the sole data store. No application database.
-- All prompts = open issues. Categories/tags = labels (`category:coding`, `model:claude`,
-  `difficulty:intermediate`). Votes = reactions. Comments = issue comments.
-  Version history = structured issue comments. Moderation state = labels + issue state.
-- Rationale: Zero infrastructure cost, inherits GitHub auth/permissions, battle-tested
-  by utterances (~9.5k stars) and giscus (~9k stars) at comparable scale.
+**Data Store: Cloudflare D1 (SQLite) via Drizzle ORM**
+- Decision: Cloudflare D1 is the primary data store. 10 tables:
+  `users`, `prompts`, `prompt_tags`, `prompt_versions`, `comments`, `reactions`,
+  `bookmarks`, `moderation_log`, `labels`, `notifications`.
+- All reads and writes go through the Hono REST API worker — the SPA never queries D1 directly.
+- Drizzle ORM provides type-safe queries and schema migrations (`drizzle-kit`).
+- Rationale: Real schema with foreign-key constraints and typed queries; stays within
+  Cloudflare free tier; eliminates GitHub API rate limit ceiling.
 
-**Schema Layer: YAML Frontmatter**
-- Decision: Structured metadata stored in issue body as YAML frontmatter.
-- Parsed via custom 15-line `parseFrontmatter()` wrapper around `yaml` 2.8.2
-  (85M weekly downloads). `front-matter` and `gray-matter` packages rejected as
-  unmaintained (5–6 years stale).
-- Contract: Every issue body starts with `---\n{metadata}\n---\n{markdown content}`.
+**Search: D1 FTS5 + MiniSearch**
+- Server-side: D1 FTS5 virtual table indexes `prompts.title` and `prompts.body`.
+  Fresh search queries hit the Hono `/search` endpoint (raw D1 `MATCH` queries).
+- Client-side: MiniSearch 7.2.0 retained for offline PWA browsing. Index built from
+  the `/prompts` API endpoint on first load; persisted via `idb-keyval`.
 
-**Version History: Structured Comment Pattern**
-- Decision: Each prompt edit is posted as a new issue comment with header
-  `## Version N — YYYY-MM-DD`, followed by optional changelog message and full
-  prompt content.
-- Restore = post new comment with old content. Diff computed client-side via `jsdiff`.
-- No external versioning system required.
+**Version History: prompt_versions Table**
+- Each prompt edit inserts a new row in `prompt_versions` (`version_number`, `body`,
+  `changelog`, `created_at`, `created_by`). `MAX(version_number)+1` auto-increment.
+- Restore = insert new version row with old body (non-destructive).
+- Diff computed client-side via `jsdiff` against fetched version bodies.
 
-**Caching Strategy: Three-Layer Defense**
-- Layer 1: ETag conditional requests — `If-None-Match` header on all GitHub API calls.
-  304 responses are free (do not count against 5,000 req/hour limit).
-- Layer 2: TanStack Vue Query staleTime configuration per query type:
-  - Prompt lists: 60s (browsing expects near-fresh data)
+**Caching Strategy: TanStack Query + Cache-Control**
+- TanStack Vue Query staleTime configuration per query type:
+  - Prompt lists: 60s
   - Individual prompt detail: 60s
-  - Comments: 30s (discussion moves faster)
-  - User profile: 300s (changes infrequently)
-  - Admin queue: 30s (moderation urgency)
+  - Comments: 30s
+  - User profile: 300s
+  - Admin queue: 30s
   - Labels: 60s
-- Layer 3: MiniSearch IndexedDB cache — all issues pre-fetched and indexed on first
-  load, persisted via `idb-keyval`. Background sync via `since` param + ETags fetches
-  only changed issues. Subsequent visits load from cache instantly.
+- Standard HTTP `Cache-Control` headers from the Hono API.
+- MiniSearch IndexedDB cache for offline-capable search without API call.
 
-**Search: Client-Side MiniSearch Index**
-- Decision: MiniSearch 7.2.0 replaces GitHub Search API for all user-facing search.
-- GitHub Search API (30 req/min cap) is unsuitable for real-time filtering.
-- MiniSearch builds an inverted index supporting prefix search, fuzzy matching,
-  and field boosting. Index updates dynamically when new prompts are submitted.
+**[HISTORICAL — v1 only] Data Store: GitHub Issues via GitHub API**
+- GitHub Issues was the sole data store. All prompts = open issues. Categories/tags = labels.
+  Votes = reactions. Comments = issue comments. Version history = structured issue comments.
+- YAML frontmatter in issue bodies was the schema layer.
+- ETag conditional requests (`If-None-Match`) kept GitHub API usage within 5,000 req/hour.
+- This approach was replaced in v2.0 due to rate limit ceilings, schema opacity, and two-repo complexity.
 
 ---
 
 ### Authentication & Security
 
-**Authentication: GitHub OAuth App + Cloudflare Worker Popup**
-- Decision: GitHub OAuth App (not GitHub App). Popup flow via ~40-line CF Worker.
-- Scope: `public_repo`. Tokens do not expire — no refresh logic required.
-- Trade-off: `public_repo` is broader than ideal, but app only ever calls Issues API
-  on the data repo. Acceptable for trusted internal company users.
-- Upgrade path to GitHub App documented but deferred post-MVP.
+**Authentication: GitHub OAuth → App JWT (HttpOnly Cookie)**
+- Decision: GitHub OAuth App (not GitHub App). Popup flow via Hono API worker.
+- Flow: User opens OAuth popup → GitHub redirects to Hono `/auth/callback` →
+  worker exchanges code for GitHub token → fetches GitHub user → upserts into D1 `users` →
+  signs HS256 JWT (7-day expiry) → sets `HttpOnly; Secure; SameSite=Lax` cookie →
+  popup closes → SPA polls `/me` for identity.
+- No GitHub token is ever sent to or stored in the browser. The browser receives only
+  the app JWT cookie.
+- Local dev: `/auth/dev-login` endpoint (ENV=dev only) bypasses GitHub for offline development.
 
 **CSRF Protection**
-- Decision: `state` parameter (cryptographic UUID) generated in Worker `/login`,
-  stored as `HttpOnly; Secure; SameSite=Lax` cookie, validated in `/callback`.
-- Token exchange (`client_secret`) never exposed to frontend.
+- Decision: `state` parameter (cryptographic UUID) generated in Hono `/auth/login`,
+  stored as `HttpOnly; Secure; SameSite=Lax` cookie (`oauth_state`), validated in `/auth/callback`.
+- `GITHUB_CLIENT_SECRET` and `JWT_SECRET` are Cloudflare Worker secrets — never in frontend.
 
 **Authorization Tiers**
 - Anonymous: Read-only (browse, view prompts, view profiles)
 - Authenticated: Read + write (vote, comment, fork, create/edit own prompts)
 - Maintainer: Full access including admin panel
-- Maintainer check: `GET /repos/:owner/:repo/collaborators/:username` on login.
-  Result stored in `useAuthStore.isMaintainer`.
+- Maintainer check: `users.role` field in D1 (`user` | `maintainer`). Set manually via
+  DB or admin tooling. No GitHub collaborators API call required.
 
-**Token Storage**
-- Decision: GitHub OAuth token stored in `localStorage` via `@vueuse/core`
-  `useLocalStorage('github_token')`. Acceptable trade-off for internal tooling
-  where users are trusted. No httpOnly cookie alternative without a backend.
+**Auth State in Frontend**
+- Decision: App JWT in HttpOnly cookie — never accessible to JavaScript (XSS resistance).
+- `useAuthStore` calls `GET /me` on mount to hydrate auth state. Cookie sent automatically
+  via `credentials: 'include'` on all API fetch calls.
+- No token in localStorage, Pinia memory, or sessionStorage.
 
 **XSS Prevention**
 - All markdown rendered via `markdown-it` must be sanitized before `v-html` binding.
 - Use `markdown-it`'s `html: false` option (disables raw HTML in markdown) +
   explicit sanitization of any user-generated content.
 
+**[HISTORICAL — v1 only] Token Storage**
+- GitHub OAuth token was stored in Pinia memory only (never localStorage or cookies).
+  Replaced in v2.0 by HttpOnly cookie-based JWT — eliminates XSS token exfiltration risk.
+
 ---
 
 ### API & Communication Patterns
 
-**API Split: GraphQL for Reads, REST for Writes**
-- Decision: `@octokit/graphql` 9.x for all read queries (issues, comments, reactions,
-  user data). `@octokit/core` 7.x for all write operations (create issue, add label,
-  post comment, add reaction).
-- Rationale: Single GraphQL query replaces 5 REST calls for prompt detail
-  (issue + labels + reactions + comments + author). REST writes are simpler and
-  more predictable for mutations.
+**API: Hono REST API on Cloudflare Workers**
+- Decision: All data operations go through a Hono REST API worker deployed to Cloudflare Workers.
+- Route modules per resource: `auth.ts` (`/auth/*`), `prompts.ts` (`/prompts/*`),
+  `search.ts` (`/search`), `comments.ts`, `reactions.ts`, `bookmarks.ts`,
+  `versions.ts`, `users.ts`, `labels.ts`, `notifications.ts`, `admin.ts` (`/admin/*`).
+- Auth endpoints: `GET /auth/login`, `GET /auth/callback`, `GET /me`, `POST /auth/logout`,
+  `POST /auth/dev-login` (ENV=dev only).
+- All authenticated routes use JWT middleware: reads `HttpOnly` cookie, verifies HS256
+  signature, injects user into Hono context (`c.get('user')`).
+- Workers runtime — not Node.js. Uses `Bindings` interface for D1, secrets, env.
+- No `@octokit/graphql` or `@octokit/core` in the SPA. No GitHub API client in frontend.
 
 **Error Handling Standard**
 - Decision: Two-tier error handling.
-  - API/mutation errors (network failure, rate limit, permission denied) →
+  - API/mutation errors (network failure, 401, 403, 5xx from Hono) →
     toast notification (auto-dismiss 3s success, 5s error). UI reverts via
     TanStack Query optimistic rollback.
   - Form validation errors (empty title, max tags exceeded, invalid label name) →
@@ -335,12 +361,11 @@ the second.
 - Implementation: Shared `useToast()` composable (shadcn-vue Sonner). Validation
   errors managed by form component local state.
 
-**Rate Limit Strategy**
-- Primary defense: ETag 304 responses (free). Most repeat reads become zero-cost.
-- Secondary defense: TanStack Query staleTime prevents unnecessary refetches.
-- Search: MiniSearch index eliminates all Search API calls.
-- Content-generating secondary limit (80/min, 500/hr): Optimistic UI hides latency.
-  At 50–400 users, this limit is not a realistic constraint.
+**[HISTORICAL — v1 only] GitHub API GraphQL/REST Split**
+- `@octokit/graphql` 9.x was used for all read queries; `@octokit/core` 7.x for writes.
+- Single GraphQL query replaced 5 REST calls for prompt detail.
+- This was replaced in v2.0 by the Hono REST API worker with D1 as the data source.
+- `@octokit/graphql` and `@octokit/core` packages were removed from the SPA entirely.
 
 ---
 
@@ -389,24 +414,37 @@ the second.
 
 ### Infrastructure & Deployment
 
-**Hosting: Cloudflare Pages + Workers + R2**
-- App: Cloudflare Pages (unlimited free bandwidth; Netlify/Vercel cap at 100GB/mo).
-- OAuth proxy + image upload: Cloudflare Workers (free tier: 100k req/day).
-- Image storage: Cloudflare R2 (10GB free, zero egress fees).
-- Two-repo architecture: `prompt-community` (this repo, Vue SPA) +
-  `prompt-community-data` (GitHub Issues only, separate permission model).
+**Hosting: Cloudflare Pages + Workers + D1 + R2 (Single-Repo)**
+- SPA: Cloudflare Pages (unlimited free bandwidth).
+- Hono API: Cloudflare Workers (free tier: 100k req/day).
+- Data: Cloudflare D1 (SQLite; free tier: 5M rows read/day, 100k writes/day).
+- Images: Cloudflare R2 (10GB free, zero egress fees).
+- Single-repo architecture: SPA + API worker in `prompt-community`. No separate data repo.
+- `prompt-community-data` repository: **archived** — was the v1 GitHub-Issues data store.
 
 **CI/CD: Manual Deploy for MVP**
 - Decision: `wrangler pages deploy dist/` run locally after `npm run build`.
   GitHub Actions CI/CD pipeline added post-launch once deployment cadence is stable.
-- Worker deployment: `wrangler deploy src/workers/oauth.ts` and
-  `wrangler deploy src/workers/upload.ts`.
+- Worker deployment: `wrangler deploy` from the `api/` directory.
 
 **Environment Configuration**
-- CF Pages: `VITE_GITHUB_OWNER`, `VITE_GITHUB_DATA_REPO`, `VITE_OAUTH_WORKER_URL`
-  as build-time env vars.
-- CF Worker secrets (never in frontend): `CLIENT_ID`, `CLIENT_SECRET`, `APP_ORIGIN`,
-  `R2_BUCKET` binding — stored via `wrangler secret put`.
+- CF Pages: `VITE_API_URL` as build-time env var pointing to the Hono API worker URL.
+- CF Worker secrets (never in frontend): `GITHUB_CLIENT_ID`, `GITHUB_CLIENT_SECRET`,
+  `JWT_SECRET`, `APP_ORIGIN` — stored via `wrangler secret put`.
+- D1 binding: `prompt-community-db` (database_id set after `wrangler d1 create`).
+
+**Local Development**
+- `npm run dev` → Vite HMR (localhost:5173, SPA)
+- `wrangler dev` in `api/` → local Hono API (localhost:8787) with local D1
+- Two-terminal workflow. `VITE_API_URL=http://localhost:8787` in `.env`.
+- `/auth/dev-login` endpoint (ENV=dev only) provides instant login without GitHub OAuth round-trip.
+
+**[HISTORICAL — v1 only] Two-Repo Architecture + OAuth Proxy Worker**
+- `prompt-community-data` (separate repo): GitHub Issues as data store.
+- OAuth proxy worker (~40 lines): exchanged GitHub OAuth code for token, postMessage'd to SPA popup.
+- Image upload proxy worker: proxied uploads to R2.
+- Environment vars: `VITE_GITHUB_OWNER`, `VITE_GITHUB_DATA_REPO`, `VITE_OAUTH_WORKER_URL`.
+- All replaced in v2.0 by the Hono API worker with D1 and HttpOnly cookie JWT auth.
 
 **Analytics: Matomo**
 - Decision: Matomo (self-hosted or cloud). GDPR-compliant, cookie-free mode
@@ -1049,21 +1087,26 @@ prompt-community/
 
 ### Architectural Boundaries
 
-**GitHub API Boundary**
-All calls to `api.github.com` flow exclusively through `src/lib/github/`.
-Components and stores never import Octokit. The boundary is:
+**Hono API Boundary (v2.0)**
+All data operations flow through the Hono API worker. Components and stores never
+call `fetch` directly — all API calls go through `src/lib/api/`. The boundary is:
 ```
-Component/Store → Composable (query/mutation) → lib/github/*.ts → GitHub API
+Component/Store → Composable (query/mutation) → lib/api/*.ts → Hono API → D1
 ```
-ETag management is centralized in `lib/github/etag.ts` and called by all fetch
-functions — no fetch function bypasses ETag headers.
+JWT cookie is sent automatically via `credentials: 'include'` on all `apiFetch` calls.
+No GitHub API calls in the SPA.
 
 **Cloudflare Worker Boundary**
-The SPA communicates with CF Workers at two points only:
-- `VITE_OAUTH_WORKER_URL/login` and `/callback` — OAuth token exchange
-- `VITE_OAUTH_WORKER_URL/api/upload` — authenticated image upload to R2
-Workers are deployed independently via `wrangler deploy`. Workers live in
-`src/workers/` but are compiled separately from the SPA build.
+The SPA communicates with the Hono API worker for all operations:
+- All data endpoints: `VITE_API_URL/prompts`, `/me`, `/search`, `/admin/*`, etc.
+- OAuth flow: `VITE_API_URL/auth/login`, `/auth/callback`
+- Image upload: `VITE_API_URL/api/upload` → R2
+The API worker is deployed via `wrangler deploy` from the `api/` directory.
+
+**[HISTORICAL — v1 only] GitHub API Boundary**
+All calls to `api.github.com` flowed through `src/lib/github/`. ETag management
+centralized in `lib/github/etag.ts`. Replaced in v2.0 by `src/lib/api/` calling
+the Hono API worker.
 
 **Pinia / TanStack Query Boundary**
 - Pinia stores hold **client state** (UI state, selected IDs, filter settings, drafts)
@@ -1073,9 +1116,10 @@ Workers are deployed independently via `wrangler deploy`. Workers live in
   invalidate query cache after writes.
 
 **Authentication Boundary**
-Auth state flows one-way: CF Worker → localStorage → `useAuthStore` → all consumers.
-The store is initialized in `main.ts` (reads localStorage token). Route guards
+Auth state flows one-way: Hono JWT cookie → `GET /me` → `useAuthStore` → all consumers.
+The store is initialized in `main.ts` (calls `fetchMe()` on mount). Route guards
 read `useAuthStore` synchronously — no async checks inside guards.
+No token in localStorage in v2.0. Cookie is HttpOnly — inaccessible to JavaScript.
 
 ---
 
@@ -1112,15 +1156,14 @@ read `useAuthStore` synchronously — no async checks inside guards.
 ```
 App boot
   → useMiniSearch.buildIndex()
-    → lib/search/syncIndex.ts → GitHub GraphQL (paginated, per_page=100, ETag)
-    → lib/search/indexedDbCache.ts (persist index to IndexedDB)
+    → lib/api/prompts.ts → GET /prompts (Hono API, paginated)
+    → lib/search/indexedDbCache.ts (persist MiniSearch index to IndexedDB)
 
 User browses
-  → usePromptsQuery(filters) → lib/github/prompts.ts (ETag conditional)
-    → 304 Not Modified (free) or fresh data → lib/github/mappers.ts
-    → TanStack Query cache ['prompts', filters]
+  → usePromptsQuery(filters) → lib/api/prompts.ts → GET /prompts?category=...
+    → TanStack Query cache ['prompts', filters] (staleTime: 60s)
   → User selects prompt → usePromptDetailQuery(id)
-    → lib/github/prompts.ts + comments.ts → PromptDetail renders
+    → lib/api/prompts.ts + lib/api/comments.ts → GET /prompts/:id → PromptDetail renders
 ```
 
 **Write Path (Optimistic Mutation)**
@@ -1128,20 +1171,25 @@ User browses
 User submits comment
   → CommentComposer → useCreateCommentMutation.mutate()
     → onMutate: cancel queries, snapshot cache, optimistic add
-    → lib/github/comments.ts → POST GitHub REST API
+    → lib/api/comments.ts → POST /prompts/:id/comments (Hono API, JWT cookie)
     → onSettled: invalidate ['comments', promptId]
     → onError: rollback cache + toast.error()
 ```
 
-**Auth Flow**
+**Auth Flow (v2.0)**
 ```
 User clicks "Sign in with GitHub"
-  → useAuthStore.login() → window.open(CF Worker /login)
-    → Worker: state cookie + redirect to github.com/oauth/authorize
-    → User consents → Worker /callback: exchange code → postMessage({token})
-  → SPA receives token → useAuthStore: persist to localStorage
-    → fetchUser() + checkCollaborator() → isAuthenticated, isMaintainer set
+  → useAuthStore.login() → window.open(Hono /auth/login)
+    → Hono: sets oauth_state cookie + redirect to github.com/oauth/authorize
+    → User consents → Hono /auth/callback: exchanges code → upserts D1 users row
+      → signs HS256 JWT → sets HttpOnly cookie → popup closes
+  → SPA polls popup.closed → calls fetchMe() → GET /me (JWT cookie auto-sent)
+    → isAuthenticated, isMaintainer (from users.role) set
     → Route guards re-evaluate
+
+[HISTORICAL — v1 only] Auth Flow:
+  → Worker /callback: exchange code → postMessage({token}) to SPA popup
+  → SPA: persist GitHub token to localStorage → checkCollaborator() for isMaintainer
 ```
 
 ---
@@ -1151,30 +1199,31 @@ User clicks "Sign in with GitHub"
 **Configuration Files (root level)**
 - `vite.config.ts` — Vite build, PWA plugin, `@/` alias
 - `components.json` — shadcn-vue registry (Tailwind 4, component paths)
-- `wrangler.toml` — Workers entry points, R2 bucket binding, Pages project name
+- `api/wrangler.toml` — Hono API worker entry point, D1 binding, R2 binding
 - `.env.example` — Documents all required env vars; actual `.env` is gitignored
 
 **Build Process**
 - `npm run build` → Vite → `dist/` (SPA + PWA service worker)
 - `wrangler pages deploy dist/` → CF Pages
-- `wrangler deploy src/workers/oauth/index.ts` → CF Worker (separate)
-- `wrangler deploy src/workers/upload/index.ts` → CF Worker (separate)
+- `wrangler deploy` (from `api/`) → Hono API Worker
 
 **Local Development**
-- `npm run dev` → Vite HMR (localhost:5173)
-- `wrangler dev src/workers/oauth/index.ts` → local OAuth Worker (localhost:8787)
-- `.env`: `VITE_OAUTH_WORKER_URL=http://localhost:8787` for local integration
+- `npm run dev` → Vite HMR (localhost:5173, SPA)
+- `wrangler dev` in `api/` → Hono API local (localhost:8787) with local D1
+- `.env`: `VITE_API_URL=http://localhost:8787` for local integration
+- `/auth/dev-login` (ENV=dev only): instant login bypass for offline development
 
 ## Architecture Validation Results
 
 ### Coherence Validation ✅
 
 **Decision Compatibility:**
-All technology choices operate within the Vue 3 / Cloudflare / GitHub API ecosystem
+All technology choices operate within the Vue 3 / Cloudflare Workers + D1 / Hono ecosystem
 without conflicts. Vue 3.5 + Vite 8 + vue-router 5 + Pinia 3 + TanStack Vue Query 5
 are the officially sanctioned Vue ecosystem stack. shadcn-vue 2.4 is purpose-built on
-Reka UI 2.9 for Tailwind 4. All Octokit packages (graphql 9.x, core 7.x) are from
-the same family. vite-plugin-pwa 1.2.0 supports Vite 8. All versions verified March 2026.
+Reka UI 2.9 for Tailwind 4. Hono 4.x targets the Cloudflare Workers runtime.
+Drizzle ORM 0.x supports D1 (SQLite). vite-plugin-pwa 1.2.0 supports Vite 8.
+Note: `@octokit/graphql` and `@octokit/core` have been removed from the SPA in v2.0.
 
 **Pattern Consistency:**
 Naming conventions are consistent across all sections: `use{Domain}Store` /
@@ -1185,8 +1234,8 @@ is consistent between S02 (filter), S03 (editor), and S05 (admin).
 
 **Structure Alignment:**
 All 5 Pinia stores, 12 query hooks, 9 mutation hooks, and 4 lib modules have explicit
-homes in the project structure. CF Workers are isolated from SPA build. The GitHub API
-boundary is clean: all `api.github.com` calls flow through `src/lib/github/` only.
+homes in the project structure. Hono API worker is isolated from SPA build (in `api/`).
+The API boundary is clean: all data calls flow through `src/lib/api/` → Hono worker → D1.
 
 **Dependency Gap Resolved:**
 Four packages referenced in lib code were missing from the starter install commands.
@@ -1220,12 +1269,12 @@ npm install vite-plugin-pwa
 
 | NFR Category | Architectural Support | Status |
 |---|---|---|
-| Performance | ETag 304 (free requests) + TanStack staleTime + MiniSearch local index (<100ms search) | ✅ |
-| Scalability | Free tier CF stack handles 50–400 users; rate limits mitigated by 3-layer caching | ✅ |
-| Security | OAuth CSRF state cookie; `markdown-it html:false` XSS prevention; `client_secret` in Worker env only | ✅ |
+| Performance | TanStack staleTime + Cache-Control + MiniSearch local index (<100ms offline search) | ✅ |
+| Scalability | Free tier CF stack (Pages + Workers + D1 + R2) handles 50–400 users; no GitHub API rate limits | ✅ |
+| Security | OAuth CSRF state cookie; HS256 JWT in HttpOnly cookie; `markdown-it html:false` XSS prevention; secrets in Worker env only | ✅ |
 | Accessibility | Reka UI WAI-ARIA primitives; shadcn-vue semantic HTML; `aria-live` in notification/vote updates | ✅ |
-| Reliability | PWA/Workbox offline mode; TanStack Query optimistic rollback; ETag 304 redundancy layer | ✅ |
-| Maintainability | TypeScript strict; Vitest co-located spec files; clean lib/github boundary; 5-store max rule | ✅ |
+| Reliability | PWA/Workbox offline mode; TanStack Query optimistic rollback; MiniSearch offline PWA layer | ✅ |
+| Maintainability | TypeScript strict; Vitest co-located spec files; clean lib/api boundary; 5-store max rule | ✅ |
 
 **Notification Architecture Gap — Resolved:**
 `useNotificationsQuery` uses GitHub's native Notifications API (`GET /notifications`)
@@ -1306,11 +1355,11 @@ points are addressed, and all 54 FRs have structural homes. The one important ga
 (notification API source) is resolved with a clear MVP-scoped approach.
 
 **Key Strengths:**
-- Zero-infrastructure architecture is coherent end-to-end — no hidden server dependencies
-- ETag + TanStack Query + MiniSearch caching strategy is layered and comprehensive
+- First-party Cloudflare Workers + D1 backend is coherent end-to-end — no GitHub API dependencies for data operations
+- TanStack Query staleTime + MiniSearch caching strategy is layered and comprehensive
 - Optimistic mutation pattern is fully specified — no implementation ambiguity on writes
 - 5-store topology with explicit responsibilities prevents state management sprawl
-- GitHub label naming convention enforced consistently at all three touch points
+- JWT HttpOnly cookie auth eliminates XSS token exfiltration risk
 
 **Areas for Future Enhancement:**
 - Vote milestone notifications (requires CF Worker cron or GitHub Action)
@@ -1327,7 +1376,8 @@ points are addressed, and all 54 FRs have structural homes. The one important ga
 - Follow all architectural decisions exactly as documented in this file
 - Use the exact cache key arrays from the Format Patterns section — do not invent new keys
 - Follow the 5-step optimistic mutation pattern for every write that touches cached data
-- Never call Octokit outside `src/lib/github/` — the boundary is absolute
+- Never call the Hono API outside `src/lib/api/` — the boundary is absolute
+- Never call GitHub API from the SPA — all data operations go through the Hono worker
 - Never add a 6th Pinia store — the 5-store topology is a hard constraint
 - Refer to this document for all architectural questions before making assumptions
 
