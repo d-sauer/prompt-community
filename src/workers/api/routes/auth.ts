@@ -136,17 +136,34 @@ auth.post('/dev-login', async (c) => {
   if (c.env.ENV !== 'dev') return c.notFound()
   if (!c.env.JWT_SECRET) throw new Error('JWT_SECRET not configured')
 
-  const body = await c.req.json<{ role?: 'user' | 'maintainer' }>().catch(() => ({}))
+  const body = await c.req.json<{ login?: string; role?: 'user' | 'maintainer'; name?: string }>().catch(() => ({}))
   const role = body?.role === 'maintainer' ? 'maintainer' : 'user'
-  const fixtureId = role === 'maintainer' ? '01DEVMAINT00000000000000001' : '01DEVUSER000000000000000001'
-  const fixtureLogin = role === 'maintainer' ? 'dev-maintainer' : 'dev-user'
+
+  // Resolve login string — fall back to fixture defaults if not provided
+  const fixtureLogin =
+    body.login && body.login.trim().length > 0
+      ? body.login.trim()
+      : role === 'maintainer' ? 'dev-maintainer' : 'dev-user'
+
+  // Resolve sub (user ID) — keep hardcoded IDs for the two seeded fixtures,
+  // generate a deterministic 26-char ULID-shaped ID for any other login
+  let fixtureId: string
+  if (fixtureLogin === 'dev-user') {
+    fixtureId = '01DEVUSER000000000000000001'
+  } else if (fixtureLogin === 'dev-maintainer') {
+    fixtureId = '01DEVMAINT00000000000000001'
+  } else {
+    fixtureId = 'DEVUSR' + fixtureLogin.toUpperCase().replace(/[^A-Z0-9]/g, '0').slice(0, 20).padEnd(20, '0')
+  }
+
+  const resolvedName = body.name ?? fixtureLogin
 
   const token = await sign(
     {
       sub: fixtureId,
       role,
       login: fixtureLogin,
-      name: fixtureLogin,
+      name: resolvedName,
       avatar_url: null,
       exp: Math.floor(Date.now() / 1000) + SEVEN_DAYS,
     },
@@ -160,7 +177,7 @@ auth.post('/dev-login', async (c) => {
     maxAge: SEVEN_DAYS,
     path: '/',
   })
-  return c.json({ ok: true, role })
+  return c.json({ ok: true, role, login: fixtureLogin })
 })
 
 auth.post('/logout', (c) => {

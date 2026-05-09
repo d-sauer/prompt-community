@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import { watch } from 'vue'
+import { ref, watch } from 'vue'
 import { useDark } from '@vueuse/core'
 import { RouterLink, useRouter } from 'vue-router'
 import { storeToRefs } from 'pinia'
 import { useAuthStore } from '@/stores/useAuthStore'
 import { useUIStore } from '@/stores/useUIStore'
 import { useSearchStore } from '@/stores/useSearchStore'
+import DevLoginModal from '@/components/layout/DevLoginModal.vue'
 import {
   CommandDialog,
   CommandInput,
@@ -61,6 +62,16 @@ function onSelectResult(prompt: { id: number | string; title: string; frontmatte
 watch(commandPaletteOpen, (open) => {
   if (!open) searchStore.setQuery('')
 })
+
+const devModalOpen = ref(false)
+
+function handleSignIn() {
+  if (import.meta.env.DEV) {
+    devModalOpen.value = true
+  } else {
+    authStore.login()
+  }
+}
 
 function openMobileSidebar() {
   uiStore.sidebarMobileOpen = true
@@ -206,10 +217,11 @@ function openMobileSidebar() {
         size="sm"
         variant="outline"
         class="border-[#2a2a3a] text-white hover:bg-[#1a1a27] text-xs"
-        @click="authStore.login()"
+        @click="handleSignIn"
       >
-        Sign in with GitHub
+        Sign in
       </Button>
+      <DevLoginModal v-model:open="devModalOpen" />
     </div>
 
     <!-- Command dialog (palette) -->
