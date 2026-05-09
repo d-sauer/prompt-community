@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: Backend Migration
 status: planning
-stopped_at: Completed 15-decommission-docs 15-01-PLAN.md
-last_updated: "2026-05-09T14:43:40.322Z"
+stopped_at: "Checkpoint: 15-02 Task 2 — awaiting human Cloudflare deployment"
+last_updated: "2026-05-09T14:45:35.665Z"
 last_activity: 2026-05-05 — Roadmap created; 7 phases defined, 81/81 v2.0 requirements mapped
 progress:
   total_phases: 7
   completed_phases: 6
   total_plans: 30
-  completed_plans: 28
+  completed_plans: 29
   percent: 0
 ---
 
@@ -78,6 +78,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 14-admin-moderation-api P03 | 3min | 2 tasks | 11 files |
 | Phase 14-admin-moderation-api P04 | 5min | 2 tasks | 3 files |
 | Phase 15-decommission-docs P01 | 2min | 2 tasks | 15 files |
+| Phase 15-decommission-docs P02 | 2 | 1 tasks | 1 files |
 
 ## Accumulated Context
 
@@ -160,6 +161,8 @@ Recent decisions affecting current work:
 - [Phase 14-admin-moderation-api]: vi.mock factory literals only — no outer-scope const references inside vi.mock to avoid Vitest hoisting ReferenceError
 - [Phase 14-admin-moderation-api]: LabelGroup items now match backend GET /labels shape exactly — no mapping layer needed in groupedLabels computed
 - [Phase 15-decommission-docs]: Pre-existing vue-tsc build failures in admin components not caused by github lib deletions — verified via git stash; deferred to future cleanup plan
+- [Phase 15-decommission-docs]: [env.production] block uses PLACEHOLDER_RUN_WRANGLER_D1_CREATE as database_id — operator replaces after wrangler d1 create
+- [Phase 15-decommission-docs]: Production secrets (JWT_SECRET, GITHUB_CLIENT_ID, GITHUB_CLIENT_SECRET) set via wrangler secret put — no plaintext in committed wrangler.toml
 
 ### Roadmap Evolution
 
@@ -175,6 +178,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-05-09T14:43:40.319Z
-Stopped at: Completed 15-decommission-docs 15-01-PLAN.md
+Last session: 2026-05-09T14:45:35.663Z
+Stopped at: Checkpoint: 15-02 Task 2 — awaiting human Cloudflare deployment
 Resume file: None

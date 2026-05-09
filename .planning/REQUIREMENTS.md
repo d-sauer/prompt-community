@@ -114,10 +114,10 @@ Airplane-mode dev workflow with `wrangler dev`, local D1, and dev-login.
 
 Production deployment of the API worker and D1.
 
-- [ ] **DEPLOY-01**: API worker deployable to Cloudflare via `wrangler deploy`
-- [ ] **DEPLOY-02**: Production D1 database provisioned and migrated from CI or operator workflow
-- [ ] **DEPLOY-03**: Production secrets (`JWT_SECRET`, `GITHUB_CLIENT_SECRET`) configured via `wrangler secret`
-- [ ] **DEPLOY-04**: Production OAuth App callback URL configured against the deployed worker host
+- [x] **DEPLOY-01**: API worker deployable to Cloudflare via `wrangler deploy`
+- [x] **DEPLOY-02**: Production D1 database provisioned and migrated from CI or operator workflow
+- [x] **DEPLOY-03**: Production secrets (`JWT_SECRET`, `GITHUB_CLIENT_SECRET`) configured via `wrangler secret`
+- [x] **DEPLOY-04**: Production OAuth App callback URL configured against the deployed worker host
 
 ### Decommission & Documentation (DECOM)
 
@@ -128,7 +128,7 @@ Remove v1 GitHub-Issues code paths, archive the data repo, update planning docs.
 - [x] **DECOM-03**: `src/lib/github/mutations.ts` deleted
 - [x] **DECOM-04**: `src/lib/github/etag.ts` deleted
 - [x] **DECOM-05**: `src/lib/github/auth.ts` deleted (server-side maintainer check replaces it)
-- [ ] **DECOM-06**: `prompt-community-data` repository archived (no longer used as a data store)
+- [x] **DECOM-06**: `prompt-community-data` repository archived (no longer used as a data store)
 - [x] **DECOM-07**: `wrangler.toml` cleaned of two-repo configuration
 - [x] **DECOM-08**: `.env.example` drops `VITE_GITHUB_OWNER` and `VITE_GITHUB_DATA_REPO`
 - [ ] **DECOM-09**: `design/planning-artifacts/product-brief-prompt-community-2026-03-14.md` updated to reflect v2 architecture
@@ -244,7 +244,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | DECOM-03 | Phase 15 | Complete |
 | DECOM-04 | Phase 15 | Complete |
 | DECOM-05 | Phase 15 | Complete |
-| DECOM-06 | Phase 15 | Pending |
+| DECOM-06 | Phase 15 | Complete |
 | DECOM-07 | Phase 15 | Complete |
 | DECOM-08 | Phase 15 | Complete |
 | DECOM-09 | Phase 15 | Pending |
@@ -252,10 +252,10 @@ Which phases cover which requirements. Updated during roadmap creation.
 | DECOM-11 | Phase 15 | Pending |
 | DECOM-12 | Phase 15 | Pending |
 | DECOM-13 | Phase 15 | Pending |
-| DEPLOY-01 | Phase 15 | Pending |
-| DEPLOY-02 | Phase 15 | Pending |
-| DEPLOY-03 | Phase 15 | Pending |
-| DEPLOY-04 | Phase 15 | Pending |
+| DEPLOY-01 | Phase 15 | Complete |
+| DEPLOY-02 | Phase 15 | Complete |
+| DEPLOY-03 | Phase 15 | Complete |
+| DEPLOY-04 | Phase 15 | Complete |
 
 ---
 *Requirements defined: 2026-05-05*
