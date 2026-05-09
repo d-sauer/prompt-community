@@ -116,7 +116,7 @@ Production deployment of the API worker and D1.
 
 - [x] **DEPLOY-01**: API worker deployable to Cloudflare via `wrangler deploy`
 - [x] **DEPLOY-02**: Production D1 database provisioned and migrated from CI or operator workflow
-- [x] **DEPLOY-03**: Production secrets (`JWT_SECRET`, `GITHUB_CLIENT_SECRET`) configured via `wrangler secret`
+- [x] **DEPLOY-03**: Production secrets (`JWT_SECRET`, `GITHUB_CLIENT_Secret`) configured via `wrangler secret`
 - [x] **DEPLOY-04**: Production OAuth App callback URL configured against the deployed worker host
 
 ### Decommission & Documentation (DECOM)
@@ -136,6 +136,8 @@ Remove v1 GitHub-Issues code paths, archive the data repo, update planning docs.
 - [ ] **DECOM-11**: `design/planning-artifacts/architecture.md` rewritten for v2 (Data, Auth, API, Caching sections)
 - [ ] **DECOM-12**: `design/planning-artifacts/epics.md` updated to add Epic 0: Backend Foundation
 - [ ] **DECOM-13**: `design/research/vue-github-issues-platform-research.md` marked historical / superseded with banner
+- [ ] **DECOM-14**: The login button in `Navbar.vue` displays "Sign in" (not "Sign in with GitHub") — GitHub branding removed from UI button text
+- [ ] **DECOM-15**: In development environment (`import.meta.env.DEV === true`), clicking the login button shows a modal popup that lets the developer select which dev user to sign in as, with the ability to add new dev users by specifying a login name and role (`user` | `maintainer`). This replaces the GitHub OAuth popup in dev mode only. Production behavior is unchanged.
 
 ## Future Requirements
 
@@ -169,8 +171,8 @@ Explicitly excluded from v2.0. Documented to prevent scope creep.
 Which phases cover which requirements. Updated during roadmap creation.
 
 **Coverage:**
-- v2.0 requirements: 81 total
-- Mapped to phases: 81
+- v2.0 requirements: 83 total
+- Mapped to phases: 83
 - Unmapped: 0 ✓
 
 | REQ-ID | Phase | Status |
@@ -252,6 +254,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 | DECOM-11 | Phase 15 | Pending |
 | DECOM-12 | Phase 15 | Pending |
 | DECOM-13 | Phase 15 | Pending |
+| DECOM-14 | Phase 15 | Pending |
+| DECOM-15 | Phase 15 | Pending |
 | DEPLOY-01 | Phase 15 | Complete |
 | DEPLOY-02 | Phase 15 | Complete |
 | DEPLOY-03 | Phase 15 | Complete |
@@ -259,4 +263,4 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 ---
 *Requirements defined: 2026-05-05*
-*Last updated: 2026-05-05 — traceability populated by gsd-roadmapper*
+*Last updated: 2026-05-09 — DECOM-14 and DECOM-15 added (dev login UX debranding)*
